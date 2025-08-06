@@ -10,4 +10,4 @@ Tento skript (`simulate_random_walk.py`) simuluje vývoj ceny akcie pomocí jedn
 
 ## Spuštění
 
-py simulate_random_walk.py
+py Brownian-motion/simulate_random_walk.py
