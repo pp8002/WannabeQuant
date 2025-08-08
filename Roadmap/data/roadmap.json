@@ -1,13 +1,30 @@
 {
   "nodes": [
-    { "id": "python_basics", "label": "Python Basics" },
-    { "id": "numpy", "label": "NumPy", "prereqs": ["python_basics"] },
-    { "id": "pandas", "label": "Pandas", "prereqs": ["numpy"] },
-    { "id": "plotly", "label": "Plotly", "prereqs": ["pandas"] }
+    { "id": "calc",           "label": "Calculus",           "track": "Matematika" },
+    { "id": "linear_algebra", "label": "Linear Algebra",     "track": "Matematika",  "prereqs": ["calc"] },
+    { "id": "probability",    "label": "Probability",        "track": "Matematika",  "prereqs": ["calc"] },
+    { "id": "stoch_process",  "label": "Stochastic Proc.",   "track": "Matematika",  "prereqs": ["probability","linear_algebra"] },
+
+    { "id": "python_basics",  "label": "Python Basics",      "track": "Programování" },
+    { "id": "numpy",          "label": "NumPy",              "track": "Programování", "prereqs": ["python_basics"] },
+    { "id": "pandas",         "label": "Pandas",             "track": "Programování", "prereqs": ["numpy"] },
+    { "id": "plotly",         "label": "Plotly",             "track": "Programování", "prereqs": ["pandas"] },
+
+    { "id": "stats",          "label": "Statistics",         "track": "ML/Statistika", "prereqs": ["probability"] },
+    { "id": "ml_basics",      "label": "ML Basics",          "track": "ML/Statistika", "prereqs": ["stats","python_basics"] },
+    { "id": "feature_eng",    "label": "Feature Engineering","track": "ML/Statistika", "prereqs": ["pandas"] },
+
+    { "id": "markets",        "label": "Markets Micro",      "track": "Finance/Markets" },
+    { "id": "derivatives",    "label": "Derivatives",        "track": "Finance/Markets", "prereqs": ["calc","probability"] },
+    { "id": "portfolio",      "label": "Portfolio Theory",   "track": "Finance/Markets", "prereqs": ["linear_algebra","stats"] },
+
+    { "id": "sql",            "label": "SQL",                "track": "Data Eng" },
+    { "id": "pipelines",      "label": "Pipelines",          "track": "Data Eng", "prereqs": ["sql","pandas"] },
+    { "id": "cloud",          "label": "Cloud Basics",       "track": "Data Eng", "prereqs": ["pipelines"] },
+
+    { "id": "risk",           "label": "Risk Basics",        "track": "Risk/Portfolio", "prereqs": ["probability"] },
+    { "id": "var_es",         "label": "VaR & ES",           "track": "Risk/Portfolio", "prereqs": ["risk","stats"] },
+    { "id": "backtesting",    "label": "Backtesting",        "track": "Risk/Portfolio", "prereqs": ["ml_basics","portfolio"] }
   ],
-  "edges": [
-    { "source": "python_basics", "target": "numpy" },
-    { "source": "numpy", "target": "pandas" },
-    { "source": "pandas", "target": "plotly" }
-  ]
+  "edges": []
 }
