@@ -1,84 +1,213 @@
-/* assets/style.css */
-
-/* Příjemné písmo (pokud máš vlastní, klidně změň) */
+/* ========== Base ========== */
 html, body {
-  background: radial-gradient(1000px 600px at 20% 10%, #f0fbff 0%, #ffffff 60%) fixed;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
-  color: #0f172a; /* slate-900 */
+  background: radial-gradient(1000px 600px at 20% 10%, #0e1831 0%, #0b1220 60%) fixed;
+  color: #e2e8f0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Layout wrapper */
 .page-wrap {
   max-width: 1200px;
   margin: 0 auto;
   padding: 16px;
 }
 
-/* Panel s ovladači */
+/* ========== Top panel ========== */
 .panel {
-  background: #ffffff;
+  background: #0f172a;
   border-radius: 16px;
-  padding: 14px 16px;
-  box-shadow: 0 8px 20px rgba(2, 8, 23, 0.06);
-  margin-bottom: 16px;
+  padding: 12px 14px;
+  box-shadow: 0 8px 20px rgba(2, 8, 23, 0.45);
+  margin-bottom: 12px;
   display: grid;
   grid-template-columns: 1fr auto;
-  gap: 12px;
+  gap: 10px;
 }
 
 .title {
-  font-size: 22px;
-  font-weight: 700;
-  color: #0f172a;
+  font-size: 24px;
+  font-weight: 800;
+  color: #e5f4ff;
+  letter-spacing: 0.2px;
 }
 
-.controls {
+.top-right {
   display: flex;
-  gap: 8px;
   align-items: center;
+  gap: 12px;
 }
 
-.btn {
-  border: none;
-  background: #e2e8f0;
-  color: #0f172a;
-  padding: 8px 12px;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: transform 0.05s ease, background 0.2s ease;
-  font-weight: 600;
-}
-.btn:hover { background: #cbd5e1; }
-.btn:active { transform: translateY(1px); }
-.btn.primary { background: #22c55e; color: #fff; }
-.btn.primary:hover { background: #16a34a; }
-
-.speed-wrap {
-  min-width: 220px;
-}
-.speed-wrap label {
-  display: block;
-  font-size: 12px;
-  color: #475569;
-  margin-bottom: 4px;
+.overall-progress {
+  font-weight: 800;
+  color: #e5f4ff;
 }
 
-/* Karta s grafem */
+.streak {
+  color: #facc15;
+  font-weight: 700;
+}
+
+/* ========== Two-column layout ========== */
+.two-col {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 12px;
+}
+
+.graph-col {
+  min-height: 70vh;
+}
+
 .graph-card {
-  background: #ffffff;
+  background: #0f172a;
   border-radius: 18px;
-  box-shadow: 0 12px 28px rgba(2, 8, 23, 0.08);
+  box-shadow: 0 12px 28px rgba(2, 8, 23, 0.35);
   padding: 6px;
 }
 
-/* (Volitelně) pulzace markeru přes CSS – animace je decentní */
-.js-plotly-plot .scatterlayer .trace:nth-child(4) path {
-  animation: pulse 1.6s ease-in-out infinite;
-  transform-origin: center;
+/* ========== Side panel (detail uzlu) ========== */
+.side-panel {
+  background: #0f172a;
+  border-radius: 18px;
+  box-shadow: 0 12px 28px rgba(2, 8, 23, 0.35);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-@keyframes pulse {
-  0%   { transform: scale(1.00); opacity: 0.95; }
-  50%  { transform: scale(1.06); opacity: 1.00; }
-  100% { transform: scale(1.00); opacity: 0.95; }
+.side-title {
+  font-size: 12px;
+  color: #9fb4ff;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 2px;
 }
+
+.side-node-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #e5f4ff;
+}
+
+.side-prereqs,
+.side-status,
+.test-status {
+  color: #94a3b8;
+}
+
+.side-subtitle {
+  font-weight: 800;
+  color: #cde0ff;
+  margin-bottom: 4px;
+}
+
+.side-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* odkazy v panelu */
+.links .link {
+  display: inline-block;
+  margin-right: 8px;
+  color: #9fb4ff;
+  text-decoration: none;
+  font-weight: 700;
+}
+.links .link:hover {
+  text-decoration: underline;
+}
+
+/* ========== Buttons ========== */
+.btn {
+  border: none;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: #1f2937;
+  color: #e2e8f0;
+  cursor: pointer;
+  font-weight: 700;
+  transition: transform 0.05s ease, background 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 3px 10px rgba(2, 8, 23, 0.3);
+}
+.btn:hover { background: #2b3648; }
+.btn:active { transform: translateY(1px); }
+
+.btn.success { background: #22c55e; color: #0b1220; }
+.btn.success:hover { background: #1fb455; }
+
+.btn.warn { background: #f59e0b; color: #0b1220; }
+.btn.warn:hover { background: #e39a0b; }
+
+.btn.danger { background: #ef4444; color: #0b1220; }
+.btn.danger:hover { background: #e43f3f; }
+
+/* ========== Checklist (tasks) ========== */
+.tasks {
+  display: grid;
+  gap: 6px;
+  padding: 4px 0 6px 0;
+}
+
+.tasks label {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  background: #0b162b;
+  border: 1px solid #1f2a44;
+  border-radius: 12px;
+  padding: 8px 10px;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+.tasks label:hover {
+  background: #12203a;
+  border-color: #2a3a5f;
+}
+
+.tasks input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #22c55e;
+}
+
+/* ========== Plotly tweaks ========== */
+/* Legend text a ikony světlejší */
+.js-plotly-plot .legend .traces .legendtext {
+  fill: #d6e3ff !important;
+}
+
+/* ========== Responsive ========== */
+@media (max-width: 900px) {
+  .two-col { grid-template-columns: 1fr; }
+  .graph-col { min-height: 60vh; }
+}
+
+/* Glow-y cards */
+.graph-card, .side-panel, .panel {
+  box-shadow: 0 12px 28px rgba(2, 8, 23, 0.35), 0 0 0 1px rgba(159, 180, 255, 0.04) inset;
+}
+
+/* sticky horní panel */
+.panel.sticky {
+  position: sticky;
+  top: 8px;
+  z-index: 10;
+}
+
+/* vyhledávání */
+.search {
+  background: #0b162b;
+  border: 1px solid #1f2a44;
+  color: #e2e8f0;
+  padding: 6px 10px;
+  border-radius: 10px;
+  outline: none;
+  min-width: 180px;
+  margin-right: 6px;
+}
+.search::placeholder { color: #8aa0c5; }
+
