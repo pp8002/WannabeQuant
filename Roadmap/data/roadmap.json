@@ -1,4 +1,10 @@
 {
-  "nodes": [],
-  "edges": []
+  "nodes": [
+    { "id": "python_basics", "label": "Python Basics" },
+    { "id": "numpy", "label": "NumPy" }
+  ],
+  "edges": [
+    { "source": "python_basics", "target": "numpy" }
+  ]
 }
+
