@@ -1,10 +1,13 @@
 {
   "nodes": [
     { "id": "python_basics", "label": "Python Basics" },
-    { "id": "numpy", "label": "NumPy" }
+    { "id": "numpy", "label": "NumPy", "prereqs": ["python_basics"] },
+    { "id": "pandas", "label": "Pandas", "prereqs": ["numpy"] },
+    { "id": "plotly", "label": "Plotly", "prereqs": ["pandas"] }
   ],
   "edges": [
-    { "source": "python_basics", "target": "numpy" }
+    { "source": "python_basics", "target": "numpy" },
+    { "source": "numpy", "target": "pandas" },
+    { "source": "pandas", "target": "plotly" }
   ]
 }
-

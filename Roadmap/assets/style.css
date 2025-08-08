@@ -1,2 +1,84 @@
-/* Fáze 0 – drobná typografie, ať to nevypadá divoce */
-body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; }
+/* assets/style.css */
+
+/* Příjemné písmo (pokud máš vlastní, klidně změň) */
+html, body {
+  background: radial-gradient(1000px 600px at 20% 10%, #f0fbff 0%, #ffffff 60%) fixed;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+  color: #0f172a; /* slate-900 */
+}
+
+/* Layout wrapper */
+.page-wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+/* Panel s ovladači */
+.panel {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 14px 16px;
+  box-shadow: 0 8px 20px rgba(2, 8, 23, 0.06);
+  margin-bottom: 16px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+}
+
+.title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.btn {
+  border: none;
+  background: #e2e8f0;
+  color: #0f172a;
+  padding: 8px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.05s ease, background 0.2s ease;
+  font-weight: 600;
+}
+.btn:hover { background: #cbd5e1; }
+.btn:active { transform: translateY(1px); }
+.btn.primary { background: #22c55e; color: #fff; }
+.btn.primary:hover { background: #16a34a; }
+
+.speed-wrap {
+  min-width: 220px;
+}
+.speed-wrap label {
+  display: block;
+  font-size: 12px;
+  color: #475569;
+  margin-bottom: 4px;
+}
+
+/* Karta s grafem */
+.graph-card {
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 12px 28px rgba(2, 8, 23, 0.08);
+  padding: 6px;
+}
+
+/* (Volitelně) pulzace markeru přes CSS – animace je decentní */
+.js-plotly-plot .scatterlayer .trace:nth-child(4) path {
+  animation: pulse 1.6s ease-in-out infinite;
+  transform-origin: center;
+}
+
+@keyframes pulse {
+  0%   { transform: scale(1.00); opacity: 0.95; }
+  50%  { transform: scale(1.06); opacity: 1.00; }
+  100% { transform: scale(1.00); opacity: 0.95; }
+}
