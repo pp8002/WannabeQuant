@@ -1,30 +1,315 @@
 {
+  "metadata": {
+    "title": "Quantitative Analyst Roadmap",
+    "description": "Kompletní vzdělávací cesta od začátečníka po kvantitativního analytika",
+    "author": "Quant Mentor",
+    "version": "1.1"
+  },
+  "tracks": [
+    {
+      "id": "math-fundamentals",
+      "name": "Matematické základy",
+      "color": "#1f77b4"
+    },
+    {
+      "id": "programming",
+      "name": "Programování",
+      "color": "#ff7f0e"
+    },
+    {
+      "id": "finance-theory",
+      "name": "Finanční teorie",
+      "color": "#2ca02c"
+    },
+    {
+      "id": "practical-applications",
+      "name": "Praktické aplikace",
+      "color": "#d62728"
+    }
+  ],
   "nodes": [
-    { "id": "calc",           "label": "Calculus",           "track": "Matematika" },
-    { "id": "linear_algebra", "label": "Linear Algebra",     "track": "Matematika",  "prereqs": ["calc"] },
-    { "id": "probability",    "label": "Probability",        "track": "Matematika",  "prereqs": ["calc"] },
-    { "id": "stoch_process",  "label": "Stochastic Proc.",   "track": "Matematika",  "prereqs": ["probability","linear_algebra"] },
-
-    { "id": "python_basics",  "label": "Python Basics",      "track": "Programování" },
-    { "id": "numpy",          "label": "NumPy",              "track": "Programování", "prereqs": ["python_basics"] },
-    { "id": "pandas",         "label": "Pandas",             "track": "Programování", "prereqs": ["numpy"] },
-    { "id": "plotly",         "label": "Plotly",             "track": "Programování", "prereqs": ["pandas"] },
-
-    { "id": "stats",          "label": "Statistics",         "track": "ML/Statistika", "prereqs": ["probability"] },
-    { "id": "ml_basics",      "label": "ML Basics",          "track": "ML/Statistika", "prereqs": ["stats","python_basics"] },
-    { "id": "feature_eng",    "label": "Feature Engineering","track": "ML/Statistika", "prereqs": ["pandas"] },
-
-    { "id": "markets",        "label": "Markets Micro",      "track": "Finance/Markets" },
-    { "id": "derivatives",    "label": "Derivatives",        "track": "Finance/Markets", "prereqs": ["calc","probability"] },
-    { "id": "portfolio",      "label": "Portfolio Theory",   "track": "Finance/Markets", "prereqs": ["linear_algebra","stats"] },
-
-    { "id": "sql",            "label": "SQL",                "track": "Data Eng" },
-    { "id": "pipelines",      "label": "Pipelines",          "track": "Data Eng", "prereqs": ["sql","pandas"] },
-    { "id": "cloud",          "label": "Cloud Basics",       "track": "Data Eng", "prereqs": ["pipelines"] },
-
-    { "id": "risk",           "label": "Risk Basics",        "track": "Risk/Portfolio", "prereqs": ["probability"] },
-    { "id": "var_es",         "label": "VaR & ES",           "track": "Risk/Portfolio", "prereqs": ["risk","stats"] },
-    { "id": "backtesting",    "label": "Backtesting",        "track": "Risk/Portfolio", "prereqs": ["ml_basics","portfolio"] }
+    {
+      "id": "math-linear-algebra",
+      "label": "Lineární algebra",
+      "track": "math-fundamentals",
+      "level": 1,
+      "difficulty": 1,
+      "desc": "Základy maticových operací a vektorových prostorů",
+      "estimate": "40h",
+      "prereqs": [],
+      "tasks_all": [
+        "Matice a vektorové operace",
+        "Soustavy lineárních rovnic",
+        "Vlastní čísla a vektory",
+        "Singulární rozklad (SVD)",
+        "PCA analýza"
+      ],
+      "links": [
+        {
+          "title": "MIT Linear Algebra",
+          "url": "https://ocw.mit.edu/courses/mathematics/18-06-linear-algebra-spring-2010/"
+        }
+      ]
+    },
+    {
+      "id": "math-probability",
+      "label": "Pravděpodobnost",
+      "track": "math-fundamentals",
+      "level": 2,
+      "difficulty": 1,
+      "desc": "Základy teorie pravděpodobnosti",
+      "estimate": "50h",
+      "prereqs": [],
+      "tasks_all": [
+        "Pravděpodobnostní distribuce",
+        "Bayesova věta",
+        "Markovovy řetězce",
+        "Centrální limitní věta",
+        "Korelace a kovariance"
+      ],
+      "links": [
+        {
+          "title": "Probability Course",
+          "url": "https://www.probabilitycourse.com/"
+        }
+      ]
+    },
+    {
+      "id": "prog-python-basics",
+      "label": "Python základy",
+      "track": "programming",
+      "level": 1,
+      "difficulty": 1,
+      "desc": "Základní syntax a struktury Pythonu",
+      "estimate": "30h",
+      "prereqs": [],
+      "tasks_all": [
+        "Datové typy a struktury",
+        "Řízení toku programu",
+        "Funkce a moduly",
+        "Základní OOP principy",
+        "Práce s výjimkami"
+      ],
+      "links": [
+        {
+          "title": "Python Official Tutorial",
+          "url": "https://docs.python.org/3/tutorial/"
+        }
+      ]
+    },
+    {
+      "id": "prog-scientific-python",
+      "label": "Vědecký Python",
+      "track": "programming",
+      "level": 2,
+      "difficulty": 2,
+      "desc": "Knihovny pro vědecké výpočty",
+      "estimate": "40h",
+      "prereqs": ["prog-python-basics"],
+      "tasks_all": [
+        "NumPy - vektorové operace",
+        "Pandas - práce s daty",
+        "Matplotlib/Seaborn - vizualizace",
+        "SciPy - vědecké výpočty",
+        "Jupyter notebooky"
+      ],
+      "links": [
+        {
+          "title": "Python Data Science Handbook",
+          "url": "https://jakevdp.github.io/PythonDataScienceHandbook/"
+        }
+      ]
+    },
+    {
+      "id": "finance-basics",
+      "label": "Finanční základy",
+      "track": "finance-theory",
+      "level": 1,
+      "difficulty": 1,
+      "desc": "Základní finanční koncepty",
+      "estimate": "35h",
+      "prereqs": ["math-probability"],
+      "tasks_all": [
+        "Time value of money",
+        "Úrokové sazby a diskontování",
+        "Základy portfoliové teorie",
+        "Riziko a výnos",
+        "Kapitálové trhy"
+      ],
+      "links": [
+        {
+          "title": "Investopedia Finance Basics",
+          "url": "https://www.investopedia.com/"
+        }
+      ]
+    },
+    {
+      "id": "stochastic-calculus",
+      "label": "Stochastický kalkulus",
+      "track": "math-fundamentals",
+      "level": 3,
+      "difficulty": 3,
+      "desc": "Matematický základ pro oceňování derivátů",
+      "estimate": "60h",
+      "prereqs": ["math-probability", "math-linear-algebra"],
+      "tasks_all": [
+        "Brownův pohyb",
+        "Itoův lemma",
+        "Stochastické diferenciální rovnice",
+        "Martingaly",
+        "Girsanovova věta"
+      ],
+      "links": [
+        {
+          "title": "Stochastic Calculus for Finance",
+          "url": "https://www.springer.com/gp/book/9780387249681"
+        }
+      ]
+    },
+    {
+      "id": "derivatives-pricing",
+      "label": "Oceňování derivátů",
+      "track": "finance-theory",
+      "level": 2,
+      "difficulty": 3,
+      "desc": "Teorie a modely pro oceňování derivátů",
+      "estimate": "50h",
+      "prereqs": ["stochastic-calculus", "finance-basics"],
+      "tasks_all": [
+        "Black-Scholes model",
+        "Option Greeks",
+        "Implied volatility",
+        "Exotické opce",
+        "Numerické metody pro pricing"
+      ],
+      "links": [
+        {
+          "title": "Options, Futures and Other Derivatives",
+          "url": "https://www.pearson.com/us/higher-education/program/Hull-Options-Futures-and-Other-Derivatives-10th-Edition/PGM1760255.html"
+        }
+      ]
+    },
+    {
+      "id": "quant-programming",
+      "label": "Kvantitativní programování",
+      "track": "programming",
+      "level": 3,
+      "difficulty": 3,
+      "desc": "Pokročilé techniky pro kvantitativní finance",
+      "estimate": "70h",
+      "prereqs": ["prog-scientific-python"],
+      "tasks_all": [
+        "Backtesting frameworky",
+        "QuantLib - oceňování derivátů",
+        "Optimalizace výkonu",
+        "Paralelní výpočty",
+        "Práce s časovými řadami"
+      ],
+      "links": [
+        {
+          "title": "QuantLib Documentation",
+          "url": "https://www.quantlib.org/"
+        }
+      ]
+    },
+    {
+      "id": "risk-management",
+      "label": "Risk management",
+      "track": "practical-applications",
+      "level": 1,
+      "difficulty": 2,
+      "desc": "Metody měření a řízení rizika",
+      "estimate": "45h",
+      "prereqs": ["finance-basics", "math-probability"],
+      "tasks_all": [
+        "Value at Risk (VaR)",
+        "Expected Shortfall",
+        "Stress testing",
+        "Scenario analysis",
+        "Credit risk modely"
+      ],
+      "links": [
+        {
+          "title": "Risk Management and Financial Institutions",
+          "url": "https://www.wiley.com/en-us/Risk+Management+and+Financial+Institutions%2C+5th+Edition-p-9781119448117"
+        }
+      ]
+    },
+    {
+      "id": "hft-techniques",
+      "label": "HFT techniky",
+      "track": "practical-applications",
+      "level": 2,
+      "difficulty": 3,
+      "desc": "Pokročilé metody high-frequency tradingu",
+      "estimate": "80h",
+      "prereqs": ["quant-programming"],
+      "tasks_all": [
+        "Low-latency programování",
+        "Market microstructure",
+        "Order book dynamika",
+        "Latency arbitráž",
+        "FPGA akcelerace"
+      ],
+      "links": [
+        {
+          "title": "Advances in Financial Machine Learning",
+          "url": "https://www.wiley.com/en-us/Advances+in+Financial+Machine+Learning-p-9781119482086"
+        }
+      ]
+    },
+    {
+      "id": "machine-learning",
+      "label": "Strojové učení pro finance",
+      "track": "practical-applications",
+      "level": 3,
+      "difficulty": 3,
+      "desc": "Aplikace ML v kvantitativních financích",
+      "estimate": "90h",
+      "prereqs": ["quant-programming", "math-probability"],
+      "tasks_all": [
+        "Predikce časových řad",
+        "Reinforcement learning pro trading",
+        "NLP pro sentiment analýzu",
+        "Feature engineering",
+        "Model interpretability"
+      ],
+      "links": [
+        {
+          "title": "Machine Learning for Asset Managers",
+          "url": "https://www.cambridge.org/core/books/machine-learning-for-asset-managers/671E8F0A1C9B5A0D5563D53A4C8569D6"
+        }
+      ]
+    }
+  ],
+  "learning_paths": [
+    {
+      "name": "Základní cesta",
+      "description": "Doporučené pořadí pro začátečníky",
+      "node_sequence": [
+        "math-linear-algebra",
+        "math-probability",
+        "prog-python-basics",
+        "prog-scientific-python",
+        "finance-basics",
+        "stochastic-calculus",
+        "derivatives-pricing",
+        "quant-programming",
+        "risk-management"
+      ]
+    },
+    {
+      "name": "HFT specializace",
+      "description": "Cesta pro high-frequency trading",
+      "node_sequence": [
+        "math-linear-algebra",
+        "math-probability",
+        "prog-python-basics",
+        "prog-scientific-python",
+        "quant-programming",
+        "hft-techniques"
+      ]
+    }
   ],
   "edges": []
 }

@@ -1,149 +1,170 @@
-/* =========================
-   Global / Base
-   ========================= */
+/* =========================================================
+   TERRARIA THEME — static image background
+   (používá /assets/terraria-bg.png)
+   ========================================================= */
+
+/* ---------- Základní proměnné UI ---------- */
 :root{
-  --bg: #0b1220;
-  --panel: #0f172a;
-  --muted: #9fb4ff;
-  --text: #e6f0ff;
-  --text-dim: #cbd5e1;
-  --border: #223153;
-  --ring: #ffffff;
-  --ring-progress: #7ee081;
-  --accent: #2dd4bf;
-  --warn: #f59e0b;
-  --danger: #ef4444;
-  --ok: #16a34a;
+  --panel: rgba(11, 28, 38, .88);
+  --text: #eaf9ff;
+  --text-dim: #cbe7ee;
+  --border: #1a3a44;
+
+  --btn-bg: rgba(255,255,255,.06);
+  --btn-border: rgba(255,255,255,.12);
 }
 
-html, body, #root, #_dash-app-content, .page-wrap{ height: 100%; }
+html, body, #root, #_dash-app-content, .page-wrap{ height:100%; }
 
+/* ---------- Globální pozadí: Terraria obrázek ---------- */
+/* Ujisti se, že soubor je na cestě:  /assets/terraria-bg.png */
 body{
-  background: var(--bg);
+  margin: 0;
   color: var(--text);
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Apple Color Emoji","Segoe UI Emoji";
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: "Trebuchet MS", Verdana, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  background: url("/assets/terraria-bg.png") center center / cover fixed no-repeat;
+  position: relative;
+}
+body::after{
+  content:"";
+  position: fixed; inset:0;
+  background: linear-gradient(180deg, rgba(0,0,0,.10) 0%, rgba(0,0,0,.14) 40%, rgba(0,0,0,.18) 100%);
+  pointer-events:none; z-index:-1;
 }
 
-/* =========================
-   Top bar
-   ========================= */
+/* =========================================================
+   Panel / top bar / tlačítka
+   ========================================================= */
 .panel{
-  background: rgba(15, 23, 42, 0.38);
-  border: 1px solid rgba(159,180,255,.08);
+  background: var(--panel);
+  border: 1px solid var(--border);
   border-radius: 16px;
-  padding: 12px 14px;
-  margin: 12px 14px;
-  box-shadow: 0 18px 40px rgba(2, 8, 23, 0.35), inset 0 0 0 1px rgba(159,180,255,.04);
-  display: flex; align-items: center; justify-content: space-between;
-  backdrop-filter: blur(6px);
+  padding: 10px 14px;
+  margin: 12px;
+  display:flex; align-items:center; justify-content:space-between;
+  box-shadow: 0 14px 36px rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,255,255,.03);
+  backdrop-filter: blur(4px);
 }
 .panel.sticky{ position: sticky; top: 8px; z-index: 10; }
 
-.title{ font-size: 28px; font-weight: 900; letter-spacing: 0.2px; color: var(--text); }
-
-.top-right{ display: flex; align-items: center; gap: 8px; }
+.title{
+  font-size: 28px;
+  font-weight: 900;
+  letter-spacing:.3px;
+  color:#eaffff;
+  text-shadow:0 0 10px rgba(255,255,255,.12);
+}
+.top-right{ display:flex; gap:8px; align-items:center; }
 
 .search{
-  background: #0b162b; border: 1px solid #1f2a44; color: var(--text);
-  padding: 8px 12px; border-radius: 12px; outline: none; min-width: 220px;
+  background:#0f2c37; color:var(--text);
+  border:1px solid var(--border); border-radius:12px; padding:8px 12px; min-width:220px;
 }
-.search::placeholder{ color: #8aa0c5; }
+.search::placeholder{ color:#a9d8df; }
 
 .btn{
-  background: #16233e; color: var(--text); border: 1px solid #233357;
-  border-radius: 10px; padding: 8px 12px; cursor: pointer;
-  transition: transform .06s ease, background .15s ease, border-color .15s ease;
+  background: var(--btn-bg);
+  color: var(--text);
+  border: 1px solid var(--btn-border);
+  border-radius: 12px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: transform .15s ease, background .15s ease, border-color .15s ease;
+  text-decoration: none;
 }
-.btn:hover{ transform: translateY(-1px); background:#1a2a4b; border-color:#2f4575; }
-.btn:active{ transform: translateY(0); }
+.btn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.12); }
+.btn.success{ background: rgba(16,185,129,.14); border-color: rgba(16,185,129,.34); }
+.btn.warn{ background: rgba(245,158,11,.14); border-color: rgba(245,158,11,.34); }
+.btn.danger{ background: rgba(239,68,68,.14); border-color: rgba(239,68,68,.34); }
+.overall-progress, .streak{ color: var(--text-dim); font-weight:700; padding:0 6px; }
 
-.btn.success{ background:#123221; border-color:#1f5b35; }
-.btn.success:hover{ background:#144227; }
-.btn.warn{ background:#3a2a12; border-color:#77531b; }
-.btn.warn:hover{ background:#4b3616; }
-.btn.danger{ background:#381616; border-color:#7a2626; }
-.btn.danger:hover{ background:#4d1d1d; }
-
-.overall-progress, .streak{ color: var(--text-dim); font-weight: 700; padding: 0 6px; }
-
-/* =========================
-   Graph area
-   ========================= */
+/* =========================================================
+   Graph area (Plotly)
+   ========================================================= */
 .graph-col{ padding: 0 12px 12px; }
+
+/* průhledné pozadí, aby byl vidět obrázek */
 .graph-card{
   border-radius: 18px;
-  box-shadow: 0 16px 36px rgba(2,8,23,.35), inset 0 0 0 1px rgba(159,180,255,.04);
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(0,0,0,.06);
+  box-shadow: 0 16px 36px rgba(0,0,0,.30), inset 0 0 0 1px rgba(255,255,255,.03);
 }
 
-/* Plotly default text color tweak (když někde je legenda apod.) */
-.js-plotly-plot .xtick text, .js-plotly-plot .ytick text{ fill: #9fb4ff !important; }
-.js-plotly-plot .legend text{ fill: #cbd5e1 !important; }
+/* Plotly nápisy – světlé */
+.js-plotly-plot .xtick text, .js-plotly-plot .ytick text{ fill: #e8fbff !important; }
+.js-plotly-plot .legend text{ fill: #e8fbff !important; }
 
-/* =========================
-   Modal (fullscreen)
-   ========================= */
+/* =========================================================
+   Tooltip / toast
+   ========================================================= */
+.toast{
+  position: fixed; left:50%; bottom:22px; transform:translateX(-50%);
+  display:flex; align-items:center; gap:10px;
+  background: rgba(18,38,44,.95);
+  border:1px solid var(--border); color:var(--text);
+  padding:10px 14px; border-radius:12px;
+  box-shadow: 0 12px 28px rgba(0,0,0,.45); z-index:50;
+}
+.toast-close{
+  background:transparent; color:var(--text); border:none; cursor:pointer; font-size:18px; line-height:1; padding:2px 6px;
+}
+
+/* =========================================================
+   Modal s lekcí
+   ========================================================= */
 .modal-overlay{
-  position: fixed; inset: 0; display: none;
-  align-items: center; justify-content: center;
-  background: rgba(5,10,20,0.65); backdrop-filter: blur(2px); z-index: 30;
+  position: fixed; inset:0; display:none; align-items:center; justify-content:center;
+  background: rgba(0,0,0,.55); backdrop-filter: blur(2px); z-index:100;
 }
 .modal-card{
-  width: min(900px, 92vw); max-height: 86vh; overflow: auto;
-  background: var(--panel); border: 1px solid var(--border);
-  border-radius: 16px; box-shadow: 0 28px 60px rgba(2, 8, 23, 0.55);
-  padding: 18px; display: flex; flex-direction: column; gap: 12px;
+  width:min(900px,92vw); max-height:86vh; overflow:auto;
+  background: var(--panel);
+  border:1px solid var(--border);
+  border-radius:16px; padding:18px;
+  box-shadow: 0 28px 60px rgba(0,0,0,.55), inset 0 0 0 1px rgba(255,255,255,.03);
+  display:flex; flex-direction:column; gap:12px;
 }
-.modal-title{ font-size: 22px; font-weight: 900; color: var(--text); }
-.modal-desc { color: var(--muted); }
-.modal-links{ display:flex; gap:10px; flex-wrap: wrap; }
-.link{ background:#14203a; padding:6px 10px; border-radius:10px; border:1px solid #243a63; }
-.side-subtitle{ font-weight:800; color:#dbe6ff; margin-top: 2px; }
-.side-actions{ display:flex; gap:8px; flex-wrap: wrap; margin-top: 8px; }
-.test-status{ color:#dbe6ff; font-weight:700; }
-.tasks{ display:flex; flex-direction: column; gap: 6px; background:#0c1528; border:1px solid #193056; padding:10px; border-radius:12px; }
-.tasks label{ cursor:pointer; }
+.modal-head{ display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.modal-head-left{ display:flex; flex-direction:column; gap:6px; }
+.modal-title{ font-size:22px; font-weight:900; color:#ffe8c2; }
+.modal-estimate{ font-weight:700; color:var(--text-dim); }
+.modal-desc{ color: var(--text-dim); }
+.modal-links{ display:flex; gap:10px; flex-wrap:wrap; }
+.modal-links a{ background:#0e252b; border:1px solid var(--border); color:var(--text); text-decoration:none; padding:6px 10px; border-radius:10px; }
+.side-subtitle{ font-weight:800; color:#fff0d0; margin-top:2px; }
+.side-actions{ display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
 
-/* =========================
-   Animated background
-   ========================= */
-.page-wrap{ position: relative; isolation: isolate; }
-.page-wrap::before{
-  content:""; position: fixed; inset: -12vmax;
-  background:
-    radial-gradient(1000px 700px at 18% 12%, rgba(30,58,138,.28), transparent 60%),
-    radial-gradient(900px 900px at 78% 88%, rgba(16,185,129,.18), transparent 55%),
-    radial-gradient(1200px 800px at 62% 28%, rgba(245,158,11,.12), transparent 55%),
-    linear-gradient(180deg, #0b1220 0%, #0b1426 60%, #0b1220 100%);
-  animation: bgShift 38s ease-in-out infinite;
-  z-index: -3;
+.topics-list{
+  list-style:none; padding:8px; margin:0;
+  display:flex; flex-direction:column; gap:8px;
+  background:#0b2026; border:1px solid var(--border); border-radius:12px;
 }
-.page-wrap::after{
-  content:""; position: fixed; inset: -20vmax;
-  background:
-    radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,.15) 50%, transparent 51%),
-    radial-gradient(1.5px 1.5px at 60% 70%, rgba(255,255,255,.15) 50%, transparent 51%),
-    radial-gradient(2px 2px at 80% 20%, rgba(255,255,255,.12) 50%, transparent 51%),
-    radial-gradient(1.5px 1.5px at 30% 80%, rgba(255,255,255,.12) 50%, transparent 51%),
-    radial-gradient(1.5px 1.5px at 50% 50%, rgba(255,255,255,.10) 50%, transparent 51%);
-  filter: blur(.35px);
-  animation: starDrift 70s linear infinite; z-index: -2;
+.topics-list li a{
+  color:#cbeff4; text-decoration:none; padding:6px 10px; border-radius:8px;
+  background:#0f2930; border:1px solid #1a3e44;
 }
-@keyframes bgShift{
-  0%   { transform: translate3d(0,0,0) scale(1); }
-  50%  { transform: translate3d(-1.5%, -1%, 0) scale(1.015); }
-  100% { transform: translate3d(0,0,0) scale(1); }
-}
-@keyframes starDrift{
-  0%   { transform: translateY(0); }
-  100% { transform: translateY(-24px); }
-}
+.topics-list li a:hover{ background:#12363e; }
+.test-status{ color:#ffe8c2; font-weight:700; }
 
-/* =========================
+/* =========================================================
+   Lesson viewer
+   ========================================================= */
+.lesson-card{
+  background: rgba(14,31,39,.70);
+  border:1px solid var(--border); border-radius:16px;
+  box-shadow: 0 16px 36px rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,255,255,.03);
+  margin:12px; padding:16px;
+}
+.lesson-title{ font-size:24px; font-weight:900; color:#ffe8c2; }
+.lesson-meta{ color:var(--text-dim); margin-bottom:8px; }
+.lesson-md{ color:var(--text); }
+.lesson-nav{ display:flex; gap:10px; }
+
+/* =========================================================
    Utility
-   ========================= */
-hr{ border: none; border-top: 1px solid rgba(159,180,255,.08); margin: 10px 0; }
+   ========================================================= */
+hr{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:10px 0; }
 @media (max-width: 900px){
   .title{ font-size: 22px; }
   .search{ min-width: 160px; }

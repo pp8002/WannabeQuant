@@ -1,68 +1,84 @@
 from __future__ import annotations
-from typing import List, Literal, Optional, Tuple
+from typing import List, Optional, Dict
 from pydantic import BaseModel, Field, field_validator, model_validator
 
-Area = Literal["Programování", "Matematika", "Finance", "Praxe"]
+
+class Metadata(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    author: Optional[str] = None
+    version: Optional[str] = None
+
+
+class Track(BaseModel):
+    id: str
+    name: str
+    color: Optional[str] = None
+
+
+class Link(BaseModel):
+    title: str
+    url: str
+
 
 class Node(BaseModel):
-    """
-    Jeden uzel roadmapy (úkol / kurz / milník).
-    """
     id: str
     label: str
-    area: Area = "Programování"
-    difficulty: Literal[1, 2, 3, 4] = 1
-    position: Tuple[float, float, float] = Field(
-        (0.0, 0.0, 0.0), description="Pozice v 3D (x, y, z)"
-    )
-    description: Optional[str] = None
-    resources: List[str] = []
-    milestone: Optional[str] = None
-    prereqs: List[str] = []
+    track: str                       # odkazuje na Track.id
+    level: int = Field(1, ge=1, le=9)
+    difficulty: int = Field(1, ge=1, le=4)   # 1..4 (Beginner..Expert)
+    desc: Optional[str] = ""
+    estimate: Optional[str] = None
+    prereqs: List[str] = Field(default_factory=list)
+    tasks_all: List[str] = Field(default_factory=list)
+    links: List[Link] = Field(default_factory=list)
 
-    @field_validator("label")
+    # přijmeme i stringy jako "Beginner", "Intermediate", "Advanced"
+    @field_validator("difficulty", mode="before")
     @classmethod
-    def _label_not_empty(cls, v: str) -> str:
-        if not v.strip():
-            raise ValueError("label nesmí být prázdný")
+    def _map_difficulty(cls, v):
+        if isinstance(v, str):
+            m = {"beginner": 1, "intermediate": 2, "advanced": 3, "expert": 4}
+            return m.get(v.strip().lower(), 2)
         return v
 
+
+class LearningPath(BaseModel):
+    name: str
+    description: Optional[str] = ""
+    node_sequence: List[str] = Field(default_factory=list)
+
+
 class Edge(BaseModel):
-    """
-    Hrana z jednoho uzlu do druhého (orientovaná).
-    """
+    """Volitelné přímé hrany mezi uzly (source -> target)."""
     source: str
     target: str
 
-    @model_validator(mode="after")
-    def _no_self_loops(self) -> "Edge":
-        if self.source == self.target:
-            raise ValueError("Edge nesmí mít shodný source a target (self-loop).")
-        return self
 
 class Roadmap(BaseModel):
-    """
-    Celý orientovaný graf roadmapy.
-    """
+    metadata: Optional[Metadata] = None
+    tracks: List[Track]
     nodes: List[Node]
-    edges: List[Edge]
+    learning_paths: List[LearningPath] = Field(default_factory=list)
+    edges: List[Edge] = Field(default_factory=list)
 
+    # základní konzistence referencí
     @model_validator(mode="after")
-    def _validate_graph(self) -> "Roadmap":
-        # 1) unikátní ID uzlů
-        ids = [n.id for n in self.nodes]
-        if len(ids) != len(set(ids)):
-            # najdi první duplicitní id pro srozumitelnou hlášku
-            seen = set()
-            dup = next(i for i in ids if (i in seen) or seen.add(i) is None)  # malý trik na zjištění duplikátu
-            raise ValueError(f"Duplicate node id: {dup}")
+    def _validate_refs(self) -> "Roadmap":
+        node_ids = {n.id for n in self.nodes}
+        track_ids = {t.id for t in self.tracks}
 
-        # 2) všechny hrany musí odkazovat na existující uzly
-        node_ids = set(ids)
+        # validace tracků a prereqů
+        for n in self.nodes:
+            if n.track not in track_ids:
+                raise ValueError(f"Node '{n.id}' odkazuje na neznámý track '{n.track}'.")
+            for p in n.prereqs:
+                if p not in node_ids:
+                    raise ValueError(f"Node '{n.id}' má prereq '{p}', který není v nodes.")
+
+        # validace hran
         for e in self.edges:
             if e.source not in node_ids or e.target not in node_ids:
-                raise ValueError(f"Edge odkazuje na neznámý uzel: {e.source} -> {e.target}")
+                raise ValueError(f"Edge '{e.source}->{e.target}' odkazuje na neznámý node.")
 
-        # 3) (volitelné) zakázat triviální cycles 1-edge (řeší Edge), delší cykly budeme řešit později, pokud budou vadit
         return self
-
