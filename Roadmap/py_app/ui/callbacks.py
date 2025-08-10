@@ -2,9 +2,10 @@ from __future__ import annotations
 from typing import Dict, Any, List, Optional
 from dash import Output, Input, State, MATCH, ALL, no_update, ctx
 
-from core.models import Roadmap, Track, Node
-from core.utils import category_maps
-from ui.layout import make_category_figure
+from py_app.core.models import Roadmap, Track, Node
+from py_app.core.utils import category_maps
+from py_app.ui.layout import make_category_figure
+
 
 def _extract_hover_index(hoverData: Optional[Dict[str, Any]]) -> Optional[int]:
     try:

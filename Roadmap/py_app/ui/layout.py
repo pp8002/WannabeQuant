@@ -4,8 +4,9 @@ import math
 import plotly.graph_objects as go
 from dash import html, dcc
 
-from core.models import Roadmap, Track, Node
-from core.utils import category_maps
+from py_app.core.models import Roadmap, Track, Node
+from py_app.core.utils import category_maps
+
 
 BG = "rgba(0,0,0,0)"
 PLOT_BG = "rgba(0,0,0,0)"

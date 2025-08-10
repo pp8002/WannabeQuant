@@ -5,7 +5,27 @@ import json
 
 from .models import Roadmap, Edge
 
+def default_roadmap_path() -> Path:
+    # py_app/core/utils.py -> parent je "core", parents[1] je "py_app"
+    return Path(__file__).resolve().parent / "data" / "roadmap.json"
 
+def load_roadmap(path: str | Path | None = None) -> Roadmap:
+    p = Path(path) if path is not None else default_roadmap_path()
+
+# Pomocné konstrukce hran
+# =========================
+def _edges_from_prereqs(data: dict) -> Set[Tuple[str, str]]:
+        data = json.load(f)
+
+    # lehké migrace pro kompatibilitu
+    _ensure_numeric_difficulty(data)
+    _ensure_level_numeric(data)
+    _ensure_edges(data)
+
+    try:
+        return Roadmap(**data)
+    except Exception as e:  # hezká hláška s cestou k souboru
+        raise ValueError(f"Neplatná struktura dat v {p}: {e}") from e
 # =========================
 # Pomocné konstrukce hran
 # =========================

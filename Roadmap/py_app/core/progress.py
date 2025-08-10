@@ -1,285 +1,386 @@
-# core/progress.py
+# py_app/core/progress.py
 from __future__ import annotations
 from pathlib import Path
+from typing import Any, Dict, List, Tuple, Optional, Iterable
 import json
-from typing import Dict, List, Set, Tuple
-from datetime import datetime, timedelta, date
+import datetime as dt
 
-# timezone
-try:
-    from zoneinfo import ZoneInfo
-    _TZ = ZoneInfo("Europe/Prague")
-except Exception:
-    _TZ = None
+# ====== Cesty ======
+_PROGRESS_PATH = Path("py_app/core/data/progress.json")
+_BACKUP_DIR = _PROGRESS_PATH.parent / "progress_backups"
 
-PROGRESS_PATH = Path("core/data/progress.json")
-
-
-# ------------------ time helpers ------------------
-def _today_date() -> date:
-    return datetime.now(_TZ).date() if _TZ else date.today()
-
+# ====== Interní helpery ======
 def _today_str() -> str:
-    return _today_date().isoformat()
+    return dt.date.today().isoformat()
 
 def _yesterday_str() -> str:
-    d = _today_date() - timedelta(days=1)
-    return d.isoformat()
+    return (dt.date.today() - dt.timedelta(days=1)).isoformat()
 
-
-# ------------------ defaults / io ------------------
-def _default_progress() -> Dict:
+def _default_progress() -> Dict[str, Any]:
+    now = dt.datetime.utcnow().isoformat()
     return {
         "xp": 0,
         "level": 1,
-        "completed_nodes": [],      # list[str]
         "streak_days": 0,
-        "last_day": None,           # YYYY-MM-DD
-        "badges": [],               # list[str]
-        # per-task stav
-        "tasks": {},                # { "<node_id>": {"tasks_done":[int,...]} }
-        # DENNÍ CÍL (XP) + log
-        "daily_goal_xp": 30,
-        "daily_log": {}             # { "YYYY-MM-DD": { "xp": int, "completed_nodes":[str,...] } }
+        "last_day": None,            # "YYYY-MM-DD" kdy byl poslední zisk XP/aktivita
+        "daily_goal": 50,
+        "completed_nodes": [],       # list[str]
+        "tasks": {},                 # { node_id: { "tasks_done":[int,...], "completed": bool } }
+        "badges": [],                # list[str]
+        "recent": [],                # list[ { "date": "YYYY-MM-DD", "type":"xp|node", "amount":int, "id": str } ]
+        "meta": {"created": now, "last_updated": now, "version": 1}
     }
 
-def load_progress() -> Dict:
-    if PROGRESS_PATH.exists():
-        try:
-            with PROGRESS_PATH.open(encoding="utf-8") as f:
-                p = json.load(f)
-            p.setdefault("completed_nodes", [])
-            p.setdefault("xp", 0)
-            p.setdefault("level", 1)
-            p.setdefault("streak_days", 0)
-            p.setdefault("last_day", None)
-            p.setdefault("badges", [])
-            p.setdefault("tasks", {})
-            p.setdefault("daily_goal_xp", 30)
-            p.setdefault("daily_log", {})
-            return p
-        except Exception:
-            pass
+def _read_progress_file() -> Dict[str, Any]:
+    try:
+        if _PROGRESS_PATH.exists():
+            data = json.loads(_PROGRESS_PATH.read_text(encoding="utf-8"))
+            if isinstance(data, dict):
+                # doplníme chybějící klíče (migrace)
+                base = _default_progress()
+                for k, v in base.items():
+                    if k not in data:
+                        data[k] = v
+                if "meta" not in data:
+                    data["meta"] = {"created": dt.datetime.utcnow().isoformat(),
+                                    "last_updated": dt.datetime.utcnow().isoformat(),
+                                    "version": 1}
+                return data
+    except Exception as e:
+        print(f"[PROGRESS] Chyba čtení: {e}")
     return _default_progress()
 
-def save_progress(p: Dict) -> None:
-    PROGRESS_PATH.parent.mkdir(parents=True, exist_ok=True)
-    with PROGRESS_PATH.open("w", encoding="utf-8") as f:
-        json.dump(p, f, ensure_ascii=False, indent=2)
+def _write_progress_file(data: Dict[str, Any], backup: bool = True) -> None:
+    try:
+        _PROGRESS_PATH.parent.mkdir(parents=True, exist_ok=True)
+        data.setdefault("meta", {})
+        data["meta"]["last_updated"] = dt.datetime.utcnow().isoformat()
 
+        if backup and _PROGRESS_PATH.exists():
+            _BACKUP_DIR.mkdir(parents=True, exist_ok=True)
+            ts = dt.datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+            (_BACKUP_DIR / f"progress_{ts}.json").write_text(
+                json.dumps(_read_progress_file(), ensure_ascii=False, indent=2),
+                encoding="utf-8"
+            )
 
-# ------------------ daily goal helpers ------------------
+        _PROGRESS_PATH.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+    except Exception as e:
+        print(f"[PROGRESS] Chyba zápisu: {e}")
+
+# ====== Veřejné utility (export/import/reset) ======
+def export_progress() -> Dict[str, Any]:
+    return _read_progress_file()
+
+def import_progress(obj: Dict[str, Any], overwrite: bool = True) -> Dict[str, Any]:
+    if not isinstance(obj, dict):
+        raise ValueError("Importovaný objekt není dict.")
+    if overwrite:
+        _write_progress_file(obj)
+        return obj
+
+    cur = _read_progress_file()
+    merged = dict(cur)
+
+    merged["xp"] = max(int(cur.get("xp", 0)), int(obj.get("xp", 0)))
+    merged["level"] = max(int(cur.get("level", 1)), int(obj.get("level", 1)))
+    merged["streak_days"] = max(int(cur.get("streak_days", 0)), int(obj.get("streak_days", 0)))
+    merged["last_day"] = obj.get("last_day", cur.get("last_day"))
+    merged["daily_goal"] = int(obj.get("daily_goal", cur.get("daily_goal", 50)))
+
+    a = set(map(str, cur.get("completed_nodes", [])))
+    b = set(map(str, obj.get("completed_nodes", [])))
+    merged["completed_nodes"] = sorted(a | b)
+
+    mt = dict(cur.get("tasks", {}))
+    for nid, bucket in (obj.get("tasks", {}) or {}).items():
+        nid = str(nid)
+        mb = mt.get(nid, {"tasks_done": [], "completed": False})
+        done_set = set(mb.get("tasks_done", [])) | set(bucket.get("tasks_done", []))
+        mb["tasks_done"] = sorted(map(int, done_set))
+        mb["completed"] = bool(mb.get("completed")) or bool(bucket.get("completed"))
+        mt[nid] = mb
+    merged["tasks"] = mt
+
+    ba = set(cur.get("badges", []))
+    bb = set(obj.get("badges", []))
+    merged["badges"] = sorted(ba | bb)
+
+    ra = list(cur.get("recent", []))
+    rb = list(obj.get("recent", []))
+    merged["recent"] = (rb + ra)[-50:]
+
+    _write_progress_file(merged)
+    return merged
+
+def reset_progress(full_reset: bool = True) -> None:
+    if full_reset:
+        _write_progress_file(_default_progress())
+    else:
+        cur = _read_progress_file()
+        cur.update({
+            "xp": 0, "level": 1, "streak_days": 0, "last_day": None,
+            "completed_nodes": [], "tasks": {}, "recent": []
+        })
+        _write_progress_file(cur)
+
+# ====== ZPĚTNÁ KOMPATIBILITA + aplikační logika ======
+# Tyto funkce volají tvoje obrazovky: home_screen.py, category_screen.py
+
+def load_progress() -> Dict[str, Any]:
+    """Zpětně kompatibilní – vrátí dict s průběhem."""
+    return _read_progress_file()
+
+def save_progress(data: Dict[str, Any]) -> None:
+    _write_progress_file(data)
+
 def get_daily_goal() -> int:
-    return int(load_progress().get("daily_goal_xp", 30))
+    return int(_read_progress_file().get("daily_goal", 50))
 
-def set_daily_goal(xp_target: int) -> Dict:
-    p = load_progress()
-    p["daily_goal_xp"] = max(0, int(xp_target))
-    save_progress(p)
-    return p
+def set_daily_goal(v: int) -> None:
+    p = _read_progress_file()
+    p["daily_goal"] = int(max(0, v))
+    _write_progress_file(p)
 
-def _ensure_today_log(p: Dict) -> Dict:
-    t = _today_str()
-    log = p.setdefault("daily_log", {})
-    day = log.setdefault(t, {"xp": 0, "completed_nodes": []})
-    day.setdefault("xp", 0)
-    day.setdefault("completed_nodes", [])
-    return day
+def _record_xp_event(amount: int, node_id: Optional[str] = None) -> None:
+    """Zapíše XP událost do recent + udržuje streak."""
+    if amount <= 0:
+        return
+    p = _read_progress_file()
+
+    # streak update
+    today = _today_str()
+    last_day = p.get("last_day")
+    if last_day is None or last_day != today:
+        # nový den → pokud poslední den byl včera, inkrementuj streak, jinak reset na 1
+        if last_day == _yesterday_str():
+            p["streak_days"] = int(p.get("streak_days", 0)) + 1
+        else:
+            p["streak_days"] = 1
+        p["last_day"] = today
+
+    p["xp"] = int(p.get("xp", 0)) + int(amount)
+    # jednoduchý level-up: každých 100 XP nová úroveň
+    p["level"] = max(1, p["xp"] // 100 + 1)
+
+    p.setdefault("recent", [])
+    p["recent"].append({
+        "date": today,
+        "type": "xp",
+        "amount": int(amount),
+        "id": str(node_id) if node_id is not None else None
+    })
+    p["recent"] = p["recent"][-50:]
+
+    _write_progress_file(p)
 
 def today_xp() -> int:
-    p = load_progress()
-    day = p.get("daily_log", {}).get(_today_str(), {"xp": 0})
-    return int(day.get("xp", 0))
-
-def is_goal_met_today() -> bool:
-    return today_xp() >= get_daily_goal()
-
-def _bump_streak(p: Dict) -> Dict:
+    p = _read_progress_file()
     today = _today_str()
-    last = p.get("last_day")
-    if last == today:
-        return p
-    if last is None:
-        p["streak_days"] = 1
+    total = 0
+    for ev in p.get("recent", []):
+        if ev.get("type") == "xp" and ev.get("date") == today:
+            total += int(ev.get("amount", 0))
+    return total
+
+def get_tasks_done(node_id: str) -> List[int]:
+    p = _read_progress_file()
+    bucket = p.get("tasks", {}).get(str(node_id), {})
+    return [int(i) for i in bucket.get("tasks_done", [])]
+
+def set_task_done(node_id: str, index: int, done: bool) -> Dict[str, Any]:
+    p = _read_progress_file()
+    nid = str(node_id)
+    p.setdefault("tasks", {})
+    p["tasks"].setdefault(nid, {"tasks_done": [], "completed": False})
+    s = set(map(int, p["tasks"][nid]["tasks_done"]))
+    if done:
+        s.add(int(index))
     else:
-        p["streak_days"] = int(p.get("streak_days", 0)) + 1 if last == _yesterday_str() else 1
-    p["last_day"] = today
-    return p
+        s.discard(int(index))
+    p["tasks"][nid]["tasks_done"] = sorted(s)
+    _write_progress_file(p)
+    return p["tasks"][nid]
 
+def node_progress_ratio(node: Dict[str, Any]) -> float:
+    tasks_all = node.get("tasks_all") or []
+    if not tasks_all:
+        # uzel bez úkolů – bereme hotové jen po označení completed
+        p = _read_progress_file()
+        return 1.0 if str(node.get("id")) in set(map(str, p.get("completed_nodes", []))) else 0.0
+    done = set(get_tasks_done(node.get("id")))
+    r = len(done) / max(1, len(tasks_all))
+    return max(0.0, min(1.0, float(r)))
 
-# ------------------ XP ------------------
-def _add_xp_internal(p: Dict, amount: int) -> Tuple[Dict, bool]:
+def evaluate_node_completion(node: Dict[str, Any], xp_award: int = 10) -> Tuple[bool, List[str], bool]:
     """
-    Přičte XP do profilu i do dnešního logu.
-    Vrací (progress, goal_just_achieved).
+    Vrátí (just_completed, newly_unlocked_ids, goal_hit).
+    newly_unlocked necháváme prázdné (logika odemykání je v UI), ale držíme signaturu.
     """
-    amount = int(amount)
-    before_goal_met = today_xp() >= p.get("daily_goal_xp", 30)
+    p = _read_progress_file()
+    nid = str(node.get("id"))
+    tasks_all = node.get("tasks_all") or []
+    done_set = set(get_tasks_done(nid))
+    already_completed = nid in set(map(str, p.get("completed_nodes", [])))
 
-    # global xp
-    p["xp"] = int(p.get("xp", 0)) + amount
-    p["level"] = p["xp"] // 100 + 1
+    just_completed = (not already_completed) and (len(tasks_all) > 0) and (len(done_set) == len(tasks_all))
+    goal_hit = False
 
-    # daily xp
-    day = _ensure_today_log(p)
-    day["xp"] = int(day.get("xp", 0)) + amount
+    if just_completed:
+        p["completed_nodes"] = sorted(set(map(str, p.get("completed_nodes", []))) | {nid})
+        p.setdefault("tasks", {}).setdefault(nid, {"tasks_done": [], "completed": False})
+        p["tasks"][nid]["completed"] = True
+        _write_progress_file(p)
+        # XP + denní cíl
+        _record_xp_event(xp_award, node_id=nid)
+        goal_hit = today_xp() >= get_daily_goal()
 
-    after_goal_met = (day["xp"] >= p.get("daily_goal_xp", 30))
-    goal_just_achieved = (not before_goal_met) and after_goal_met
+    return just_completed, [], goal_hit
 
-    save_progress(p)
-    return p, goal_just_achieved
-
-def add_xp(amount: int) -> Dict:
-    p = load_progress()
-    p, _ = _add_xp_internal(p, amount)
-    return p
-
-
-# ------------------ node completion ------------------
-def completed_set() -> Set[str]:
-    return set(map(str, load_progress().get("completed_nodes", [])))
-
-def is_completed(node_id: str) -> bool:
-    return str(node_id) in completed_set()
-
-def mark_completed(node_id: str, xp_award: int = 10) -> Tuple[Dict, bool]:
+def mark_completed(node_id: str, xp_award: int = 10) -> Tuple[bool, bool]:
     """
-    Označí uzel jako hotový (pokud ještě není), připíše XP,
-    aktualizuje streak a denní log.
-    Vrací (progress, goal_just_achieved_today).
+    Označí uzel jako hotový bez ohledu na tasks_all.
+    Vrátí (was_completed_now, goal_hit).
     """
-    node_id = str(node_id)
-    p = load_progress()
-    comp: List[str] = list({str(x) for x in p.get("completed_nodes", [])})
+    p = _read_progress_file()
+    nid = str(node_id)
+    already = nid in set(map(str, p.get("completed_nodes", [])))
+    goal_hit = False
 
-    if node_id not in comp:
-        comp.append(node_id)
-        p["completed_nodes"] = comp
-        # přidat i do denního logu seznam completed node ids
-        day = _ensure_today_log(p)
-        if node_id not in day["completed_nodes"]:
-            day["completed_nodes"].append(node_id)
+    if not already:
+        p["completed_nodes"] = sorted(set(map(str, p.get("completed_nodes", []))) | {nid})
+        p.setdefault("tasks", {}).setdefault(nid, {"tasks_done": [], "completed": True})
+        p["tasks"][nid]["completed"] = True
+        _write_progress_file(p)
+        _record_xp_event(xp_award, node_id=nid)
+        goal_hit = today_xp() >= get_daily_goal()
+        return True, goal_hit
+    return False, today_xp() >= get_daily_goal()
 
-        # XP + daily goal
-        p, goal_hit = _add_xp_internal(p, xp_award)
-    else:
-        goal_hit = False
-
-    p = _bump_streak(p)
-    save_progress(p)
-    return p, goal_hit
-
-
-# ------------------ per-task progress ------------------
-def _ensure_task_bucket(p: Dict, node_id: str) -> Dict:
-    tasks = p.setdefault("tasks", {})
-    b = tasks.setdefault(str(node_id), {})
-    b.setdefault("tasks_done", [])
-    return b
-
-def get_tasks_done(node_id: str) -> Set[int]:
-    b = load_progress().get("tasks", {}).get(str(node_id), {})
-    return set(b.get("tasks_done", []))
-
-def set_task_done(node_id: str, task_index: int, done: bool) -> Dict:
-    p = load_progress()
-    b = _ensure_task_bucket(p, str(node_id))
-    done_list: List[int] = list({int(i) for i in b.get("tasks_done", [])})
-    if done and task_index not in done_list:
-        done_list.append(int(task_index))
-    if not done and task_index in done_list:
-        done_list.remove(int(task_index))
-    b["tasks_done"] = sorted(done_list)
-    save_progress(p)
-    return p
-
-def node_progress_ratio(node: Dict) -> float:
-    if is_completed(node["id"]):
-        return 1.0
-    all_tasks = node.get("tasks_all") or []
-    if not all_tasks:
-        return 0.0
-    done_idx = get_tasks_done(node["id"])
-    return max(0.0, min(1.0, len(done_idx) / len(all_tasks)))
-
-def evaluate_node_completion(node: Dict, xp_award: int = 10) -> Tuple[bool, Dict, bool]:
-    """
-    Pokud jsou VŠECHNY úkoly uzlu hotové, označí uzel completed (+XP).
-    Vrací (just_completed, progress, goal_just_achieved_today)
-    """
-    if is_completed(node["id"]):
-        return False, load_progress(), False
-    all_tasks = node.get("tasks_all") or []
-    if not all_tasks:
-        return False, load_progress(), False
-    done_idx = get_tasks_done(node["id"])
-    if len(done_idx) >= len(all_tasks):
-        p, goal_hit = mark_completed(node["id"], xp_award=xp_award)
-        return True, p, goal_hit
-    return False, load_progress(), False
-
-
-# ------------------ availability / category progress ------------------
-def first_available_index(nodes: List[Dict]) -> int:
-    comp = completed_set()
+def first_available_index(nodes: List[Dict[str, Any]]) -> int:
+    """Najde první uzel se statusem 'available', jinak první ne-hotový, jinak 0."""
+    p = _read_progress_file()
+    completed = set(map(str, p.get("completed_nodes", [])))
     for i, n in enumerate(nodes):
-        nid = str(n["id"])
-        if nid in comp:
-            continue
-        prereqs = [str(x) for x in (n.get("prereqs") or [])]
-        if all(pr in comp for pr in prereqs):
+        st = n.get("__status__")
+        if st == "available":
+            return i
+    for i, n in enumerate(nodes):
+        if str(n.get("id")) not in completed:
             return i
     return 0
 
-def category_progress_from_nodes(nodes: List[Dict]) -> Dict[str, int]:
-    total = len(nodes)
-    if total <= 0:
-        return {"total": 0, "done": 0, "pct": 0}
-    comp = completed_set()
-    done = sum(1 for n in nodes if str(n["id"]) in comp)
-    pct = int(round(100 * done / total))
+def category_progress_from_nodes(nodes: List[Dict[str, Any]]) -> Dict[str, int]:
+    """
+    Vypočítá agregovaný postup pro kategorii:
+      - total: počet všech tasků (sum přes nodes[].tasks_all)
+      - done : počet splněných tasků
+      - pct  : procenta (zaokrouhlená)
+    Pokud node nemá tasks_all, počítáme jej jako 0/0; pokud je completed, přičteme 1/1.
+    """
+    p = _read_progress_file()
+    completed = set(map(str, p.get("completed_nodes", [])))
+    total = 0
+    done = 0
+    for n in nodes:
+        nid = str(n.get("id"))
+        tasks = n.get("tasks_all") or []
+        if tasks:
+            total += len(tasks)
+            done += len(set(get_tasks_done(nid)))
+        else:
+            # bez úkolů – pokud completed, ber 1/1 jinak 0/1?
+            # Abychom nedeformovali metriky, započítáme jen pokud chceme uzly bez úkolů vidět:
+            total += 1
+            done += 1 if nid in completed else 0
+    pct = int(round((done / total) * 100)) if total > 0 else 0
     return {"total": total, "done": done, "pct": pct}
 
+# ====== Odznaky ======
+def _candidate_badges(roadmap: Optional[Any]) -> List[str]:
+    """
+    Vytvoří seznam možných odznaků (ID).
+    - XP: 100, 500, 1000
+    - Streak: 3, 7, 14, 30
+    - Kategorie: 'track_<id>_complete'
+    """
+    out: List[str] = ["xp_100", "xp_500", "xp_1000", "streak_3", "streak_7", "streak_14", "streak_30"]
+    if roadmap:
+        for t in getattr(roadmap, "tracks", []):
+            out.append(f"track_{t.id}_complete")
+    return out
 
-# ------------------ badges ------------------
-XP_BADGES = [100, 500, 1000]
-STREAK_BADGES = [3, 7, 14, 30]
+def recompute_badges(roadmap: Optional[Any] = None) -> Tuple[List[str], List[str]]:
+    """
+    Přepočítá odznaky dle aktuálního stavu.
+    Vrací (všechny_možné, nově_udělené) — nové se rovnou uloží do progress.
+    """
+    p = _read_progress_file()
+    owned = set(p.get("badges", []))
+    possible = set(_candidate_badges(roadmap))
 
-def _badge_id_xp(th: int) -> str: return f"xp_{th}"
-def _badge_id_streak(th: int) -> str: return f"streak_{th}"
-def _badge_id_cat(track_id: str) -> str: return f"cat_{track_id}_done"
+    newly: List[str] = []
 
-def _compute_category_done_ids(roadmap: Dict) -> List[str]:
-    comp = completed_set()
-    done_tracks: List[str] = []
-    for t in roadmap.get("tracks", []):
-        tid = t["id"]
-        tnodes = [n for n in roadmap.get("nodes", []) if n.get("track") == tid]
-        if tnodes and all(str(n["id"]) in comp for n in tnodes):
-            done_tracks.append(tid)
-    return done_tracks
-
-def recompute_badges(roadmap: Dict) -> Tuple[Dict, List[str]]:
-    p = load_progress()
-    owned: Set[str] = set(p.get("badges", []))
-    new_set: Set[str] = set(owned)
-
+    # XP thresholds
     xp = int(p.get("xp", 0))
-    for th in XP_BADGES:
-        if xp >= th:
-            new_set.add(_badge_id_xp(th))
+    for th, bid in [(100, "xp_100"), (500, "xp_500"), (1000, "xp_1000")]:
+        if xp >= th and bid not in owned:
+            newly.append(bid)
 
+    # Streak thresholds
     streak = int(p.get("streak_days", 0))
-    for th in STREAK_BADGES:
-        if streak >= th:
-            new_set.add(_badge_id_streak(th))
+    for th, bid in [(3, "streak_3"), (7, "streak_7"), (14, "streak_14"), (30, "streak_30")]:
+        if streak >= th and bid not in owned:
+            newly.append(bid)
 
-    for tid in _compute_category_done_ids(roadmap):
-        new_set.add(_badge_id_cat(tid))
+    # Kategorie kompletní
+    if roadmap:
+        completed = set(map(str, p.get("completed_nodes", [])))
+        for t in roadmap.tracks:
+            t_nodes = [n for n in roadmap.nodes if n.track == t.id]
+            if t_nodes and all(str(n.id) in completed for n in t_nodes):
+                bid = f"track_{t.id}_complete"
+                if bid not in owned:
+                    newly.append(bid)
 
-    newly_awarded = sorted(list(new_set - owned))
-    if newly_awarded:
-        p["badges"] = sorted(list(new_set))
-        save_progress(p)
-    return p, newly_awarded
+    # Ulož
+    if newly:
+        p["badges"] = sorted(owned | set(newly))
+        _write_progress_file(p)
+
+    return sorted(possible), newly
+
+# ====== Extra „rychlé“ akce ======
+def add_xp(amount: int) -> None:
+    _record_xp_event(int(amount))
+
+def add_badge(badge_id: str) -> None:
+    p = _read_progress_file()
+    if badge_id not in p.get("badges", []):
+        p.setdefault("badges", []).append(badge_id)
+        _write_progress_file(p)
+
+def mark_task_done(node_id: str, task_id: int) -> None:
+    cur = set(get_tasks_done(node_id))
+    cur.add(int(task_id))
+    set_task_done(node_id, int(task_id), True)
+
+from datetime import datetime
+
+def get_today_progress() -> float:
+    """
+    Vrací dnešní progres jako číslo 0.0 – 1.0 podle počtu splněných úkolů.
+    """
+    data = _read_progress_file()
+    tasks = data.get("tasks", {})
+    completed = sum(len(v.get("tasks_done", [])) for v in tasks.values())
+    # Předpokládejme max. 5 úkolů jako základní cíl
+    return min(completed / 5, 1.0)
+
+
+def get_current_streak() -> int:
+    """
+    Vrací počet dní v řadě, kdy byl splněn denní cíl.
+    """
+    data = _read_progress_file()
+    return int(data.get("streak_days", 0))

@@ -1,6 +1,9 @@
-# screens/settings_screen.py
+from __future__ import annotations
 import flet as ft
-from core.progress import get_daily_goal, set_daily_goal
+
+from py_app.core.progress import get_daily_goal, set_daily_goal
+from py_app.ui.appbar import build_appbar
+COLORS = getattr(ft, "colors", getattr(ft, "Colors", None))
 
 def create_settings_view(page: ft.Page) -> ft.View:
     goal_val = get_daily_goal()
@@ -29,28 +32,24 @@ def create_settings_view(page: ft.Page) -> ft.View:
     input_field.on_submit = on_input_submit
 
     theme_switch = ft.Switch(label="Tmavý režim", value=True)
-
     def on_theme_change(e):
         page.theme_mode = ft.ThemeMode.DARK if theme_switch.value else ft.ThemeMode.LIGHT
         page.update()
-
     theme_switch.on_change = on_theme_change
 
-    return ft.View(
-        route="/settings",
-        controls=[
-            ft.AppBar(title=ft.Text("Nastavení"), center_title=True, bgcolor=ft.colors.SURFACE_VARIANT),
-            ft.Container(
-                content=ft.Column(
-                    [
-                        ft.Text("Denní cíl", size=16, weight=ft.FontWeight.W_700),
-                        ft.Row([slider, input_field], alignment=ft.MainAxisAlignment.START),
-                        ft.Divider(opacity=0.1),
-                        theme_switch,
-                    ],
-                    spacing=16
-                ),
-                padding=16
-            )
-        ]
+    appbar = build_appbar(title=ft.Text("Nastavení", size=18, weight=ft.FontWeight.W_700))
+
+    body = ft.Container(
+        content=ft.Column(
+            [
+                ft.Text("Denní cíl", size=16, weight=ft.FontWeight.W_700),
+                ft.Row([slider, input_field], alignment=ft.MainAxisAlignment.START),
+                ft.Divider(opacity=0.1),
+                theme_switch,
+            ],
+            spacing=16
+        ),
+        padding=16
     )
+
+    return ft.View(route="/settings", controls=[appbar, body])
