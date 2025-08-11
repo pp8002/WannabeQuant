@@ -8,13 +8,13 @@ import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/fireb
 // === Firebase config ===
 const firebaseConfig = {
   apiKey: YOUR_API_KEY,
-   authDomain: "quant-5589e.firebaseapp.com",
-    projectId: "quant-5589e",
-    storageBucket: "quant-5589e.firebasestorage.app",
-    messagingSenderId: "795935839648",
-    appId: "1:795935839648:web:9b0cfeaeb1e590f90400c5",
-    measurementId: "G-6SL04E2WVJ"
-  };
+    authDomain: "quant-25068.firebaseapp.com",
+  projectId: "quant-25068",
+  storageBucket: "quant-25068.firebasestorage.app",
+  messagingSenderId: "994280892133",
+  appId: "1:994280892133:web:d23746af3460f3300f960c",
+  measurementId: "G-1G0LNME5GH"
+};
 
 // === Inicializace Firebase ===
 const app = initializeApp(firebaseConfig);
