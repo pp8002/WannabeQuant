@@ -18,6 +18,21 @@
   <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="inline w-6 mr-2" alt="Google" />
   Sign in with Google
 </button>
+<div class="text-left mt-6">
+  <p id="profileXP" class="text-yellow-400">XP: 0</p>
+  <p id="profileLevel" class="text-green-400">Level 1</p>
+  <p id="profileStreak" class="text-pink-400">Streak: 0🔥</p>
+</div>
+
+<div class="mt-6">
+  <label class="block text-sm mb-2" for="profileName">Username:</label>
+  <input id="profileName" type="text" class="w-full p-2 rounded bg-gray-700 text-white" />
+</div>
+
+<div class="mt-4 flex justify-between">
+  <button id="saveProfileBtn" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">Save</button>
+  <button id="logoutBtn" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded">Logout</button>
+</div>
 
   </div>
 
@@ -26,7 +41,7 @@
   import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
    const firebaseConfig = {
-  apiKey: YOUR_API_KEY,
+   apiKey: window.FIREBASE_API_KEY,
      authDomain: "quant-25068.firebaseapp.com",
   projectId: "quant-25068",
   storageBucket: "quant-25068.firebasestorage.app",
@@ -62,7 +77,9 @@
 </script>
 
   <!-- Scripts -->
+   <script src="env.js"></script>
   <script type="module" src="script.js"></script>
   <script type="module" src="profile.js"></script>
+  
 </body>
 </html>

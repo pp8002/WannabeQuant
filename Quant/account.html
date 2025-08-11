@@ -87,7 +87,7 @@
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
     
     const firebaseConfig = {
-  apiKey: YOUR_API_KEY,
+   apiKey: window.FIREBASE_API_KEY,
    authDomain: "quant-25068.firebaseapp.com",
   projectId: "quant-25068",
   storageBucket: "quant-25068.firebasestorage.app",
@@ -114,7 +114,9 @@
         window.location.href = "login.html";
       });
     }
+  
   </script>
+  <script src="env.js"></script>
   <!-- Firebase Init -->
 <script type="module" src="firebase-init.js"></script>
 

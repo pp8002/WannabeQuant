@@ -1,11 +1,13 @@
 // firebase-init.js
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+
+// ✅ Firebase imports (z CDN, správné pořadí)
+import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-// 🔐 Tady vlož svou vlastní konfiguraci Firebase (z konzole)
+// ✅ Konfigurace načtená z env.js (musíš mít <script src="/env.js"></script> v HTML)
 const firebaseConfig = {
-  apiKey: YOUR_API_KEY,
+  apiKey: window.FIREBASE_API_KEY,
   authDomain: "quant-25068.firebaseapp.com",
   projectId: "quant-25068",
   storageBucket: "quant-25068.firebasestorage.app",
@@ -14,9 +16,12 @@ const firebaseConfig = {
   measurementId: "G-1G0LNME5GH"
 };
 
-// Inicializace Firebase
-const app = initializeApp(firebaseConfig);
+// ✅ Inicializuj Firebase pouze pokud ještě nebyl inicializován
+const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 
-// Exportujeme Firebase služby
-export const auth = getAuth(app);
-export const db = getFirestore(app);
+// ✅ Získej služby
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// ✅ Exportuj pro další soubory
+export { app, auth, db };

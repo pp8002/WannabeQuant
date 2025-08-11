@@ -1,45 +1,57 @@
-<!-- /lessons/math/math.html -->
 <!DOCTYPE html>
 <html lang="cs">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>QuantQuest - Math Lessons</title>
-  <link rel="stylesheet" href="/style.css" />
+  <title>QuantQuest – Matematika</title>
+
+  <!-- Styl a font -->
+  <link rel="stylesheet" href="/../style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+
+  <!-- MathJax pro zobrazení matematiky -->
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
   <style>
     body {
-      background-color: #0b0c2a;
-      color: white;
-      font-family: 'Press Start 2P', cursive;
       margin: 0;
+      font-family: 'Press Start 2P', cursive;
       display: flex;
       height: 100vh;
+      background-color: #0b0c2a;
+      color: white;
     }
 
     .sidebar {
       width: 320px;
       background: #141632;
-      border-right: 3px solid lime;
+      border-right: 3px solid #00ffcc;
       padding: 20px;
       overflow-y: auto;
     }
 
+    .sidebar h2 {
+      font-size: 14px;
+      color: #00ffcc;
+      margin-bottom: 24px;
+    }
+
     .lesson-title {
-      font-size: 16px;
-      margin: 14px 0;
-      cursor: pointer;
-      padding: 10px;
+      display: block;
+      font-size: 12px;
+      padding: 12px 10px;
+      margin-bottom: 10px;
       background: #1f223e;
       border-left: 5px solid transparent;
-      transition: 0.3s;
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s;
     }
 
     .lesson-title:hover {
-      border-left: 5px solid #00ffcc;
       background-color: #25294a;
+      border-left: 5px solid #00ffcc;
     }
 
     .lesson-title.active {
@@ -48,8 +60,9 @@
     }
 
     .content {
-      flex: 1;
-      padding: 0;
+      flex-grow: 1;
+      background: #0e102f;
+      overflow: hidden;
     }
 
     iframe {
@@ -63,25 +76,27 @@
 
   <!-- Sidebar Curriculum -->
   <div class="sidebar">
-    <h2 style="color:#00ffcc;">📘 Math I: Lineární algebra</h2>
-    <div class="lesson-title" onclick="loadLesson('math1-linear-algebra/lesson1.html', this)">1. Vektory</div>
-    <div class="lesson-title" onclick="loadLesson('math1-linear-algebra/lesson2.html', this)">2. Matice</div>
-    <div class="lesson-title" onclick="loadLesson('math1-linear-algebra/lesson3.html', this)">3. Determinanty</div>
-    <div class="lesson-title" onclick="loadLesson('math1-linear-algebra/lesson4.html', this)">4. Lineární systémy</div>
-    <div class="lesson-title" onclick="loadLesson('math1-linear-algebra/lesson5.html', this)">5. Vlastní čísla a vektory</div>
+    <h2>📘 MATH I: Linear algebra</h2>
+    <div class="lesson-title" onclick="loadLesson('math1-linear-algebra/lesson1.html', this)">1. Vectors</div>
+    <div class="lesson-title" onclick="loadLesson('math1-linear-algebra/lesson2.html', this)">2. Matrices</div>
+    <div class="lesson-title" onclick="loadLesson('math1-linear-algebra/lesson3.html', this)">3. Determinant</div>
+    <div class="lesson-title" onclick="loadLesson('math1-linear-algebra/lesson4.html', this)">4. Linear system</div>
+    <div class="lesson-title" onclick="loadLesson('math1-linear-algebra/lesson5.html', this)">5. Eigenvalues and Eigenvectors</div>
   </div>
 
-  <!-- Lesson Content -->
+  <!-- Obsah lekce -->
   <div class="content">
     <iframe id="lessonFrame" src="math1-linear-algebra/lesson1.html"></iframe>
   </div>
 
+  <!-- Script pro načítání lekcí -->
   <script>
     function loadLesson(path, el) {
       document.getElementById("lessonFrame").src = path;
 
-      // Aktivní třída pro kliknutou lekci
-      document.querySelectorAll('.lesson-title').forEach(item => item.classList.remove('active'));
+      document.querySelectorAll('.lesson-title').forEach(item => {
+        item.classList.remove('active');
+      });
       el.classList.add('active');
     }
   </script>

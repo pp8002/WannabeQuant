@@ -1,25 +1,9 @@
-// auth-handler.js
-
 // === Firebase imports ===
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+import { auth, db } from './firebase-init.js';
+import { GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-// === Firebase config ===
-const firebaseConfig = {
-  apiKey: YOUR_API_KEY,
-    authDomain: "quant-25068.firebaseapp.com",
-  projectId: "quant-25068",
-  storageBucket: "quant-25068.firebasestorage.app",
-  messagingSenderId: "994280892133",
-  appId: "1:994280892133:web:d23746af3460f3300f960c",
-  measurementId: "G-1G0LNME5GH"
-};
-
-// === Inicializace Firebase ===
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+// === Google provider ===
 const provider = new GoogleAuthProvider();
 
 // === Přihlášení pomocí Google ===
@@ -28,11 +12,9 @@ export async function signInWithGoogle() {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
 
-    // Referenční dokument v databázi
     const userRef = doc(db, "users", user.uid);
     const userSnap = await getDoc(userRef);
 
-    // Pokud uživatel neexistuje v DB, vytvoříme výchozí profil
     if (!userSnap.exists()) {
       await setDoc(userRef, {
         name: user.displayName,
@@ -43,14 +25,11 @@ export async function signInWithGoogle() {
         streak: 0,
         badges: [],
         achievements: [],
-        progress: {} // zde bude pokrok v lekcích
+        progress: {}
       });
     }
 
-    // Uložení UID do localStorage
     localStorage.setItem("current_user", user.uid);
-
-    // Přesměrování po přihlášení
     window.location.href = "account.html";
 
   } catch (error) {
@@ -90,9 +69,5 @@ export async function getUserData() {
   const userRef = doc(db, "users", uid);
   const userSnap = await getDoc(userRef);
 
-  if (userSnap.exists()) {
-    return userSnap.data();
-  } else {
-    return null;
-  }
+  return userSnap.exists() ? userSnap.data() : null;
 }

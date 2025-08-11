@@ -30,7 +30,7 @@
   <script>
     // ✅ Firebase konfigurace (nahraď svými údaji)
    const firebaseConfig = {
-  apiKey: YOUR_API_KEY,
+   apiKey: window.FIREBASE_API_KEY,
     authDomain: "quant-25068.firebaseapp.com",
   projectId: "quant-25068",
   storageBucket: "quant-25068.firebasestorage.app",
@@ -66,6 +66,7 @@
         });
     });
   </script>
+  <script src="env.js"></script>
   <!-- Firebase Init -->
 <script type="module" src="firebase-init.js"></script>
 

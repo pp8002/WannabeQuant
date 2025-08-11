@@ -1,3 +1,9 @@
+// ====== PŘIPOJENÍ FIREBASE Z INIT ======
+import { auth } from "./firebase-init.js";
+import { GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+const provider = new GoogleAuthProvider();
+
 document.addEventListener("DOMContentLoaded", () => {
   console.log("✅ profile.js načten");
 
@@ -94,38 +100,37 @@ document.addEventListener("DOMContentLoaded", () => {
   } else {
     console.error("❌ Některé prvky nebo uživatel chybí.");
   }
+
+  // ===== GOOGLE LOGIN BUTTON =====
+  const googleBtn = document.getElementById("googleLoginBtn");
+  if (googleBtn) {
+    googleBtn.addEventListener("click", () => {
+      signInWithPopup(auth, provider)
+        .then((result) => {
+          const user = result.user;
+          const username = user.displayName;
+
+          // Uložení nebo vytvoření profilu v localStorage
+          let users = JSON.parse(localStorage.getItem("quant_users")) || {};
+          if (!users[username]) {
+            users[username] = {
+              xp: 0,
+              level: 1,
+              streak: 0,
+              tasks: [],
+              badges: []
+            };
+          }
+
+          localStorage.setItem("quant_users", JSON.stringify(users));
+          localStorage.setItem("current_user", username);
+
+          // Přesměrování na účet
+          window.location.href = "account.html";
+        })
+        .catch((error) => {
+          alert("Chyba při přihlášení: " + error.message);
+        });
+    });
+  }
 });
-
-import { auth, provider, signInWithPopup } from "./firebase-config.js";
-
-const googleBtn = document.getElementById("googleLoginBtn");
-if (googleBtn) {
-  googleBtn.addEventListener("click", () => {
-    signInWithPopup(auth, provider)
-      .then((result) => {
-        const user = result.user;
-        const username = user.displayName;
-
-        // Uložení nebo vytvoření profilu v localStorage
-        let users = JSON.parse(localStorage.getItem("quant_users")) || {};
-        if (!users[username]) {
-          users[username] = {
-            xp: 0,
-            level: 1,
-            streak: 0,
-            tasks: [],
-            badges: []
-          };
-        }
-
-        localStorage.setItem("quant_users", JSON.stringify(users));
-        localStorage.setItem("current_user", username);
-
-        // Přesměrování na účet
-        window.location.href = "account.html";
-      })
-      .catch((error) => {
-        alert("Chyba při přihlášení: " + error.message);
-      });
-  });
-}
