@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuantQuest - Path to Becoming a Quant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        terraria: {
+                            blue: '#00a8ff',
+                            green: '#00ff88',
+                            purple: '#9c27b0',
+                            orange: '#ff7b00',
+                            red: '#ff3d3d',
+                            yellow: '#ffeb3b',
+                            dark: '#1a1a2e',
+                            darker: '#0f0f1a'
+                        }
+                    },
+                    fontFamily: {
+                        'pixel': ['"Press Start 2P"', 'cursive']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+        
+        body {
+            background-color: #1a1a2e;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .pixel-font {
+            font-family: 'Press Start 2P', cursive;
+        }
+        
+        .terraria-card {
+            border: 4px solid #00ff88;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.8) 0%, rgba(15, 15, 26, 0.9) 100%);
+        }
+        
+        .terraria-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 25px rgba(0, 255, 136, 0.5);
+        }
+        
+        .progress-bar {
+            height: 20px;
+            border: 2px solid #00a8ff;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00a8ff, #00ff88);
+            transition: width 0.5s ease;
+        }
+        
+        .streak-fire {
+            animation: pulse 1.5s infinite alternate;
+        }
+        
+        @keyframes pulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.1); }
+        }
+        
+        .pixel-border {
+            border: 4px solid #9c27b0;
+            border-image: repeating-linear-gradient(45deg, #9c27b0, #00a8ff, #9c27b0) 10;
+        }
+        
+        .terraria-btn {
+            background: linear-gradient(135deg, #ff7b00, #ff3d3d);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 0 #9c27b0;
+        }
+        
+        .terraria-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #9c27b0;
+        }
+        
+        .terraria-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #9c27b0;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-terraria-darker">
+    <header class="bg-terraria-dark py-4 px-6 shadow-lg">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-4">
+                <div class="w-12 h-12 bg-terraria-blue rounded-full flex items-center justify-center pixel-border">
+                    <i class="fas fa-calculator text-2xl text-white"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-terraria-green pixel-font">QUANTQUEST</h1>
+            </div>
+            <div class="flex items-center space-x-6">
+                <div class="flex items-center space-x-2">
+                    <div class="w-10 h-10 bg-terraria-purple rounded-full flex items-center justify-center">
+                        <i class="fas fa-gem text-xl text-white"></i>
+                    </div>
+                    <span class="text-xl font-bold text-terraria-yellow">1,250</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <div class="w-10 h-10 bg-terraria-red rounded-full flex items-center justify-center streak-fire">
+                        <i class="fas fa-fire text-xl text-white"></i>
+                    </div>
+                    <span class="text-xl font-bold text-white">7</span>
+                </div>
+                <!-- USER ICON (with onclick handler) -->
+                <a href="profile.html" id="profileIcon" class="w-10 h-10 bg-terraria-orange rounded-full flex items-center justify-center cursor-pointer">
+  <i class="fas fa-user text-xl text-white"></i>
+</a>
+
+
+
+
+            </div>
+        </div>
+    </header>
+     <!-- ========= MODAL PROFILU ========= -->
+<div id="profileModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 hidden">
+  <div class="bg-terraria-dark p-8 rounded-lg w-96 text-white relative">
+    <!-- Zavírací křížek -->
+    <button onclick="closeProfile()" class="absolute top-3 right-4 text-2xl text-white hover:text-red-500">&times;</button>
+
+    <h2 class="text-2xl font-bold text-terraria-green mb-4 pixel-font">Your Profile</h2>
+
+    <!-- Uživatelské jméno -->
+    <label class="block mb-2 text-sm font-bold">Username</label>
+    <input type="text" id="profileName" class="w-full p-2 rounded bg-terraria-darker text-white mb-4 border border-terraria-blue" placeholder="Enter your name" />
+
+    <!-- Tlačítka -->
+    <button id="saveProfile" class="terraria-btn w-full mb-3">Save</button>
+    <button id="logoutUser" class="w-full bg-red-700 text-white py-2 rounded hover:bg-red-800 transition">Logout</button>
+  </div>
+</div>
+
+    <main class="container mx-auto py-8 px-4">
+        <section class="mb-12">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-3xl font-bold text-terraria-blue pixel-font">YOUR QUANT JOURNEY</h2>
+                <div class="flex items-center space-x-4">
+                    <span class="text-terraria-green font-bold">Level 5 Quant Explorer</span>
+                    <div class="w-32 progress-bar">
+                        <div class="progress-fill" style="width: 65%;"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Math Path -->
+                <div class="terraria-card p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-bold text-terraria-green pixel-font">MATH MASTERY</h3>
+                        <div class="w-16 progress-bar">
+                            <div class="progress-fill" style="width: 45%;"></div>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 mb-4">Essential mathematical foundations for quantitative finance</p>
+                    
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between bg-terraria-dark p-3 rounded">
+                            <span class="text-terraria-blue"><i class="fas fa-check-circle mr-2"></i>Linear Algebra</span>
+                            <span class="text-terraria-yellow">3/5</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-terraria-dark p-3 rounded">
+                            <span class="text-terraria-blue"><i class="fas fa-check-circle mr-2"></i>Calculus</span>
+                            <span class="text-terraria-yellow">0/5</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-terraria-dark p-3 rounded">
+                            <span class="text-terraria-blue"><i class="far fa-circle mr-2"></i>Probability Theory & Statistics
+                        </div>
+                        <div class="flex items-center justify-between bg-terraria-dark p-3 rounded">
+                            <span class="text-terraria-blue"><i class="far fa-circle mr-2"></i>Differential Equations & Applications</span>
+                            <span class="text-gray-400">0/5</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-terraria-dark p-3 rounded">
+                            <span class="text-terraria-blue"><i class="far fa-circle mr-2"></i>Numerical mathematics & Optimalization</span>
+                            <span class="text-gray-400">0/5</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-terraria-dark p-3 rounded">
+                            <span class="text-terraria-blue"><i class="far fa-circle mr-2"></i>Stochastic Processes</span>
+                            <span class="text-gray-400">0/5</span>
+                        </div>
+                    </div>
+                    
+                    <button class="terraria-btn w-full mt-4" onclick="window.location.href='/lessons/math/math.html'">
+  Continue Learning
+</button>
+
+                </div>
+                
+                <!-- Programming Path -->
+                <div class="terraria-card p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-bold text-terraria-green pixel-font">CODE CRAFTER</h3>
+                        <div class="w-16 progress-bar">
+                            <div class="progress-fill" style="width: 30%;"></div>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 mb-4">Programming skills for financial modeling and analysis</p>
+                    
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between bg-terraria-dark p-3 rounded">
+                            <span class="text-terraria-blue"><i class="fas fa-check-circle mr-2"></i>Python Basics</span>
+                            <span class="text-terraria-yellow">5/5</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-terraria-dark p-3 rounded">
+                            <span class="text-terraria-blue"><i class="fas fa-check-circle mr-2"></i>NumPy/Pandas</span>
+                            <span class="text-terraria-yellow">2/5</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-terraria-dark p-3 rounded">
+                            <span class="text-terraria-blue"><i class="far fa-circle mr-2"></i>C++ for Finance</span>
+                            <span class="text-gray-400">0/5</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-terraria-dark p-3 rounded">
+                            <span class="text-terraria-blue"><i class="far fa-circle mr-2"></i>Algorithm Design</span>
+                            <span class="text-gray-400">0/5</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-terraria-dark p-3 rounded">
+                            <span class="text-terraria-blue"><i class="far fa-circle mr-2"></i>Quant Libraries</span>
+                            <span class="text-gray-400">0/5</span>
+                        </div>
+                    </div>
+                    
+                    <button class="terraria-btn w-full mt-4">Continue Learning</button>
+                </div>
+                
+                <!-- Finance Path -->
+                <div class="terraria-card p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-bold text-terraria-green pixel-font">FINANCE SAGE</h3>
+                        <div class="w-16 progress-bar">
+                            <div class="progress-fill" style="width: 15%;"></div>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 mb-4">Financial theory and market knowledge</p>
+                    
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between bg-terraria-dark p-3 rounded">
+                            <span class="text-terraria-blue"><i class="fas fa-check-circle mr-2"></i>Financial Markets</span>
+                            <span class="text-terraria-yellow">1/5</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-terraria-dark p-3 rounded">
+                            <span class="text-terraria-blue"><i class="far fa-circle mr-2"></i>Derivatives Pricing</span>
+                            <span class="text-gray-400">0/5</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-terraria-dark p-3 rounded">
+                            <span class="text-terraria-blue"><i class="far fa-circle mr-2"></i>Portfolio Theory</span>
+                            <span class="text-gray-400">0/5</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-terraria-dark p-3 rounded">
+                            <span class="text-terraria-blue"><i class="far fa-circle mr-2"></i>Risk Management</span>
+                            <span class="text-gray-400">0/5</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-terraria-dark p-3 rounded">
+                            <span class="text-terraria-blue"><i class="far fa-circle mr-2"></i>Trading Strategies</span>
+                            <span class="text-gray-400">0/5</span>
+                        </div>
+                    </div>
+                    
+                    <button class="terraria-btn w-full mt-4">Continue Learning</button>
+                </div>
+            </div>
+        </section>
+        
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold text-terraria-blue mb-6 pixel-font">DAILY CHALLENGES</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="terraria-card p-6 flex flex-col items-center text-center">
+                    <div class="w-20 h-20 bg-terraria-purple rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-brain text-3xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-terraria-green mb-2">Math Puzzle</h3>
+                    <p class="text-gray-300 mb-4">Solve this stochastic calculus problem</p>
+                    <button class="terraria-btn px-6">Start</button>
+                    <div class="mt-4 flex items-center text-terraria-yellow">
+                        <i class="fas fa-gem mr-2"></i>
+                        <span>+50 XP</span>
+                    </div>
+                </div>
+                
+                <div class="terraria-card p-6 flex flex-col items-center text-center">
+                    <div class="w-20 h-20 bg-terraria-orange rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-code text-3xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-terraria-green mb-2">Code Challenge</h3>
+                    <p class="text-gray-300 mb-4">Implement a Monte Carlo simulation</p>
+                    <button class="terraria-btn px-6">Start</button>
+                    <div class="mt-4 flex items-center text-terraria-yellow">
+                        <i class="fas fa-gem mr-2"></i>
+                        <span>+75 XP</span>
+                    </div>
+                </div>
+                
+                <div class="terraria-card p-6 flex flex-col items-center text-center">
+                    <div class="w-20 h-20 bg-terraria-blue rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-chart-line text-3xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-terraria-green mb-2">Market Quiz</h3>
+                    <p class="text-gray-300 mb-4">Test your knowledge of options pricing</p>
+                    <button class="terraria-btn px-6">Start</button>
+                    <div class="mt-4 flex items-center text-terraria-yellow">
+                        <i class="fas fa-gem mr-2"></i>
+                        <span>+60 XP</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section>
+            <h2 class="text-3xl font-bold text-terraria-blue mb-6 pixel-font">LEADERBOARD</h2>
+            
+            <div class="terraria-card p-6">
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="border-b border-terraria-purple">
+                                <th class="text-left py-3 px-4 text-terraria-green">Rank</th>
+                                <th class="text-left py-3 px-4 text-terraria-green">Player</th>
+                                <th class="text-left py-3 px-4 text-terraria-green">Level</th>
+                                <th class="text-left py-3 px-4 text-terraria-green">XP</th>
+                                <th class="text-left py-3 px-4 text-terraria-green">Streak</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b border-terraria-dark">
+                                <td class="py-3 px-4 flex items-center">
+                                    <span class="w-8 h-8 bg-terraria-yellow rounded-full flex items-center justify-center text-terraria-dark font-bold">1</span>
+                                </td>
+                                <td class="py-3 px-4 font-bold">QuantMaster99</td>
+                                <td class="py-3 px-4">23</td>
+                                <td class="py-3 px-4">12,450</td>
+                                <td class="py-3 px-4 text-terraria-red">42 <i class="fas fa-fire ml-1"></i></td>
+                            </tr>
+                            <tr class="border-b border-terraria-dark">
+                                <td class="py-3 px-4 flex items-center">
+                                    <span class="w-8 h-8 bg-terraria-blue rounded-full flex items-center justify-center text-white font-bold">2</span>
+                                </td>
+                                <td class="py-3 px-4 font-bold">StochasticStar</td>
+                                <td class="py-3 px-4">21</td>
+                                <td class="py-3 px-4">11,200</td>
+                                <td class="py-3 px-4 text-terraria-red">35 <i class="fas fa-fire ml-1"></i></td>
+                            </tr>
+                            <tr class="border-b border-terraria-dark">
+                                <td class="py-3 px-4 flex items-center">
+                                    <span class="w-8 h-8 bg-terraria-orange rounded-full flex items-center justify-center text-white font-bold">3</span>
+                                </td>
+                                <td class="py-3 px-4 font-bold">AlgoTrader</td>
+                                <td class="py-3 px-4">19</td>
+                                <td class="py-3 px-4">9,870</td>
+                                <td class="py-3 px-4 text-terraria-red">28 <i class="fas fa-fire ml-1"></i></td>
+                            </tr>
+                            <tr id="userRow" class="border-b border-terraria-dark">
+    <td class="py-3 px-4 flex items-center">
+        <span class="w-8 h-8 bg-white rounded-full flex items-center justify-center text-terraria-dark font-bold">4</span>
+    </td>
+    <td class="py-3 px-4 username">You</td>
+    <td class="py-3 px-4" id="userLevel">5</td>
+    <td class="py-3 px-4" id="userXP">1250</td>
+    <td class="py-3 px-4 text-terraria-red" id="userStreak">7 <i class="fas fa-fire ml-1"></i></td>
+</tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer class="bg-terraria-dark py-6 px-4 mt-12">
+        <div class="container mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <h2 class="text-xl font-bold text-terraria-green pixel-font">QUANTQUEST</h2>
+                    <p class="text-gray-400">Your journey to becoming a quant starts here</p>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-terraria-blue hover:text-terraria-green"><i class="fab fa-twitter text-2xl"></i></a>
+                    <a href="#" class="text-terraria-blue hover:text-terraria-green"><i class="fab fa-discord text-2xl"></i></a>
+                    <a href="#" class="text-terraria-blue hover:text-terraria-green"><i class="fab fa-github text-2xl"></i></a>
+                </div>
+            </div>
+            <div class="border-t border-terraria-purple mt-6 pt-6 text-center text-gray-400">
+                <p>© 2023 QuantQuest. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Simple animation for the progress bars
+        document.addEventListener('DOMContentLoaded', function() {
+            const progressBars = document.querySelectorAll('.progress-fill');
+            
+            progressBars.forEach(bar => {
+                const targetWidth = bar.style.width;
+                bar.style.width = '0';
+                
+                setTimeout(() => {
+                    bar.style.width = targetWidth;
+                }, 300);
+            });
+            
+            // Add click events for buttons
+            const buttons = document.querySelectorAll('.terraria-btn');
+            buttons.forEach(button => {
+                button.addEventListener('click', function() {
+                    this.classList.add('transform', 'scale-95');
+                    setTimeout(() => {
+                        this.classList.remove('transform', 'scale-95');
+                    }, 200);
+                    
+                    
+                });
+            });
+        });
+    </script>
+    <script type="module" src="profile.js"></script>
+    <!-- ✅ Připojení skriptu -->
+<script type="module" src="script.js"></script>
+<!-- Firebase Init -->
+<script type="module" src="firebase-init.js"></script>
+
+<!-- Auth Handler (zajistí rozpoznání přihlášeného uživatele) -->
+<script type="module" src="auth-handler.js"></script>
+
+
+</body>
+</html>

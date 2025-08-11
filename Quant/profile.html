@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>QuantQuest Login</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
+</head>
+<body class="bg-terraria-darker text-white min-h-screen flex flex-col items-center justify-center">
+
+  <div class="bg-terraria-dark p-8 rounded-lg shadow-lg max-w-md w-full text-center">
+    <h1 class="text-3xl font-bold pixel-font text-terraria-green mb-6">Sign in to QuantQuest</h1>
+    
+    <button id="googleLoginBtn" class="bg-white text-black px-4 py-2 rounded shadow-lg hover:bg-gray-200">
+  <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="inline w-6 mr-2" alt="Google" />
+  Sign in with Google
+</button>
+
+  </div>
+
+ <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+  import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+   const firebaseConfig = {
+    apiKey: "AIzaSyBcJbbjNDvZqLvGcfevfJVX6jKixHmYAwI",
+    authDomain: "quant-5589e.firebaseapp.com",
+    projectId: "quant-5589e",
+    storageBucket: "quant-5589e.firebasestorage.app",
+    messagingSenderId: "795935839648",
+    appId: "1:795935839648:web:31e0a952fad4d1e60400c5",
+    measurementId: "G-DQ0R4TCBFC"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
+
+  // Přihlášení pomocí Google (tlačítko nebo automatické volání)
+  const loginBtn = document.getElementById("googleLoginBtn");
+
+  if (loginBtn) {
+    loginBtn.addEventListener("click", async () => {
+      try {
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+        console.log("✅ Přihlášen:", user.displayName);
+
+        // Uložení do localStorage
+        localStorage.setItem("current_user", user.displayName);
+
+        // Přesměrování na account
+        window.location.href = 'login.html';
+      } catch (error) {
+        console.error("❌ Chyba při přihlášení:", error.message);
+      }
+    });
+  }
+</script>
+
+  <!-- Scripts -->
+  <script type="module" src="script.js"></script>
+  <script type="module" src="profile.js"></script>
+</body>
+</html>

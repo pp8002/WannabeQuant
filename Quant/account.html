@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>QuantQuest | Account</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Press Start 2P', monospace;
+      background-color: #1a1925;
+      color: white;
+    }
+    .section {
+      border: 2px solid #00ff99;
+      padding: 20px;
+      border-radius: 12px;
+      background-color: #2c2b3c;
+      margin: 10px;
+    }
+    .label {
+      font-size: 0.75rem;
+      color: #aaa;
+    }
+    .badge, .achievement {
+      background-color: #3b82f6;
+      padding: 6px 10px;
+      border-radius: 8px;
+      margin: 4px;
+      display: inline-block;
+      font-size: 12px;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="text-center mt-10 mb-6">
+    <h1 class="text-2xl text-white">🎮 My Account</h1>
+  </div>
+
+  <!-- Flex Layout -->
+  <div class="flex flex-wrap justify-center gap-6 px-6">
+
+    <!-- LEFT: User Info -->
+    <div class="section w-full md:w-1/4 text-center">
+      <img id="user-photo" src="" alt="Avatar" class="rounded-full mx-auto w-24 h-24 mb-4 border-4 border-white">
+      <h2 id="user-name" class="text-xl mb-2">User Name</h2>
+      <p id="user-email" class="text-sm label">email@example.com</p>
+    </div>
+
+    <!-- CENTER: Stats -->
+    <div class="section w-full md:w-1/4 text-center">
+      <p class="text-white text-sm mb-2">XP: <span id="xp" class="text-lg font-bold">0</span></p>
+      <p class="text-white text-sm mb-2">Level: <span id="level" class="text-lg font-bold">1</span></p>
+      <p class="text-white text-sm">Streak: <span id="streak" class="text-lg font-bold">0🔥</span></p>
+    </div>
+
+    <!-- RIGHT: Badges + Achievements -->
+    <div class="section w-full md:w-1/4">
+      <h3 class="text-center mb-2">🏅 Badges</h3>
+      <div id="badges" class="text-center">
+        <span class="badge">Beginner</span>
+        <span class="badge">Daily Streak</span>
+      </div>
+
+      <h3 class="text-center mt-4 mb-2">🎯 Achievements</h3>
+      <div id="achievements" class="text-center">
+        <span class="achievement">First Login</span>
+        <span class="achievement">Explorer</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Buttons -->
+  <div class="text-center mt-10 space-x-4">
+    <button onclick="window.location.href='index.html'" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-sm">🏠 Dashboard</button>
+    <button onclick="window.location.href='profile.html'" class="bg-yellow-600 hover:bg-yellow-700 px-4 py-2 rounded text-sm">⚙️ Profile Settings</button>
+    <button onclick="logout()" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-sm">🚪 Logout</button>
+  </div>
+
+  <!-- Firebase Auth -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+    const firebaseConfig = {
+  apiKey: "AIzaSyBcJbbjNDvZqLvGcfevfJVX6jKixHmYAwI",
+  authDomain: "quant-5589e.firebaseapp.com",
+  projectId: "quant-5589e",
+  storageBucket: "quant-5589e.firebasestorage.app",
+  messagingSenderId: "795935839648",
+  appId: "1:795935839648:web:31e0a952fad4d1e60400c5",
+  measurementId: "G-DQ0R4TCBFC"
+};
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        document.getElementById("user-name").textContent = user.displayName;
+        document.getElementById("user-email").textContent = user.email;
+        document.getElementById("user-photo").src = user.photoURL;
+      } else {
+        window.location.href = "login.html";
+      }
+    });
+
+    window.logout = function () {
+      signOut(auth).then(() => {
+        window.location.href = "login.html";
+      });
+    }
+  </script>
+  <!-- Firebase Init -->
+<script type="module" src="firebase-init.js"></script>
+
+<!-- Auth Handler (zajistí rozpoznání přihlášeného uživatele) -->
+<script type="module" src="auth-handler.js"></script>
+
+
+</body>
+</html>

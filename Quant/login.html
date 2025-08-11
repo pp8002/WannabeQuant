@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign in to QuantQuest</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" />
+  <style>
+    body {
+      font-family: 'Press Start 2P', monospace;
+    }
+  </style>
+
+  <!-- ✅ Firebase CDN knihovny -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+</head>
+<body class="bg-terraria-darker text-white flex items-center justify-center min-h-screen">
+
+  <div class="text-center p-6 bg-terraria-dark shadow-lg rounded">
+    <h1 class="text-3xl mb-6">Sign in to<br>QuantQuest</h1>
+    <button id="googleSignIn" class="bg-white text-black px-4 py-2 rounded hover:bg-gray-200 transition inline-flex items-center gap-2">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" class="w-5 h-5">
+      <span>Sign in with Google</span>
+    </button>
+  </div>
+
+  <script>
+    // ✅ Firebase konfigurace (nahraď svými údaji)
+   const firebaseConfig = {
+  apiKey: "AIzaSyBcJbbjNDvZqLvGcfevfJVX6jKixHmYAwI",
+  authDomain: "quant-5589e.firebaseapp.com",
+  projectId: "quant-5589e",
+  storageBucket: "quant-5589e.firebasestorage.app",
+  messagingSenderId: "795935839648",
+  appId: "1:795935839648:web:31e0a952fad4d1e60400c5",
+  measurementId: "G-DQ0R4TCBFC"
+};
+
+    // ✅ Inicializace Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    // ✅ Google přihlášení
+    document.getElementById("googleSignIn").addEventListener("click", () => {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      auth.signInWithPopup(provider)
+        .then((result) => {
+          const user = result.user;
+
+          // ✅ Uložení údajů uživatele
+          localStorage.setItem("current_user", JSON.stringify({
+            name: user.displayName,
+            email: user.email,
+            photo: user.photoURL,
+            uid: user.uid
+          }));
+
+          // ✅ Přesměrování na account.html
+          window.location.href = "account.html";
+        })
+        .catch((error) => {
+          alert("Chyba při přihlášení: " + error.message);
+          console.error(error);
+        });
+    });
+  </script>
+  <!-- Firebase Init -->
+<script type="module" src="firebase-init.js"></script>
+
+<!-- Auth Handler (zajistí rozpoznání přihlášeného uživatele) -->
+<script type="module" src="auth-handler.js"></script>
+
+</body>
+</html>

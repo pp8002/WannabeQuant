@@ -1,0 +1,66 @@
+/* === style.css === */
+
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+body {
+  font-family: 'Press Start 2P', cursive;
+  background-color: #1e1e2e;
+  color: white;
+}
+
+/* Terraria barvy */
+:root {
+  --terraria-dark: #1f1f2b;
+  --terraria-darker: #14141f;
+  --terraria-green: #8fdb79;
+  --terraria-blue: #64b5f6;
+  --terraria-red: #f06292;
+  --terraria-yellow: #f9f871;
+  --terraria-orange: #f4a261;
+  --terraria-purple: #b388eb;
+}
+
+/* Karty a tlačítka */
+.terraria-card {
+  background-color: var(--terraria-darker);
+  border: 2px solid var(--terraria-blue);
+  border-radius: 8px;
+}
+
+.terraria-btn {
+  background-color: var(--terraria-blue);
+  color: white;
+  font-weight: bold;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: 0.3s;
+}
+
+.terraria-btn:hover {
+  background-color: var(--terraria-green);
+}
+
+/* Progress bar */
+.progress-bar {
+  background-color: #444;
+  border: 1px solid var(--terraria-green);
+  border-radius: 4px;
+  height: 12px;
+  width: 100%;
+}
+
+.progress-fill {
+  background-color: var(--terraria-blue);
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+/* Toast */
+#toast {
+  transition: all 0.5s ease;
+  opacity: 0;
+}
+#toast.show {
+  opacity: 1;
+}
