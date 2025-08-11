@@ -5,14 +5,14 @@ import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12
 
 // ====== Firebase config ======
 const firebaseConfig = {
-  apiKey: "AIzaSyBcJbbjNDvZqLvGcfevfJVX6jKixHmYAwI",
+  apiKey: YOUR_API_KEY,
   authDomain: "quant-5589e.firebaseapp.com",
-  projectId: "quant-5589e",
-  storageBucket: "quant-5589e.firebasestorage.app",
-  messagingSenderId: "795935839648",
-  appId: "1:795935839648:web:31e0a952fad4d1e60400c5",
-  measurementId: "G-DQ0R4TCBFC"
-};
+    projectId: "quant-5589e",
+    storageBucket: "quant-5589e.firebasestorage.app",
+    messagingSenderId: "795935839648",
+    appId: "1:795935839648:web:9b0cfeaeb1e590f90400c5",
+    measurementId: "G-6SL04E2WVJ"
+  };
 
 // ====== Initialize Firebase ======
 const app = initializeApp(firebaseConfig);

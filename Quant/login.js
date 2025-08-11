@@ -4,14 +4,14 @@ import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstati
 
 // ⚙️ Vlož svůj vlastní Firebase config
 const firebaseConfig = {
-  apiKey: "AIzaSyBcJbbjNDvZqLvGcfevfJVX6jKixHmYAwI",
-  authDomain: "quant-5589e.firebaseapp.com",
-  projectId: "quant-5589e",
-  storageBucket: "quant-5589e.firebasestorage.app",
-  messagingSenderId: "795935839648",
-  appId: "1:795935839648:web:31e0a952fad4d1e60400c5",
-  measurementId: "G-DQ0R4TCBFC"
-};
+  apiKey: YOUR_API_KEY,
+   authDomain: "quant-5589e.firebaseapp.com",
+    projectId: "quant-5589e",
+    storageBucket: "quant-5589e.firebasestorage.app",
+    messagingSenderId: "795935839648",
+    appId: "1:795935839648:web:9b0cfeaeb1e590f90400c5",
+    measurementId: "G-6SL04E2WVJ"
+  };
 
 
 const app = initializeApp(firebaseConfig);

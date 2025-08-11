@@ -3,7 +3,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBcJbbjNDvZqLvGcfevfJVX6jKixHmYAwI",
+  apiKey: YOUR_API_KEY,
   authDomain: "quant-5589e.firebaseapp.com",
   projectId: "quant-5589e",
   storageBucket: "quant-5589e.firebasestorage.app",
