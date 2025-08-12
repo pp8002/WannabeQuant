@@ -64,7 +64,8 @@ async function renderCurriculum() {
   curriculum.math1.forEach((lesson) => {
     const div = document.createElement('div');
     div.className = "lesson-title";
-    div.textContent = `${lesson.title}`;
+    div.textContent = lesson.title;
+
 
     // Zamčené lekce
     const locked = userXP < lesson.requiredXP;

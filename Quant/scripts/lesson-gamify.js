@@ -1,38 +1,52 @@
-// lesson-gamify.js
+// lesson1-gamify.js – verze s Firebase zápisem
 
-// ✅ Tato funkce bude reagovat na dokončení lekce a přidá XP, uloží progress atd.
+import { app } from '../../firebase-init.js';
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  updateDoc,
+  setDoc,
+} from 'https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js';
 
-window.addEventListener("lessonCompleted", async (e) => {
-  const lessonId = e.detail.id; // např. "math1_lesson1"
-  const currentUserId = localStorage.getItem("current_user");
-  if (!currentUserId) return;
+const db = getFirestore(app);
+const uid = localStorage.getItem('current_user');
 
-  const users = JSON.parse(localStorage.getItem("quant_users")) || {};
-  const user = users[currentUserId] || {
-    xp: 0,
-    level: 1,
-    streak: 0,
-    badges: [],
-    progress: {}
-  };
+document.addEventListener("DOMContentLoaded", function () {
+  const completeBtn = document.querySelector(".btn");
 
-  // Pokud už lekce byla dokončena, nepočítej XP znovu
-  if (user.progress[lessonId]?.completed) return;
+  completeBtn.addEventListener("click", async function () {
+    if (!uid) return alert("Please log in first!");
 
-  // 🎁 Odměny za dokončení lekce
-  const XP_REWARD = 20;
-  user.xp += XP_REWARD;
-  user.progress[lessonId] = { completed: true, timestamp: Date.now() };
+    const userRef = doc(db, 'users', uid);
+    const snap = await getDoc(userRef);
 
-  // Levelování (každých 100 XP -> nový level)
-  if (user.xp >= user.level * 100) {
-    user.level += 1;
-  }
+    if (!snap.exists()) {
+      alert("❌ User not found.");
+      return;
+    }
 
-  // Uložení zpět
-  users[currentUserId] = user;
-  localStorage.setItem("quant_users", JSON.stringify(users));
+    const userData = snap.data();
+    const progress = userData.progress || {};
+    const xp = userData.xp || 0;
+    const badges = userData.badges || [];
 
-  // 🎉 Toast nebo alert
-  alert("🎉 Lesson completed! +" + XP_REWARD + " XP");
+    if (progress["math1_lesson1"]?.completed) {
+      alert("✔️ You’ve already completed this lesson.");
+      return;
+    }
+
+    // Ulož nový pokrok a XP
+    progress["math1_lesson1"] = { completed: true };
+
+    await updateDoc(userRef, {
+      xp: xp + 50,
+      progress,
+      badges: badges.includes("Vector Master")
+        ? badges
+        : [...badges, "Vector Master"],
+    });
+
+    alert("✅ Lesson complete! +50 XP\n🏅 You unlocked: Vector Master");
+  });
 });

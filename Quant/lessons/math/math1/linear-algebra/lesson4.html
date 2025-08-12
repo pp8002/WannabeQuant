@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>QuantQuest Path</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #00ffcc;
+      --secondary: #ffcc00;
+      --bg-dark: #0b0c2a;
+      --bg-light: #141632;
+      --text-main: #ffffff;
+      --locked: #444c57;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Press Start 2P', monospace;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      padding-top: 16px;
+    }
+
+    .path-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0 20px;
+      margin-bottom: 80px;
+    }
+
+    .path {
+      position: relative;
+      max-width: 580px;
+      margin: 0 auto;
+    }
+
+    .path__svg {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 40px);
+      height: 1200px;
+      z-index: 1;
+    }
+
+    .path__nodes {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 0;
+    }
+
+    .node {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      margin: 60px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      cursor: pointer;
+      border: 3px solid var(--primary);
+      background-color: var(--bg-light);
+      box-shadow: 0 0 8px var(--primary), inset 0 0 4px var(--primary);
+      transition: transform 0.2s ease;
+    }
+
+    .node--completed {
+      background: radial-gradient(circle at 30% 30%, #00ffcc 0%, #008877 100%);
+    }
+
+    .node--current {
+      background: radial-gradient(circle at 50% 50%, #ffcc00 0%, #aa8800 100%);
+      box-shadow: 0 0 12px #ffcc00, inset 0 0 6px #ffcc00;
+    }
+
+    .node--locked {
+      background-color: var(--locked);
+      opacity: 0.5;
+      cursor: default;
+    }
+
+    .node__emoji {
+      text-shadow: 1px 1px 2px #000;
+    }
+
+    .node--current::after {
+      content: '';
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      border: 2px dashed var(--secondary);
+      border-radius: 50%;
+      animation: pulse 1.2s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 0.6; }
+      50% { transform: scale(1.15); opacity: 1; }
+      100% { transform: scale(1); opacity: 0.6; }
+    }
+
+    .footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 72px;
+      background: var(--bg-light);
+      border-top: 2px solid var(--primary);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 12px;
+    }
+
+    .footer__tab {
+      color: var(--primary);
+      padding: 10px 14px;
+      margin: 0 8px;
+      background-color: #1e1e30;
+      border: 1px solid var(--primary);
+      border-radius: 6px;
+      font-family: 'Press Start 2P', monospace;
+      cursor: pointer;
+    }
+
+    .footer__tab--active {
+      background-color: var(--primary);
+      color: #000;
+    }
+
+    /* Optional staggered effect */
+    .path__nodes .node:nth-child(even) { transform: translateX(20px); }
+    .path__nodes .node:nth-child(odd) { transform: translateX(-20px); }
+  </style>
+</head>
+<body>
+
+  <div class="path-container">
+    <div class="path">
+      <svg class="path__svg" viewBox="0 0 200 1200" preserveAspectRatio="xMidYMin meet">
+        <path d="
+          M100,10
+          C 90,70 60,120 100,170
+          C 140,220 140,280 100,330
+          C 60,380 60,440 100,490
+          C 140,540 140,600 100,650
+          C 60,700 60,760 100,810
+          C 140,860 140,920 100,970
+          C 60,1020 60,1080 100,1130
+        " stroke="#222" stroke-width="10" stroke-linecap="round" fill="none"/>
+      </svg>
+
+      <div class="path__nodes">
+        <button class="node node--completed"><span class="node__emoji">📐</span></button>
+        <button class="node node--completed"><span class="node__emoji">🧮</span></button>
+        <button class="node node--current"><span class="node__emoji">📊</span></button>
+        <button class="node node--locked"><span class="node__emoji">📈</span></button>
+        <button class="node node--locked"><span class="node__emoji">🧠</span></button>
+        <button class="node node--locked"><span class="node__emoji">💾</span></button>
+        <button class="node node--locked"><span class="node__emoji">📚</span></button>
+        <button class="node node--locked"><span class="node__emoji">🧪</span></button>
+        <button class="node node--locked"><span class="node__emoji">🏁</span></button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer__tab footer__tab--active">Math I</div>
+    <div class="footer__tab">Math II</div>
+    <div class="footer__tab">Math III</div>
+    <div class="footer__tab">Math IV</div>
+    <div class="footer__tab">Math V</div>
+  </footer>
+
+</body>
+</html>

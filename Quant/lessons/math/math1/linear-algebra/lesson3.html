@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Lesson 4 – Eigenvalues & Eigenvectors | QuantQuest</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #00ffcc;
+      --secondary: #ffcc00;
+      --accent: #00aaff;
+      --bg-dark: #0b0c2a;
+      --bg-light: #141632;
+      --text-main: #ffffff;
+      --text-dim: #cccccc;
+    }
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: 'Roboto Mono', monospace;
+      padding: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    h1, h2, h3 {
+      font-family: 'Press Start 2P', cursive;
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+    .section {
+      margin-bottom: 3rem;
+      border-left: 4px solid var(--primary);
+      padding-left: 1.5rem;
+    }
+    .card {
+      background-color: var(--bg-light);
+      border: 2px solid var(--accent);
+      border-radius: 6px;
+      padding: 1.2rem;
+      margin-top: 1rem;
+    }
+    .math {
+      background: rgba(0,255,204,0.08);
+      padding: 1rem;
+      margin: 1rem 0;
+      border-left: 4px solid var(--accent);
+      border-radius: 4px;
+    }
+    .btn {
+      background-color: var(--primary);
+      color: #000;
+      padding: 1rem;
+      font-family: 'Press Start 2P', cursive;
+      cursor: pointer;
+      border-radius: 4px;
+      display: inline-block;
+      margin-top: 2rem;
+    }
+    label {
+      display: block;
+      margin: 0.6rem 0;
+    }
+    .quiz-block {
+      margin-bottom: 2rem;
+    }
+    .quiz-block h3 {
+      color: var(--secondary);
+      margin-bottom: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📘 Lesson 4: Eigenvalues & Eigenvectors</h1>
+  <p class="text-dim mt-2">The foundation of PCA, risk modeling, and factor-based investing.</p>
+
+  <div class="section">
+    <h2>🎯 Learning Goals</h2>
+    <div class="card">
+      <ul class="list-disc ml-6">
+        <li>Understand eigen-decomposition</li>
+        <li>Interpret eigenvalues in financial models</li>
+        <li>Apply PCA to reduce dimensionality</li>
+        <li>Use eigenvectors for factor-based risk analysis</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>📖 Core Concepts</h2>
+    <div class="card">
+      <h3>Definition</h3>
+      <p>If \( A \vec{v} = \lambda \vec{v} \), then \( \vec{v} \) is an eigenvector of matrix \( A \), and \( \lambda \) is the eigenvalue.</p>
+      <div class="math">$$ A\vec{v} = \lambda \vec{v} $$</div>
+
+      <h3>Characteristic Equation</h3>
+      <p>To find eigenvalues, solve:</p>
+      <div class="math">$$ \det(A - \lambda I) = 0 $$</div>
+
+      <h3>Diagonalization</h3>
+      <p>If A has a full set of eigenvectors, then:</p>
+      <div class="math">$$ A = Q\Lambda Q^{-1} $$</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>💻 Try It Yourself (Python)</h2>
+    <div class="card">
+<pre><code>import numpy as np
+
+cov_matrix = np.array([[0.04, 0.02], [0.02, 0.09]])
+eigenvalues, eigenvectors = np.linalg.eig(cov_matrix)
+
+print("Eigenvalues:", eigenvalues)
+print("Eigenvectors:\n", eigenvectors)
+
+explained = eigenvalues / np.sum(eigenvalues)
+print("Explained Variance:", explained)</code></pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>📈 Financial Applications</h2>
+    <div class="card">
+      <h3>1. PCA in Finance</h3>
+      <p>Eigenvalues represent variance explained by each principal component in returns:</p>
+      <div class="math">$$ \text{Returns} = \sum \lambda_i \vec{v}_i $$</div>
+
+      <h3>2. Risk Factor Modeling</h3>
+      <p>Dominant eigenvectors show key market risk directions (systematic risk).</p>
+
+      <h3>3. Portfolio Optimization</h3>
+      <p>Use top eigenvectors to construct minimum-variance or max-sharpe portfolios:</p>
+      <div class="math">$$ \text{Optimal Weights} \propto \vec{v}_1 $$</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>🧠 Knowledge Check</h2>
+    <div class="card">
+
+      <div class="quiz-block">
+        <h3>1. What equation defines eigenvalues of a matrix A?</h3>
+        <label><input type="radio" name="q1" onclick="checkAnswer('q1', 'B')"> A) \( A^2 = I \)</label>
+        <label><input type="radio" name="q1" onclick="checkAnswer('q1', 'B')"> B) \( \det(A - \lambda I) = 0 \)</label>
+        <label><input type="radio" name="q1" onclick="checkAnswer('q1', 'C')"> C) \( A + \lambda I = 0 \)</label>
+        <p id="q1-result"></p>
+      </div>
+
+      <div class="quiz-block">
+        <h3>2. Which eigenvalue corresponds to the principal component in PCA?</h3>
+        <label><input type="radio" name="q2" onclick="checkAnswer('q2', 'C')"> A) The smallest one</label>
+        <label><input type="radio" name="q2" onclick="checkAnswer('q2', 'C')"> B) The average of all eigenvalues</label>
+        <label><input type="radio" name="q2" onclick="checkAnswer('q2', 'C')"> C) The largest one</label>
+        <p id="q2-result"></p>
+      </div>
+
+      <div class="quiz-block">
+        <h3>3. If eigenvalue = 0, what does this tell you?</h3>
+        <label><input type="radio" name="q3" onclick="checkAnswer('q3', 'A')"> A) Matrix is not full rank (singular)</label>
+        <label><input type="radio" name="q3" onclick="checkAnswer('q3', 'B')"> B) Matrix is orthogonal</label>
+        <label><input type="radio" name="q3" onclick="checkAnswer('q3', 'C')"> C) Eigenvectors are complex</label>
+        <p id="q3-result"></p>
+      </div>
+
+      <button class="btn" onclick="showAllAnswers()">Reveal Answers</button>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>🚀 Next Steps</h2>
+    <div class="card">
+      <h3>Recommended Resources</h3>
+      <ul>
+        <li><a href="https://numpy.org/doc/stable/reference/generated/numpy.linalg.eig.html" target="_blank">NumPy eig() docs</a></li>
+        <li><a href="https://math.stackexchange.com/questions/tagged/eigenvalues-eigenvectors" target="_blank">StackExchange on Eigen</a></li>
+      </ul>
+
+      <h3>Try This:</h3>
+      <ol>
+        <li>Perform PCA on a 10-asset return matrix</li>
+        <li>Visualize the top 2 eigenvectors</li>
+        <li>Use them to build a factor-mimicking portfolio</li>
+      </ol>
+
+      <button class="btn" id="mark-complete">Mark Lesson Complete</button>
+    </div>
+  </div>
+
+  <script>
+    const answers = {
+      q1: { correct: "B", explanation: "✅ Correct! Eigenvalues solve det(A - λI) = 0." },
+      q2: { correct: "C", explanation: "✅ Correct! The largest eigenvalue captures most variance in PCA." },
+      q3: { correct: "A", explanation: "✅ Correct! Zero eigenvalue means the matrix is singular (non-invertible)." }
+    };
+
+    function checkAnswer(question, selected) {
+      const result = document.getElementById(`${question}-result`);
+      const answer = answers[question];
+      if (selected === answer.correct) {
+        result.innerHTML = answer.explanation;
+        result.style.color = "#00ff99";
+      } else {
+        result.innerHTML = "❌ Incorrect. Try again!";
+        result.style.color = "#ff6666";
+      }
+    }
+
+    function showAllAnswers() {
+      Object.keys(answers).forEach(q => {
+        const answer = answers[q];
+        const result = document.getElementById(`${q}-result`);
+        result.innerHTML = answer.explanation;
+        result.style.color = "#00ff99";
+      });
+    }
+  </script>
+
+  <!-- Complete tracking -->
+  <script>
+    const currentLessonId = "math1_lesson4";
+    const XP_REWARD = 150;
+  </script>
+  <script type="module" src="/complete.js"></script>
+
+</body>
+</html>

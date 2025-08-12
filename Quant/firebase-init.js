@@ -25,3 +25,31 @@ const db = getFirestore(app);
 
 // ✅ Exportuj pro další soubory
 export { app, auth, db };
+
+// ✅ Uživatelské funkce pro práci s Firestore
+
+/**
+ * Uloží nebo aktualizuje uživatelský profil (např. XP, level, completedLessons)
+ */
+export async function saveUserProgress(userId, data) {
+  try {
+    const userRef = doc(db, "users", userId);
+    await setDoc(userRef, data, { merge: true }); // merge zachová existující data
+  } catch (error) {
+    console.error("❌ Error saving user progress:", error);
+  }
+}
+
+/**
+ * Načte data o uživateli
+ */
+export async function getUserProgress(userId) {
+  try {
+    const userRef = doc(db, "users", userId);
+    const docSnap = await getDoc(userRef);
+    return docSnap.exists() ? docSnap.data() : null;
+  } catch (error) {
+    console.error("❌ Error loading user progress:", error);
+    return null;
+  }
+}
