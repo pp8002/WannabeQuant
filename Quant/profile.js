@@ -1,10 +1,14 @@
 // ====== PŘIPOJENÍ FIREBASE ======
 import { auth } from "./firebase-init.js";
-import { GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import {
+  GoogleAuthProvider,
+  signInWithRedirect,
+  getRedirectResult
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
 const provider = new GoogleAuthProvider();
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   console.log("✅ profile.js načten");
 
   // ===== FUNKCE PRO UŽIVATELE =====
@@ -102,37 +106,42 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ===== GOOGLE LOGIN BUTTON =====
+  // ===== GOOGLE LOGIN BUTTON (redirect verze) =====
   if (googleBtn) {
-    googleBtn.addEventListener("click", async () => {
-      try {
-        const result = await signInWithPopup(auth, provider);
-        const firebaseUser = result.user;
-        const username = firebaseUser.displayName || firebaseUser.email;
-
-        // Uložení / vytvoření profilu
-        let users = getAllUsers();
-        if (!users[username]) {
-          users[username] = {
-            xp: 0,
-            level: 1,
-            streak: 0,
-            tasks: [],
-            badges: []
-          };
-        }
-
-        saveAllUsers(users);
-        setCurrentUserKey(username);
-
-        console.log("✅ Přihlášen:", username);
-
-        // Přesměrování na účet
-        window.location.href = "account.html";
-      } catch (error) {
-        console.error("❌ Chyba při přihlášení:", error.message);
-        alert("Chyba při přihlášení: " + error.message);
-      }
+    googleBtn.addEventListener("click", () => {
+      signInWithRedirect(auth, provider);
     });
+  }
+
+  // ===== PO NÁVRATU Z PŘIHLÁŠENÍ ZÍSKÁNÍ DAT =====
+  try {
+    const result = await getRedirectResult(auth);
+    if (result && result.user) {
+      const firebaseUser = result.user;
+      const username = firebaseUser.displayName || firebaseUser.email;
+
+      let users = getAllUsers();
+      if (!users[username]) {
+        users[username] = {
+          xp: 0,
+          level: 1,
+          streak: 0,
+          tasks: [],
+          badges: []
+        };
+      }
+
+      saveAllUsers(users);
+      setCurrentUserKey(username);
+
+      console.log("✅ Přihlášen:", username);
+
+      // Přesměrování na účet
+      window.location.href = "account.html";
+    }
+  } catch (error) {
+    if (error.code) {
+      console.error("❌ Chyba při přihlášení:", error.message);
+    }
   }
 });

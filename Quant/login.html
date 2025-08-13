@@ -2,76 +2,53 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sign in to QuantQuest</title>
+  <title>QuantQuest | Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
   <style>
-    body {
-      font-family: 'Press Start 2P', monospace;
-    }
+    body { font-family: 'Press Start 2P', monospace; background:#1a1925; color:#fff; min-height:100vh; display:grid; place-items:center; }
+    .card { width:100%; max-width:420px; background:#2c2b3c; border:2px solid #00ff99; border-radius:14px; box-shadow:0 0 14px rgba(0,255,153,.25); padding:2rem; text-align:center; }
+    .btn  { width:100%; display:inline-flex; align-items:center; justify-content:center; gap:.6rem; padding:.9rem 1rem; border-radius:10px; background:#3b82f6; color:#fff; transition: transform .15s ease, filter .15s ease; }
+    .btn:hover { transform: translateY(-1px); filter: brightness(1.05); }
+    .hint { color:#b8bdcf; font-size:.75rem; margin-top:.75rem; }
   </style>
-
-  <!-- ✅ Firebase CDN knihovny -->
-  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
 </head>
-<body class="bg-terraria-darker text-white flex items-center justify-center min-h-screen">
+<body>
+  <div class="card">
+    <h1 class="text-xl mb-4">🔐 Sign in to QuantQuest</h1>
+    <p class="text-sm opacity-80 mb-6">Save your XP, levels, streak & progress.</p>
 
-  <div class="text-center p-6 bg-terraria-dark shadow-lg rounded">
-    <h1 class="text-3xl mb-6">Sign in to<br>QuantQuest</h1>
-    <button id="googleSignIn" class="bg-white text-black px-4 py-2 rounded hover:bg-gray-200 transition inline-flex items-center gap-2">
-      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" class="w-5 h-5">
+    <button id="googleSignIn" class="btn">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" class="w-5 h-5" />
       <span>Sign in with Google</span>
     </button>
+
+    <div class="hint">Popup opens once. After choosing your account you’ll land on your Account screen.</div>
   </div>
 
-  <script>
-    // ✅ Firebase konfigurace (nahraď svými údaji)
-   const firebaseConfig = {
-   apiKey: window.FIREBASE_API_KEY,
-    authDomain: "quant-25068.firebaseapp.com",
-  projectId: "quant-25068",
-  storageBucket: "quant-25068.firebasestorage.app",
-  messagingSenderId: "994280892133",
-  appId: "1:994280892133:web:d23746af3460f3300f960c",
-  measurementId: "G-1G0LNME5GH"
-};
-    // ✅ Inicializace Firebase
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
+  <!-- env.js MUSÍ být před firebase-init.js -->
+  <script src="env.js"></script>
 
-    // ✅ Google přihlášení
-    document.getElementById("googleSignIn").addEventListener("click", () => {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      auth.signInWithPopup(provider)
-        .then((result) => {
-          const user = result.user;
+  <script type="module">
+    import { auth, startGoogleSignIn } from './firebase-init.js';
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
-          // ✅ Uložení údajů uživatele
-          localStorage.setItem("current_user", JSON.stringify({
-            name: user.displayName,
-            email: user.email,
-            photo: user.photoURL,
-            uid: user.uid
-          }));
+    // Pokud už je přihlášen (cache), přesměruj bez klikání
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        console.log("🟢 onAuthStateChanged → user present on login.html:", user.uid);
+        setTimeout(() => (window.location.href = "account.html"), 10);
+      } else {
+        console.log("ℹ️ onAuthStateChanged → no user yet (login page)");
+      }
+    });
 
-          // ✅ Přesměrování na account.html
-          window.location.href = "account.html";
-        })
-        .catch((error) => {
-          alert("Chyba při přihlášení: " + error.message);
-          console.error(error);
-        });
+    // Volat přímo z click handleru (jinak může popup blokovat prohlížeč)
+    document.getElementById('googleSignIn').addEventListener('click', () => {
+      startGoogleSignIn();
     });
   </script>
-  <script src="env.js"></script>
-  <!-- Firebase Init -->
-<script type="module" src="firebase-init.js"></script>
-
-<!-- Auth Handler (zajistí rozpoznání přihlášeného uživatele) -->
-<script type="module" src="auth-handler.js"></script>
-
 </body>
 </html>

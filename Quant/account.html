@@ -1,128 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>QuantQuest | Account</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
   <style>
-    body {
-      font-family: 'Press Start 2P', monospace;
-      background-color: #1a1925;
-      color: white;
-    }
-    .section {
-      border: 2px solid #00ff99;
-      padding: 20px;
-      border-radius: 12px;
-      background-color: #2c2b3c;
-      margin: 10px;
-    }
-    .label {
-      font-size: 0.75rem;
-      color: #aaa;
-    }
-    .badge, .achievement {
-      background-color: #3b82f6;
-      padding: 6px 10px;
-      border-radius: 8px;
-      margin: 4px;
-      display: inline-block;
-      font-size: 12px;
-      color: white;
-    }
+    body { font-family:'Press Start 2P', monospace; background:#1a1925; color:#fff; }
+    .section { background:#2c2b3c; border:2px solid #00ff99; border-radius:14px; padding:18px; }
+    .badge,.achievement { background:#3b82f6; padding:6px 10px; border-radius:10px; margin:4px; display:inline-block; font-size:12px; }
+    .grid-wrap { display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:16px; max-width:1100px; margin:26px auto; padding:0 16px; }
   </style>
 </head>
 <body>
+  <header class="text-center pt-10">
+    <h1 class="text-2xl">🎮 My Account</h1>
+    <p class="opacity-70 text-xs mt-2">Welcome back, hero.</p>
+  </header>
 
-  <!-- Header -->
-  <div class="text-center mt-10 mb-6">
-    <h1 class="text-2xl text-white">🎮 My Account</h1>
-  </div>
+  <main class="grid-wrap">
+    <!-- User -->
+    <section class="section text-center">
+      <img id="user-photo" src="" class="w-24 h-24 rounded-full mx-auto mb-3 border-4 border-white" alt="Avatar" />
+      <h2 id="user-name" class="text-lg mb-1">User</h2>
+      <p id="user-email" class="text-xs opacity-70">email@example.com</p>
+    </section>
 
-  <!-- Flex Layout -->
-  <div class="flex flex-wrap justify-center gap-6 px-6">
+    <!-- Stats -->
+    <section class="section text-center">
+      <p>⚡ XP: <span id="xp" class="font-bold">0</span></p>
+      <p class="mt-2">📈 Level: <span id="level" class="font-bold">1</span></p>
+      <p class="mt-2">🔥 Streak: <span id="streak" class="font-bold">0</span></p>
+    </section>
 
-    <!-- LEFT: User Info -->
-    <div class="section w-full md:w-1/4 text-center">
-      <img id="user-photo" src="" alt="Avatar" class="rounded-full mx-auto w-24 h-24 mb-4 border-4 border-white">
-      <h2 id="user-name" class="text-xl mb-2">User Name</h2>
-      <p id="user-email" class="text-sm label">email@example.com</p>
-    </div>
-
-    <!-- CENTER: Stats -->
-    <div class="section w-full md:w-1/4 text-center">
-      <p class="text-white text-sm mb-2">XP: <span id="xp" class="text-lg font-bold">0</span></p>
-      <p class="text-white text-sm mb-2">Level: <span id="level" class="text-lg font-bold">1</span></p>
-      <p class="text-white text-sm">Streak: <span id="streak" class="text-lg font-bold">0🔥</span></p>
-    </div>
-
-    <!-- RIGHT: Badges + Achievements -->
-    <div class="section w-full md:w-1/4">
+    <!-- Badges + Achievements -->
+    <section class="section">
       <h3 class="text-center mb-2">🏅 Badges</h3>
-      <div id="badges" class="text-center">
-        <span class="badge">Beginner</span>
-        <span class="badge">Daily Streak</span>
-      </div>
+      <div id="badges" class="text-center"></div>
 
       <h3 class="text-center mt-4 mb-2">🎯 Achievements</h3>
-      <div id="achievements" class="text-center">
-        <span class="achievement">First Login</span>
-        <span class="achievement">Explorer</span>
-      </div>
-    </div>
-  </div>
+      <div id="achievements" class="text-center"></div>
+    </section>
+  </main>
 
-  <!-- Buttons -->
-  <div class="text-center mt-10 space-x-4">
-    <button onclick="window.location.href='index.html'" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-sm">🏠 Dashboard</button>
-    <button onclick="window.location.href='profile.html'" class="bg-yellow-600 hover:bg-yellow-700 px-4 py-2 rounded text-sm">⚙️ Profile Settings</button>
-    <button onclick="logout()" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-sm">🚪 Logout</button>
-  </div>
+  <footer class="text-center mt-6 pb-10">
+    <button id="toDashboard" class="px-4 py-2 rounded bg-blue-600 hover:bg-blue-700 text-sm">🏠 Dashboard</button>
+    <button id="logoutBtn" class="px-4 py-2 rounded bg-red-600 hover:bg-red-700 text-sm ml-2">🚪 Logout</button>
+  </footer>
 
-  <!-- Firebase Auth -->
+  <!-- env.js před modulem (kvůli API key) -->
+  <script src="env.js"></script>
+
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-    
-    const firebaseConfig = {
-   apiKey: window.FIREBASE_API_KEY,
-   authDomain: "quant-25068.firebaseapp.com",
-  projectId: "quant-25068",
-  storageBucket: "quant-25068.firebasestorage.app",
-  messagingSenderId: "994280892133",
-  appId: "1:994280892133:web:d23746af3460f3300f960c",
-  measurementId: "G-1G0LNME5GH"
-};
+    import { auth, getUserProgress, logoutUser } from './firebase-init.js';
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+    const $ = (id) => document.getElementById(id);
 
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        document.getElementById("user-name").textContent = user.displayName;
-        document.getElementById("user-email").textContent = user.email;
-        document.getElementById("user-photo").src = user.photoURL;
-      } else {
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
         window.location.href = "login.html";
+        return;
+      }
+      $("user-name").textContent  = user.displayName || "Unknown";
+      $("user-email").textContent = user.email || "";
+      $("user-photo").src         = user.photoURL || "";
+
+      const p = await getUserProgress(user.uid);
+      if (p) {
+        $("xp").textContent     = p.xp ?? 0;
+        $("level").textContent  = p.level ?? 1;
+        $("streak").textContent = p.streak ?? 0;
+
+        $("badges").innerHTML       = (p.badges ?? []).map(b => `<span class="badge">${b}</span>`).join("");
+        $("achievements").innerHTML = (p.achievements ?? []).map(a => `<span class="achievement">${a}</span>`).join("");
       }
     });
 
-    window.logout = function () {
-      signOut(auth).then(() => {
-        window.location.href = "login.html";
-      });
-    }
-  
+    $("toDashboard").addEventListener("click", () => (window.location.href = "index.html"));
+    $("logoutBtn").addEventListener("click", () => logoutUser());
   </script>
-  <script src="env.js"></script>
-  <!-- Firebase Init -->
-<script type="module" src="firebase-init.js"></script>
-
-<!-- Auth Handler (zajistí rozpoznání přihlášeného uživatele) -->
-<script type="module" src="auth-handler.js"></script>
-
-
 </body>
 </html>
