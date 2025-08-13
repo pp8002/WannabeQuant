@@ -2,8 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Lesson 1 – Vectors | QuantQuest</title>
-  <link rel="stylesheet" href="../../style.css">
+  <title>Lesson 1 – Vectors Mastery Checklist | QuantQuest</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -17,380 +16,172 @@
       --text-main: #ffffff;
       --text-dim: #cccccc;
     }
-    
     body {
       background-color: var(--bg-dark);
       color: var(--text-main);
       font-family: 'Roboto Mono', monospace;
       padding: 2rem;
-      line-height: 1.6;
       max-width: 1200px;
       margin: 0 auto;
+      line-height: 1.6;
     }
-    
-    h1, h2, h3, .header-font {
+    h1, h2, h3 {
       font-family: 'Press Start 2P', cursive;
       color: var(--primary);
+      margin-bottom: 1rem;
     }
-    
-    h1 { font-size: 2rem; margin-bottom: 1.5rem; }
-    h2 { font-size: 1.5rem; margin: 2rem 0 1rem; }
-    h3 { font-size: 1.2rem; margin: 1.5rem 0 0.8rem; }
-    
+    p.subtitle {
+      margin-bottom: 1.5rem;
+      font-size: 0.9rem;
+      color: var(--text-dim);
+      line-height: 1.6;
+    }
     .section {
       margin-bottom: 3rem;
+      border-left: 4px solid var(--primary);
       padding-left: 1.5rem;
-      border-left: 4px solid;
-      transition: all 0.3s ease;
     }
-    
-    .section:hover {
-      transform: translateX(5px);
-    }
-    
-    .section.orange { border-color: var(--secondary); }
-    .section.blue { border-color: #3399ff; }
-    .section.green { border-color: #00ff99; }
-    .section.purple { border-color: #cc66ff; }
-    .section.red { border-color: #ff6666; }
-    
     .card {
       background-color: var(--bg-light);
       border: 2px solid var(--primary);
       border-radius: 4px;
-      padding: 1.5rem;
-      margin: 1rem 0;
-      box-shadow: 0 4px 6px rgba(0, 255, 204, 0.1);
-    }
-    
-    .card.highlight {
-      border-color: var(--secondary);
-      background-color: #25294a;
-    }
-    
-    .math {
-      margin: 1rem 0;
       padding: 1rem;
-      background-color: rgba(0, 255, 204, 0.1);
-      border-radius: 4px;
-      overflow-x: auto;
-    }
-    
-    code {
-      font-family: 'Roboto Mono', monospace;
-      background-color: rgba(0, 255, 204, 0.2);
-      padding: 0.2rem 0.4rem;
-      border-radius: 3px;
-      color: var(--primary);
-    }
-    
-    .btn {
-      background-color: var(--primary);
-      color: #000;
-      padding: 0.8rem 1.5rem;
-      font-family: 'Press Start 2P', cursive;
-      border: none;
       margin-top: 1rem;
-      cursor: pointer;
-      font-size: 0.8rem;
-      transition: all 0.2s;
-      border-radius: 4px;
     }
-    
-    .btn:hover {
-      background-color: #00ffaa;
-      transform: translateY(-2px);
-      box-shadow: 0 2px 8px rgba(0, 255, 204, 0.4);
-    }
-    
-    .quiz-option {
-      display: block;
-      margin: 0.5rem 0;
-      padding: 0.8rem;
-      background-color: rgba(255, 204, 0, 0.1);
-      border: 1px solid var(--secondary);
-      border-radius: 4px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    
-    .quiz-option:hover {
-      background-color: rgba(255, 204, 0, 0.2);
-    }
-    
-    .task-list {
+    .checklist {
       list-style-type: none;
       padding-left: 0;
     }
-    
-    .task-item {
+    .checklist-item {
       padding: 0.8rem;
       margin: 0.5rem 0;
       background-color: rgba(20, 22, 50, 0.8);
       border-left: 3px solid var(--primary);
+      display: flex;
+      align-items: center;
+      transition: all 0.2s ease-in-out;
     }
-    
-    .task-item:hover {
-      background-color: rgba(20, 22, 50, 1);
+    .checklist-item input {
+      margin-right: 1rem;
+      cursor: pointer;
     }
-    
-    a {
-      color: var(--primary);
-      text-decoration: none;
-      border-bottom: 1px dotted var(--primary);
-      transition: all 0.2s;
+    .checklist-item:hover {
+      background-color: rgba(0, 255, 204, 0.1);
     }
-    
-    a:hover {
-      color: #00ffaa;
-      border-bottom: 1px solid #00ffaa;
+    .completed {
+      opacity: 0.7;
+      border-left-color: var(--secondary);
+      text-decoration: line-through;
     }
-    
-    /* Responsive adjustments */
-    @media (max-width: 768px) {
-      body {
-        padding: 1rem;
-      }
-      
-      h1 {
-        font-size: 1.5rem;
-      }
+    .project-card {
+      background-color: rgba(255, 204, 0, 0.1);
+      border: 2px dashed var(--secondary);
+      padding: 1rem;
+      margin: 1rem 0;
+    }
+    #mark-complete {
+      margin-top: 1.5rem;
+      padding: 0.8rem 1.5rem;
+      font-family: 'Press Start 2P', cursive;
+      font-size: 0.8rem;
+      color: var(--bg-dark);
+      background-color: var(--primary);
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+    }
+    #mark-complete:hover {
+      background-color: var(--secondary);
     }
   </style>
 </head>
 <body>
 
-  <header class="mb-8">
-    <h1 class="header-font">📘 Lesson 1: Vectors in Linear Algebra</h1>
-    <p>Welcome to your quant journey! Master vectors - the building blocks of financial models and algo trading systems.</p>
-  </header>
+  <h1>📋 Lesson 1: Vectors Mastery Checklist</h1>
+  <p class="subtitle">Complete all items to unlock portfolio optimization foundations.</p>
 
-  <div class="section orange">
-    <h2 class="header-font">🎯 Learning Goals</h2>
+  <!-- ✅ Core Theory -->
+  <div class="section">
+    <h2>✅ Core Theory</h2>
     <div class="card">
-      <ul class="task-list">
-        <li class="task-item">✓ Understand vector definition and coordinate form</li>
-        <li class="task-item">✓ Distinguish points from vectors</li>
-        <li class="task-item">✓ Master basic operations (addition, scalar multiplication)</li>
-        <li class="task-item">✓ Apply dot and cross products</li>
+      <ul class="checklist">
+        <li class="checklist-item"><input type="checkbox">Define vectors geometrically (magnitude + direction)</li>
+        <li class="checklist-item"><input type="checkbox">Explain vector vs. point distinction</li>
+        <li class="checklist-item"><input type="checkbox">Demonstrate vector addition geometrically (tip-to-tail)</li>
+        <li class="checklist-item"><input type="checkbox">Derive dot product formula: \( \vec{a} \cdot \vec{b} = \|\vec{a}\|\|\vec{b}\|\cosθ \)</li>
+        <li class="checklist-item"><input type="checkbox">Interpret cross product geometrically (area of parallelogram)</li>
       </ul>
     </div>
   </div>
 
-  <div class="section blue">
-    <h2 class="header-font">📖 Core Concepts</h2>
-    <div class="card">
-      <h3>Vector Definition</h3>
-      <p>A vector has <strong>magnitude</strong> (length) and <strong>direction</strong>:</p>
-      <div class="math">$$ \vec{v} = \begin{bmatrix} x \\ y \end{bmatrix} \quad \text{(2D)} \quad \text{or} \quad \vec{w} = \begin{bmatrix} x \\ y \\ z \end{bmatrix} \quad \text{(3D)} $$</div>
-      
-      <h3 class="mt-6">Key Operations</h3>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-        <div>
-          <h4>Addition</h4>
-          <div class="math">$$ \vec{a} + \vec{b} = \begin{bmatrix} a_x + b_x \\ a_y + b_y \end{bmatrix} $$</div>
-        </div>
-        <div>
-          <h4>Scalar Multiplication</h4>
-          <div class="math">$$ c \cdot \vec{v} = \begin{bmatrix} c v_x \\ c v_y \end{bmatrix} $$</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="section green">
-     <h3 class="mb-2 text-xl text-cyan-400">🧠 NumPy Implementation</h3>
-    <pre class="bg-[#0f172a] text-[#00ffcc] p-4 rounded-lg overflow-x-auto text-sm leading-relaxed border border-[#00ffcc] shadow-md">
-<code>import numpy as np
-
-# Create vectors
-v = np.array([2, 3])
-u = np.array([-1, 5])
-
-# Operations
-sum_vu = v + u          # [1, 8]
-scaled_v = 3 * v        # [6, 9]</code></pre>
-
-    <h3 class="mt-6 mb-2 text-xl text-cyan-400">📊 Visualization</h3>
-    <pre class="bg-[#0f172a] text-[#00ffcc] p-4 rounded-lg overflow-x-auto text-sm leading-relaxed border border-[#00ffcc] shadow-md">
-<code>import matplotlib.pyplot as plt
-
-plt.quiver(0, 0, v[0], v[1], angles='xy', scale_units='xy', scale=1, color='r')
-plt.quiver(0, 0, u[0], u[1], angles='xy', scale_units='xy', scale=1, color='b')
-plt.xlim(-2, 3)
-plt.ylim(0, 6)
-plt.grid()
-plt.show()</code></pre>
-
-  </div>
-</div>
-
-      
-  
-  <div class="section purple">
-    <h2 class="header-font">🧮 Dot & Cross Products</h2>
-    <div class="card highlight">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <h3>Dot Product</h3>
-          <div class="math">$$ \vec{a} \cdot \vec{b} = a_x b_x + a_y b_y $$</div>
-          <p class="mt-2">Measures vector alignment. Used in:</p>
-          <ul class="list-disc ml-5 mt-2">
-            <li>Angle calculations</li>
-            <li>Projections</li>
-            <li>Portfolio covariance</li>
-          </ul>
-        </div>
-        <div>
-          <h3>Cross Product (3D)</h3>
-          <div class="math">$$ \vec{a} \times \vec{b} = \begin{vmatrix} \hat{i} & \hat{j} & \hat{k} \\ a_x & a_y & a_z \\ b_x & b_y & b_z \end{vmatrix} $$</div>
-          <p class="mt-2">Finds perpendicular vector. Used in:</p>
-          <ul class="list-disc ml-5 mt-2">
-            <li>Area calculations</li>
-            <li>Torque computations</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="section red">
-    <h2 class="header-font">📈 Financial Applications</h2>
-    <div class="card">
-      <h3>Portfolio as Vectors</h3>
-      <p>Asset weights can be represented as vectors:</p>
-      <div class="math">$$ \text{Portfolio} = \begin{bmatrix} w_1 & w_2 & \cdots & w_n \end{bmatrix} $$</div>
-      
-      <h3 class="mt-6">Covariance Matrix</h3>
-      <p>Asset correlations relate to dot products of normalized return vectors:</p>
-      <div class="math">$$ \text{Cov}(X,Y) = \frac{\vec{X} \cdot \vec{Y}}{n} - \mu_X \mu_Y $$</div>
-    </div>
-  </div>
-
+  <!-- 💻 Coding Skills -->
   <div class="section">
-  <h2 class="header-font">🧠 Final Test – Vectors</h2>
-  <div class="card">
-
-    <!-- Question 1 -->
-    <div class="mb-8">
-      <h3 class="mb-2">1. Which of the following statements is <strong>always true</strong> for dot product?</h3>
-      <label class="quiz-option"><input type="radio" name="q1" onclick="checkAnswer('q1', 'A')"> A) \( \vec{a} \cdot \vec{b} = \|\vec{a}\|\|\vec{b}\| \)</label>
-      <label class="quiz-option"><input type="radio" name="q1" onclick="checkAnswer('q1', 'B')"> B) \( \vec{a} \cdot \vec{b} = 0 \) implies orthogonality</label>
-      <label class="quiz-option"><input type="radio" name="q1" onclick="checkAnswer('q1', 'C')"> C) Dot product always gives unit vector</label>
-      <p id="q1-result" class="mt-3 font-bold"></p>
-    </div>
-
-    <!-- Question 2 -->
-    <div class="mb-8">
-      <h3 class="mb-2">2. What is the projection of \( \vec{a} = [3, 4] \) onto \( \vec{b} = [4, 0] \)?</h3>
-      <label class="quiz-option"><input type="radio" name="q2" onclick="checkAnswer('q2', 'A')"> A) [3, 0]</label>
-      <label class="quiz-option"><input type="radio" name="q2" onclick="checkAnswer('q2', 'B')"> B) [4, 0]</label>
-      <label class="quiz-option"><input type="radio" name="q2" onclick="checkAnswer('q2', 'C')"> C) [2.4, 0]</label>
-      <p id="q2-result" class="mt-3 font-bold"></p>
-    </div>
-
-    <!-- Question 3 -->
-    <div class="mb-8">
-      <h3 class="mb-2">3. If \( \vec{u} = [1,2,3] \) and \( \vec{v} = [-1,0,1] \), what is \( \vec{u} \times \vec{v} \)?</h3>
-      <label class="quiz-option"><input type="radio" name="q3" onclick="checkAnswer('q3', 'A')"> A) [2, -4, 2]</label>
-      <label class="quiz-option"><input type="radio" name="q3" onclick="checkAnswer('q3', 'B')"> B) [2, -4, -2]</label>
-      <label class="quiz-option"><input type="radio" name="q3" onclick="checkAnswer('q3', 'C')"> C) [4, 2, -2]</label>
-      <p id="q3-result" class="mt-3 font-bold"></p>
-    </div>
-
-    <!-- Question 4 -->
-    <div class="mb-8">
-      <h3 class="mb-2">4. Which of the following sets of vectors is <strong>linearly dependent</strong>?</h3>
-      <label class="quiz-option"><input type="radio" name="q4" onclick="checkAnswer('q4', 'A')"> A) {[1,0], [0,1]}</label>
-      <label class="quiz-option"><input type="radio" name="q4" onclick="checkAnswer('q4', 'B')"> B) {[2,3], [4,6]}</label>
-      <label class="quiz-option"><input type="radio" name="q4" onclick="checkAnswer('q4', 'C')"> C) {[1,2], [2,3]}</label>
-      <p id="q4-result" class="mt-3 font-bold"></p>
-    </div>
-
-    <!-- Question 5 -->
-    <div class="mb-8">
-      <h3 class="mb-2">5. Which of the following is a valid application of the cross product?</h3>
-      <label class="quiz-option"><input type="radio" name="q5" onclick="checkAnswer('q5', 'A')"> A) Projecting one vector onto another</label>
-      <label class="quiz-option"><input type="radio" name="q5" onclick="checkAnswer('q5', 'B')"> B) Calculating the area of a parallelogram</label>
-      <label class="quiz-option"><input type="radio" name="q5" onclick="checkAnswer('q5', 'C')"> C) Calculating distance between points</label>
-      <p id="q5-result" class="mt-3 font-bold"></p>
-    </div>
-
-  </div>
-</div>
-
-<script>
-  function checkAnswer(question, selected) {
-    const answers = {
-      q1: "B",
-      q2: "A",
-      q3: "A",
-      q4: "B",
-      q5: "B"
-    };
-
-    const explanations = {
-      q1:"✅ Correct! Zero dot product means vectors are perpendicular (orthogonal). Option A is only true for parallel vectors, and C is incorrect as dot product returns a scalar.",
-  q2: "✅ Correct! Projection gives [3,0] along direction of b. Calculation: proj_b a = ((a·b)/(b·b)) * b = (12/16)*[4,0] = [3,0].",
-  q3: "✅ Correct! Cross product results in vector orthogonal to both. Calculation: u×v = [2*1-3*0, 3*(-1)-1*1, 1*0-2*(-1)] = [2,-4,2].",
-  q4: "✅ Correct! One vector is a multiple of the other → dependent. [4,6] = 2*[2,3], while other sets are linearly independent.",
-  q5: "✅ Correct! Cross product gives area of parallelogram. (A describes dot product projection, C uses vector subtraction)."
-    };
-
-    const result = document.getElementById(`${question}-result`);
-    
-    if (result) {
-      if (selected === answers[question]) {
-        result.innerHTML = explanations[question];
-        result.style.color = "#00ff99";
-      } else {
-        result.innerHTML = "❌ Incorrect. Try again.";
-        result.style.color = "#ff6666";
-      }
-    }
-  }
-</script>
-
-
-
-
-  <div class="section">
-    <h2 class="header-font">🚀 Next Steps</h2>
+    <h2>💻 Coding Skills</h2>
     <div class="card">
-      <h3>Recommended Resources</h3>
-      <ul class="list-disc ml-5 mt-2">
-        <li><a href="https://geogebra.org/vectors" target="_blank">Interactive Vector Visualizer</a></li>
-        <li><a href="https://numpy.org/doc/stable/reference/arrays.html" target="_blank">NumPy Arrays Documentation</a></li>
-        <li>3Blue1Brown: <em>Essence of Linear Algebra</em> (YouTube)</li>
+      <ul class="checklist">
+        <li class="checklist-item"><input type="checkbox">Create vectors in NumPy: <code>v = np.array([1, 2, 3])</code></li>
+        <li class="checklist-item"><input type="checkbox">Implement vector operations (+, -, scalar *)</li>
+        <li class="checklist-item"><input type="checkbox">Calculate dot product: <code>np.dot(a, b)</code></li>
+        <li class="checklist-item"><input type="checkbox">Compute cross product (3D): <code>np.cross(a, b)</code></li>
+        <li class="checklist-item"><input type="checkbox">Visualize vectors with matplotlib quiver plots</li>
       </ul>
-      
-      <h3 class="mt-6">Practice Projects</h3>
-      <ol class="list-decimal ml-5 mt-2">
-        <li>Build a portfolio optimizer using vector operations</li>
-        <li>Create a vector field visualization of market forces</li>
+    </div>
+  </div>
+
+  <!-- 📈 Financial Applications -->
+  <div class="section">
+    <h2>📈 Financial Applications</h2>
+    <div class="card">
+      <div class="project-card">
+        <h3>Project 1: Portfolio as Vector</h3>
+        <p>Represent a 3-asset portfolio as a vector of weights:</p>
+<pre><code>weights = np.array([0.5, 0.3, 0.2])  # 50% AAPL, 30% MSFT, 20% TSLA</code></pre>
+      </div>
+      <div class="project-card">
+        <h3>Project 2: Covariance as Dot Product</h3>
+        <p>Compute asset covariance from returns:</p>
+<pre><code>returns_a = np.random.normal(0.1, 0.2, 100)
+returns_b = np.random.normal(0.1, 0.15, 100)
+covariance = np.dot(returns_a - mean_a, returns_b - mean_b) / (len(returns_a) - 1)</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🧠 Knowledge Check -->
+  <div class="section">
+    <h2>🧠 Knowledge Check – Advanced Level</h2>
+    <div class="card">
+      <ol class="list-decimal pl-6 space-y-4">
+        <li>Given two non-collinear vectors in ℝ³, derive the explicit formula for the vector projection of one onto the other using only the axioms of an inner product space.</li>
+        <li>Prove that if \( \mathbf{a} \cdot \mathbf{b} = 0 \) and \( \|\mathbf{a}\| = \|\mathbf{b}\| \), then \( \mathbf{a} + \mathbf{b} \) is orthogonal to \( \mathbf{a} - \mathbf{b} \).</li>
+        <li>Let \( \mathbf{u}, \mathbf{v}, \mathbf{w} \in \mathbb{R}^3 \). Show that \( (\mathbf{u} \times \mathbf{v}) \cdot \mathbf{w} \) equals the volume of the parallelepiped they form, and determine the sign based on orientation.</li>
+        <li>Given \( \mathbf{x} \in \mathbb{R}^n \) and a symmetric positive-definite matrix \( A \), prove that \( \langle \mathbf{x}, \mathbf{y} \rangle_A = \mathbf{x}^\top A \mathbf{y} \) defines an inner product and interpret \( \| \mathbf{x} \|_A \) geometrically.</li>
+        <li>Show that in ℝ², any rotation matrix \( R(\theta) \) can be represented as \( \cos\theta\,I + \sin\theta\,J \), where \( J \) is the matrix representing a +90° rotation, and use this to prove that rotations preserve the dot product.</li>
       </ol>
-      
-      <button id="mark-complete" class="btn mt-6">Mark Lesson Complete</button>
-
     </div>
   </div>
 
-  <script>
-   
-        
-    function showSolution() {
-      document.getElementById('solution').classList.toggle('hidden');
-    }
-    
-    // Mobile menu toggle would go here
-  </script>
-  <script>
-  const currentLessonId = "math1_lesson1";  // ← změň číslo lekce podle souboru
-  const XP_REWARD = 150;                   // ← volitelně změň odměnu za lekci
-</script>
-<script type="module" src="/complete.js"></script>
+  <!-- 🚀 Completion Rewards -->
+  <div class="section">
+    <h2>🚀 Completion Rewards</h2>
+    <div class="card">
+      <ul>
+        <li>🔓 Unlock: <strong>Matrix Algebra</strong> (Lesson 2)</li>
+        <li>💼 Portfolio: <strong>Vector Operations Certificate</strong></li>
+        <li>⚡ XP: <strong>150 points</strong></li>
+      </ul>
+      <button id="mark-complete">Mark Lesson Complete</button>
+    </div>
+  </div>
 
+  <script src="complete.js"></script>
+  <script>
+    // Toggle completed state on checklist
+    document.querySelectorAll('.checklist-item input').forEach(item => {
+      item.addEventListener('change', function() {
+        this.parentNode.classList.toggle('completed', this.checked);
+      });
+    });
+  </script>
 </body>
 </html>
-
-

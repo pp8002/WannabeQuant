@@ -8,78 +8,117 @@
   <link rel="stylesheet" href="style.css" />
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
+  <style>
+    body {
+      background-color: #0d0d1a;
+      background-image: url('assets/pixel-bg.png');
+      background-size: cover;
+      background-repeat: repeat;
+      font-family: 'Press Start 2P', cursive;
+    }
+    .login-card {
+      border: 2px solid #00fff2;
+      box-shadow: 0 0 10px #00fff2;
+    }
+    .retro-btn {
+      border: 2px solid;
+      padding: 0.5rem 1rem;
+      transition: all 0.2s ease;
+    }
+    .retro-btn-green {
+      border-color: #00fff2;
+      color: #00fff2;
+    }
+    .retro-btn-green:hover {
+      background-color: #00fff2;
+      color: #0d0d1a;
+    }
+    .retro-btn-red {
+      border-color: #ff4d4d;
+      color: #ff4d4d;
+    }
+    .retro-btn-red:hover {
+      background-color: #ff4d4d;
+      color: #0d0d1a;
+    }
+    .retro-input {
+      background-color: transparent;
+      border: 2px solid #00fff2;
+      padding: 0.5rem;
+      width: 100%;
+      color: white;
+    }
+    .retro-input:focus {
+      outline: none;
+      box-shadow: 0 0 10px #00fff2;
+    }
+  </style>
 </head>
-<body class="bg-terraria-darker text-white min-h-screen flex flex-col items-center justify-center">
+<body class="min-h-screen flex flex-col items-center justify-center text-white">
 
-  <div class="bg-terraria-dark p-8 rounded-lg shadow-lg max-w-md w-full text-center">
-    <h1 class="text-3xl font-bold pixel-font text-terraria-green mb-6">Sign in to QuantQuest</h1>
+  <div class="login-card bg-terraria-dark p-8 rounded-lg shadow-lg max-w-md w-full text-center">
+    <h1 class="text-2xl mb-6">🔑 Sign in to QuantQuest</h1>
     
-    <button id="googleLoginBtn" class="bg-white text-black px-4 py-2 rounded shadow-lg hover:bg-gray-200">
-  <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="inline w-6 mr-2" alt="Google" />
-  Sign in with Google
-</button>
-<div class="text-left mt-6">
-  <p id="profileXP" class="text-yellow-400">XP: 0</p>
-  <p id="profileLevel" class="text-green-400">Level 1</p>
-  <p id="profileStreak" class="text-pink-400">Streak: 0🔥</p>
-</div>
+    <button id="googleLoginBtn" class="retro-btn retro-btn-green w-full flex items-center justify-center space-x-2 mb-6">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="inline w-6" alt="Google" />
+      <span>Sign in with Google</span>
+    </button>
 
-<div class="mt-6">
-  <label class="block text-sm mb-2" for="profileName">Username:</label>
-  <input id="profileName" type="text" class="w-full p-2 rounded bg-gray-700 text-white" />
-</div>
+    <div class="text-left mb-6">
+      <p id="profileXP" class="text-yellow-400">⚡ XP: 0</p>
+      <p id="profileLevel" class="text-green-400">📈 Level 1</p>
+      <p id="profileStreak" class="text-pink-400">🔥 Streak: 0</p>
+    </div>
 
-<div class="mt-4 flex justify-between">
-  <button id="saveProfileBtn" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">Save</button>
-  <button id="logoutBtn" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded">Logout</button>
-</div>
+    <div class="mb-4 text-left">
+      <label for="profileName" class="block mb-2">Username:</label>
+      <input id="profileName" type="text" class="retro-input" />
+    </div>
 
+    <div class="flex justify-between">
+      <button id="saveProfileBtn" class="retro-btn retro-btn-green">💾 Save</button>
+      <button id="logoutBtn" class="retro-btn retro-btn-red">📕 Logout</button>
+    </div>
   </div>
 
- <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-  import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
-   const firebaseConfig = {
-   apiKey: window.FIREBASE_API_KEY,
-     authDomain: "quant-25068.firebaseapp.com",
-  projectId: "quant-25068",
-  storageBucket: "quant-25068.firebasestorage.app",
-  messagingSenderId: "994280892133",
-  appId: "1:994280892133:web:d23746af3460f3300f960c",
-  measurementId: "G-1G0LNME5GH"
-};
+    const firebaseConfig = {
+      apiKey: window.FIREBASE_API_KEY,
+      authDomain: "quant-25068.firebaseapp.com",
+      projectId: "quant-25068",
+      storageBucket: "quant-25068.firebasestorage.app",
+      messagingSenderId: "994280892133",
+      appId: "1:994280892133:web:d23746af3460f3300f960c",
+      measurementId: "G-1G0LNME5GH"
+    };
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const provider = new GoogleAuthProvider();
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
 
-  // Přihlášení pomocí Google (tlačítko nebo automatické volání)
-  const loginBtn = document.getElementById("googleLoginBtn");
+    const loginBtn = document.getElementById("googleLoginBtn");
 
-  if (loginBtn) {
-    loginBtn.addEventListener("click", async () => {
-      try {
-        const result = await signInWithPopup(auth, provider);
-        const user = result.user;
-        console.log("✅ Přihlášen:", user.displayName);
+    if (loginBtn) {
+      loginBtn.addEventListener("click", async () => {
+        try {
+          const result = await signInWithPopup(auth, provider);
+          const user = result.user;
+          console.log("✅ Přihlášen:", user.displayName);
 
-        // Uložení do localStorage
-        localStorage.setItem("current_user", user.displayName);
+          localStorage.setItem("current_user", user.displayName);
+          window.location.href = 'login.html';
+        } catch (error) {
+          console.error("❌ Chyba při přihlášení:", error.message);
+        }
+      });
+    }
+  </script>
 
-        // Přesměrování na account
-        window.location.href = 'login.html';
-      } catch (error) {
-        console.error("❌ Chyba při přihlášení:", error.message);
-      }
-    });
-  }
-</script>
-
-  <!-- Scripts -->
-   <script src="env.js"></script>
-  <script type="module" src="script.js"></script>
+  <script src="env.js"></script>
+  <script type="module" src="firebase-init.js"></script>
   <script type="module" src="profile.js"></script>
-  
 </body>
 </html>

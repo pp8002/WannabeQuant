@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Lesson 4 – Eigenvalues & Eigenvectors | QuantQuest</title>
+  <title>Lesson 3 – Determinants & Inversion | QuantQuest</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -11,11 +11,11 @@
     :root {
       --primary: #00ffcc;
       --secondary: #ffcc00;
-      --accent: #00aaff;
       --bg-dark: #0b0c2a;
       --bg-light: #141632;
       --text-main: #ffffff;
       --text-dim: #cccccc;
+      --danger: #ff4444;
     }
     body {
       background-color: var(--bg-dark);
@@ -37,194 +37,500 @@
     }
     .card {
       background-color: var(--bg-light);
-      border: 2px solid var(--accent);
+      border: 2px solid var(--primary);
       border-radius: 6px;
       padding: 1.2rem;
       margin-top: 1rem;
+      box-shadow: 0 0 12px rgba(0, 255, 204, 0.15);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
-    .math {
-      background: rgba(0,255,204,0.08);
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 0 18px rgba(0, 255, 204, 0.3);
+    }
+    .checklist {
+      list-style-type: none;
+      padding-left: 0;
+    }
+    .checklist-item {
+      padding: 0.8rem;
+      margin: 0.5rem 0;
+      background-color: rgba(20, 22, 50, 0.8);
+      border-left: 3px solid var(--primary);
+      display: flex;
+      align-items: center;
+      transition: background-color 0.2s;
+    }
+    .checklist-item input {
+      margin-right: 1rem;
+      width: 20px;
+      height: 20px;
+    }
+    .checklist-item:hover {
+      background-color: rgba(0, 255, 204, 0.05);
+    }
+    .completed {
+      opacity: 0.7;
+      border-left-color: var(--secondary);
+      text-decoration: line-through;
+    }
+    .project-card {
+      background-color: rgba(255, 204, 0, 0.1);
+      border: 2px dashed var(--secondary);
       padding: 1rem;
       margin: 1rem 0;
-      border-left: 4px solid var(--accent);
-      border-radius: 4px;
+    }
+    .matrix-grid {
+      display: inline-grid;
+      grid-template-columns: repeat(3, auto);
+      gap: 0.5rem;
+      padding: 0.4rem 0.8rem;
+      background-color: rgba(0, 255, 204, 0.05);
+      border: 1px solid var(--primary);
+    }
+    .matrix-cell {
+      min-width: 2rem;
+      text-align: center;
+    }
+    .warning {
+      color: var(--secondary);
+      border-left: 3px solid var(--secondary);
+      padding-left: 1rem;
+      margin: 1rem 0;
+    }
+    .danger-warning {
+      color: var(--danger);
+      border-left: 3px solid var(--danger);
+      padding-left: 1rem;
+      margin: 1rem 0;
     }
     .btn {
       background-color: var(--primary);
-      color: #000;
-      padding: 1rem;
+      padding: 0.6rem 1.2rem;
+      border: none;
       font-family: 'Press Start 2P', cursive;
       cursor: pointer;
-      border-radius: 4px;
-      display: inline-block;
-      margin-top: 2rem;
+      margin-top: 1rem;
+      transition: background-color 0.2s;
     }
-    label {
-      display: block;
-      margin: 0.6rem 0;
+    .btn:hover {
+      background-color: var(--secondary);
+      color: var(--bg-dark);
     }
-    .quiz-block {
-      margin-bottom: 2rem;
+    /* Hidden solution style */
+    .hidden-solution {
+      display: none;
+      margin-top: 1rem;
+      padding: 1rem;
+      background-color: rgba(0, 255, 204, 0.1);
+      border-left: 3px solid var(--secondary);
     }
-    .quiz-block h3 {
-      color: var(--secondary);
-      margin-bottom: 0.5rem;
+    .solution-btn {
+      margin-top: 0.5rem;
+      background-color: rgba(255, 204, 0, 0.2);
+      padding: 0.4rem 1rem;
+      border: none;
+      font-family: 'Press Start 2P', cursive;
+      cursor: pointer;
+    }
+    .solution-btn:hover {
+      background-color: rgba(255, 204, 0, 0.4);
     }
   </style>
 </head>
 <body>
 
-  <h1>📘 Lesson 4: Eigenvalues & Eigenvectors</h1>
-  <p class="text-dim mt-2">The foundation of PCA, risk modeling, and factor-based investing.</p>
+  <h1>📋 Lesson 3: Determinants & Inversion</h1>
+  <p>Master the gatekeepers of matrix algebra for robust quant models.</p>
 
+  <!-- Core Theory -->
   <div class="section">
-    <h2>🎯 Learning Goals</h2>
+    <h2>✅ Core Theory</h2>
     <div class="card">
-      <ul class="list-disc ml-6">
-        <li>Understand eigen-decomposition</li>
-        <li>Interpret eigenvalues in financial models</li>
-        <li>Apply PCA to reduce dimensionality</li>
-        <li>Use eigenvectors for factor-based risk analysis</li>
+      <ul class="checklist">
+        <li class="checklist-item"><input type="checkbox" id="theory1"><label for="theory1">Calculate 2x2 determinant: <span class="matrix-grid"><span class="matrix-cell">a</span><span class="matrix-cell">b</span><span class="matrix-cell">c</span><span class="matrix-cell">d</span></span> = ad - bc</label></li>
+        <li class="checklist-item"><input type="checkbox" id="theory2"><label for="theory2">Apply Sarrus' rule for 3x3 determinants</label></li>
+        <li class="checklist-item"><input type="checkbox" id="theory3"><label for="theory3">Prove: \( \det(AB) = \det(A)\det(B) \)</label></li>
+        <li class="checklist-item"><input type="checkbox" id="theory4"><label for="theory4">Interpret determinant as volume scaling factor</label></li>
       </ul>
+      <div class="warning">⚠️ <strong>Quant Pitfall:</strong> Near-zero determinants cause numerical instability in portfolio optimization.</div>
     </div>
   </div>
 
+  <!-- Coding Skills -->
   <div class="section">
-    <h2>📖 Core Concepts</h2>
+    <h2>💻 Coding Skills</h2>
     <div class="card">
-      <h3>Definition</h3>
-      <p>If \( A \vec{v} = \lambda \vec{v} \), then \( \vec{v} \) is an eigenvector of matrix \( A \), and \( \lambda \) is the eigenvalue.</p>
-      <div class="math">$$ A\vec{v} = \lambda \vec{v} $$</div>
-
-      <h3>Characteristic Equation</h3>
-      <p>To find eigenvalues, solve:</p>
-      <div class="math">$$ \det(A - \lambda I) = 0 $$</div>
-
-      <h3>Diagonalization</h3>
-      <p>If A has a full set of eigenvectors, then:</p>
-      <div class="math">$$ A = Q\Lambda Q^{-1} $$</div>
+      <ul class="checklist">
+        <li class="checklist-item"><input type="checkbox" id="code1"><label for="code1">Compute determinants: <code>np.linalg.det(A)</code></label></li>
+        <li class="checklist-item"><input type="checkbox" id="code2"><label for="code2">Check matrix invertibility: <code>if not np.isclose(np.linalg.det(A), 0)</code></label></li>
+        <li class="checklist-item"><input type="checkbox" id="code3"><label for="code3">Implement manual 2x2/3x3 determinant calculation</label></li>
+        <li class="checklist-item"><input type="checkbox" id="code4"><label for="code4">Handle singular matrices with try-catch blocks</label></li>
+      </ul>
+      <pre><code># Safe matrix inversion
+def safe_inverse(A):
+    if np.abs(np.linalg.det(A)) < 1e-10:
+        raise ValueError("Near-singular matrix detected")
+    return np.linalg.inv(A)</code></pre>
     </div>
   </div>
 
-  <div class="section">
-    <h2>💻 Try It Yourself (Python)</h2>
-    <div class="card">
-<pre><code>import numpy as np
-
-cov_matrix = np.array([[0.04, 0.02], [0.02, 0.09]])
-eigenvalues, eigenvectors = np.linalg.eig(cov_matrix)
-
-print("Eigenvalues:", eigenvalues)
-print("Eigenvectors:\n", eigenvectors)
-
-explained = eigenvalues / np.sum(eigenvalues)
-print("Explained Variance:", explained)</code></pre>
-    </div>
-  </div>
-
+  <!-- Financial Applications -->
   <div class="section">
     <h2>📈 Financial Applications</h2>
     <div class="card">
-      <h3>1. PCA in Finance</h3>
-      <p>Eigenvalues represent variance explained by each principal component in returns:</p>
-      <div class="math">$$ \text{Returns} = \sum \lambda_i \vec{v}_i $$</div>
+      <div class="project-card">
+        <h3>Project 1: Portfolio Optimization Safeguards</h3>
+        <p>Protect Markowitz optimizer from singular matrices:</p>
+        <pre><code>def robust_portfolio_weights(cov_matrix):
+    if np.linalg.cond(cov_matrix) > 1e12:
+        return np.ones(len(cov_matrix))/len(cov_matrix)
+    return np.linalg.inv(cov_matrix) @ np.ones(len(cov_matrix))</code></pre>
+        <ul class="checklist">
+          <li class="checklist-item"><input type="checkbox" id="project1-1"><label for="project1-1">Implement condition number check</label></li>
+          <li class="checklist-item"><input type="checkbox" id="project1-2"><label for="project1-2">Test with degenerate covariance matrices</label></li>
+        </ul>
+      </div>
 
-      <h3>2. Risk Factor Modeling</h3>
-      <p>Dominant eigenvectors show key market risk directions (systematic risk).</p>
-
-      <h3>3. Portfolio Optimization</h3>
-      <p>Use top eigenvectors to construct minimum-variance or max-sharpe portfolios:</p>
-      <div class="math">$$ \text{Optimal Weights} \propto \vec{v}_1 $$</div>
+      <div class="project-card">
+        <h3>Project 2: Jacobian Determinant in Risk Transforms</h3>
+        <pre><code>def transform_pdf(X, Y, jacobian):
+    return X.pdf(Y) * np.abs(np.linalg.det(jacobian))</code></pre>
+        <ul class="checklist">
+          <li class="checklist-item"><input type="checkbox" id="project2-1"><label for="project2-1">Implement Black-Scholes to Local Vol transform</label></li>
+          <li class="checklist-item"><input type="checkbox" id="project2-2"><label for="project2-2">Visualize density distortion</label></li>
+        </ul>
+      </div>
     </div>
   </div>
 
+  <!-- Knowledge Validation -->
   <div class="section">
-    <h2>🧠 Knowledge Check</h2>
+    <h2>🧠 Knowledge Validation</h2>
     <div class="card">
-
-      <div class="quiz-block">
-        <h3>1. What equation defines eigenvalues of a matrix A?</h3>
-        <label><input type="radio" name="q1" onclick="checkAnswer('q1', 'B')"> A) \( A^2 = I \)</label>
-        <label><input type="radio" name="q1" onclick="checkAnswer('q1', 'B')"> B) \( \det(A - \lambda I) = 0 \)</label>
-        <label><input type="radio" name="q1" onclick="checkAnswer('q1', 'C')"> C) \( A + \lambda I = 0 \)</label>
-        <p id="q1-result"></p>
-      </div>
-
-      <div class="quiz-block">
-        <h3>2. Which eigenvalue corresponds to the principal component in PCA?</h3>
-        <label><input type="radio" name="q2" onclick="checkAnswer('q2', 'C')"> A) The smallest one</label>
-        <label><input type="radio" name="q2" onclick="checkAnswer('q2', 'C')"> B) The average of all eigenvalues</label>
-        <label><input type="radio" name="q2" onclick="checkAnswer('q2', 'C')"> C) The largest one</label>
-        <p id="q2-result"></p>
-      </div>
-
-      <div class="quiz-block">
-        <h3>3. If eigenvalue = 0, what does this tell you?</h3>
-        <label><input type="radio" name="q3" onclick="checkAnswer('q3', 'A')"> A) Matrix is not full rank (singular)</label>
-        <label><input type="radio" name="q3" onclick="checkAnswer('q3', 'B')"> B) Matrix is orthogonal</label>
-        <label><input type="radio" name="q3" onclick="checkAnswer('q3', 'C')"> C) Eigenvectors are complex</label>
-        <p id="q3-result"></p>
-      </div>
-
-      <button class="btn" onclick="showAllAnswers()">Reveal Answers</button>
-    </div>
-  </div>
-
-  <div class="section">
-    <h2>🚀 Next Steps</h2>
-    <div class="card">
-      <h3>Recommended Resources</h3>
-      <ul>
-        <li><a href="https://numpy.org/doc/stable/reference/generated/numpy.linalg.eig.html" target="_blank">NumPy eig() docs</a></li>
-        <li><a href="https://math.stackexchange.com/questions/tagged/eigenvalues-eigenvectors" target="_blank">StackExchange on Eigen</a></li>
+      <ul class="checklist">
+        <li class="checklist-item"><input type="checkbox" id="quiz1"><label for="quiz1">Diagnose why a portfolio optimizer failed (singular matrix case)</label></li>
+        <li class="checklist-item"><input type="checkbox" id="quiz2"><label for="quiz2">Compute 3x3 determinant manually for given matrix</label></li>
+        <li class="checklist-item"><input type="checkbox" id="quiz3"><label for="quiz3">Submit GitHub repo with robust covariance estimator</label></li>
       </ul>
+    </div>
+  </div>
+<div class="section">
+  <h2>🔥 Quant-Level Final Challenges</h2>
+  <div class="warning">
+    ⚠️ Warning: These simulate real quant interview problems. Expect difficulty spikes.
+  </div>
 
-      <h3>Try This:</h3>
-      <ol>
-        <li>Perform PCA on a 10-asset return matrix</li>
-        <li>Visualize the top 2 eigenvectors</li>
-        <li>Use them to build a factor-mimicking portfolio</li>
-      </ol>
+  <!-- Challenge 1 -->
+  <div class="challenge-block">
+    <h3>Challenge 1: Singular Covariance Crisis</h3>
+    <p>Given this degenerate covariance matrix of asset returns:</p>
+    <div class="math">
+      $$
+      \Sigma = \begin{bmatrix}
+      0.04 & 0.02 & 0.04 \\
+      0.02 & 0.01 & 0.02 \\
+      0.04 & 0.02 & 0.04
+      \end{bmatrix}
+      $$
+    </div>
+    <ul class="checklist">
+      <li>✅ <strong>Prove</strong> singularity without computing det(Σ)</li>
+      <li>✅ <strong>Modify</strong> Σ to make it positive definite while minimizing distortion</li>
+    </ul>
+    <button class="solution-btn" data-target="solution1">📂 Reveal Solution</button>
+    <div id="solution1" class="solution-box">
+<pre><code># Proof: Row 3 = 2 × Row 2 → Linear dependence → det(Σ) = 0
 
-      <button class="btn" id="mark-complete">Mark Lesson Complete</button>
+# Correction using eigenvalue clipping:
+import numpy as np
+def fix_covariance(cov_matrix, epsilon=1e-5):
+    eigvals, eigvecs = np.linalg.eigh(cov_matrix)
+    eigvals = np.where(eigvals < epsilon, epsilon, eigvals)
+    return eigvecs @ np.diag(eigvals) @ eigvecs.T
+</code></pre>
+      <p><strong>Key Insight:</strong> Detect singularity via linear dependence without determinant computation.</p>
     </div>
   </div>
 
-  <script>
-    const answers = {
-      q1: { correct: "B", explanation: "✅ Correct! Eigenvalues solve det(A - λI) = 0." },
-      q2: { correct: "C", explanation: "✅ Correct! The largest eigenvalue captures most variance in PCA." },
-      q3: { correct: "A", explanation: "✅ Correct! Zero eigenvalue means the matrix is singular (non-invertible)." }
-    };
+  <!-- Challenge 2 -->
+  <div class="challenge-block">
+    <h3>Challenge 2: Determinant Intuition Test</h3>
+    <p>For a 100x100 covariance matrix of S&amp;P 500 stocks:</p>
+    <ul class="checklist">
+      <li>✅ <strong>Estimate</strong> log(det(Σ)) within 10% error without full computation</li>
+      <li>✅ <strong>Explain</strong> why det(Σ) ≈ 0 even if no two assets are perfectly correlated</li>
+    </ul>
+    <button class="solution-btn" data-target="solution2">📂 Reveal Solution</button>
+    <div id="solution2" class="solution-box">
+<pre><code># Estimation technique using eigenvalue decay:
+# 1. Take random sample of 10 eigenvalues
+# 2. Compute mean log(λ) and extrapolate:
+log_det_estimate = n * np.mean(np.log(sampled_eigvals))
 
-    function checkAnswer(question, selected) {
-      const result = document.getElementById(`${question}-result`);
-      const answer = answers[question];
-      if (selected === answer.correct) {
-        result.innerHTML = answer.explanation;
-        result.style.color = "#00ff99";
+# Explanation:
+# High-dimensional curse — product of many λ ≈ 0 
+# even if each correlation < 1 → determinant collapses.
+</code></pre>
+      <p><strong>Quant Trick:</strong> Use random matrix theory to pre-approximate determinant scaling.</p>
+    </div>
+  </div>
+
+  <!-- Challenge 3 -->
+  <div class="challenge-block">
+    <h3>Challenge 3: Numerical Stability Nightmare</h3>
+<pre><code># Broken portfolio optimizer
+def optimize(returns):
+    cov = np.cov(returns.T)
+    inv_cov = np.linalg.inv(cov)  # Crashes often!
+    return inv_cov @ np.ones(len(cov))
+</code></pre>
+    <ul class="checklist">
+      <li>✅ <strong>Diagnose</strong> 3 hidden numerical risks (beyond det=0)</li>
+      <li>✅ <strong>Rewrite</strong> using SVD with condition number thresholding</li>
+    </ul>
+    <button class="solution-btn" data-target="solution3">📂 Reveal Solution</button>
+    <div id="solution3" class="solution-box">
+<pre><code># Hidden Risks:
+# 1. Floating-point errors in np.cov() with small eigenvalues
+# 2. Ill-conditioning when λ_max/λ_min > 1e16
+# 3. Numerical instability in weight normalization
+
+# Robust version:
+def robust_optimize(returns, cond_thresh=1e8):
+    cov = np.cov(returns.T)
+    U, s, Vh = np.linalg.svd(cov)
+    s_inv = np.where(s/s.max() > 1/cond_thresh, 1/s, 0)
+    return Vh.T @ (np.diag(s_inv) @ (U.T @ np.ones(len(cov))))
+</code></pre>
+      <p><strong>Pro Tip:</strong> Always check condition number before inversion.</p>
+    </div>
+  </div>
+</div>
+
+<style>
+.section {
+  margin-bottom: 2rem;
+}
+.warning {
+  background-color: rgba(255, 0, 0, 0.1);
+  border-left: 3px solid red;
+  padding: 0.8rem;
+  margin-bottom: 1.5rem;
+  color: red;
+  font-weight: bold;
+}
+.challenge-block {
+  border: 1px dashed yellow;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+.checklist {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.solution-btn {
+  margin-top: 0.5rem;
+  background-color: gold;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+.solution-box {
+  display: none;
+  background: rgba(0,255,204,0.05);
+  border-left: 3px solid cyan;
+  padding: 0.8rem;
+  margin-top: 1rem;
+  overflow: hidden;
+  transition: max-height 0.4s ease-out, opacity 0.4s ease-out;
+  max-height: 0;
+  opacity: 0;
+}
+.solution-box.show {
+  display: block;
+  max-height: 800px;
+  opacity: 1;
+}
+</style>
+  <script>
+    const requiredItems = {
+      'project1-1': true,
+      'project1-2': true,
+      'project2-1': true
+    };
+    document.querySelectorAll('.checklist-item input').forEach(item => {
+      item.addEventListener('change', function() {
+        this.parentNode.classList.toggle('completed', this.checked);
+        checkCompletion();
+      });
+    });
+    function checkCompletion() {
+      let allComplete = true;
+      Object.keys(requiredItems).forEach(id => {
+        if (!document.getElementById(id).checked) {
+          allComplete = false;
+        }
+      });
+      const btn = document.getElementById('completeBtn');
+      const warning = document.getElementById('warningMsg');
+      if (allComplete) {
+        btn.style.backgroundColor = 'var(--secondary)';
+        btn.textContent = "🚀 Launch Eigen Decomposition!";
+        warning.style.display = 'none';
       } else {
-        result.innerHTML = "❌ Incorrect. Try again!";
-        result.style.color = "#ff6666";
+        btn.style.backgroundColor = 'var(--primary)';
+        btn.textContent = "Complete Required Items First";
+        warning.style.display = 'block';
       }
     }
-
-    function showAllAnswers() {
-      Object.keys(answers).forEach(q => {
-        const answer = answers[q];
-        const result = document.getElementById(`${q}-result`);
-        result.innerHTML = answer.explanation;
-        result.style.color = "#00ff99";
+    checkCompletion();
+    document.querySelectorAll('.solution-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const target = this.getAttribute('data-target');
+        const solution = document.getElementById(target);
+        solution.style.display = solution.style.display === 'block' ? 'none' : 'block';
+        this.textContent = solution.style.display === 'block' ? 'Hide Solution' : 'Reveal Solution';
       });
-    }
+    });
   </script>
+  <style>
+.solution-box {
+  display: none;
+  background: rgba(0,255,204,0.05);
+  border-left: 3px solid cyan;
+  padding: 0.8rem;
+  margin-top: 1rem;
+  overflow: hidden;
+  transition: max-height 0.4s ease-out, opacity 0.4s ease-out;
+  max-height: 0;
+  opacity: 0;
+}
+.solution-box.show {
+  display: block;
+  max-height: 800px; /* dostatečně velké, aby se vešlo celé řešení */
+  opacity: 1;
+}
+</style>
 
-  <!-- Complete tracking -->
-  <script>
-    const currentLessonId = "math1_lesson4";
-    const XP_REWARD = 150;
-  </script>
-  <script type="module" src="/complete.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  /* ===============================
+     Reveal / Hide Solution buttons
+     =============================== */
+  document.querySelectorAll('.solution-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = document.getElementById(btn.dataset.target);
+
+      if (target.classList.contains('show')) {
+        target.classList.remove('show');
+        btn.textContent = '📂 Reveal Solution';
+      } else {
+        target.classList.add('show');
+        btn.textContent = '📂 Hide Solution';
+      }
+    });
+  });
+
+  /* ==========================================
+     Enhanced checklist with dependency checks
+     ========================================== */
+  const checklistRequiredItems = {
+    'project1-1': true,
+    'project1-2': true,
+    'project2-1': true
+  };
+
+  document.querySelectorAll('.checklist-item input').forEach(item => {
+    item.addEventListener('change', function () {
+      this.parentNode.classList.toggle('completed', this.checked);
+      checklistCheckCompletion();
+    });
+  });
+
+  function checklistCheckCompletion() {
+    let allComplete = true;
+    Object.keys(checklistRequiredItems).forEach(id => {
+      const element = document.getElementById(id);
+      if (!element || !element.checked) {
+        allComplete = false;
+      }
+    });
+
+    const btn = document.getElementById('completeBtn');
+    const warning = document.getElementById('warningMsg');
+
+    if (btn && warning) {
+      if (allComplete) {
+        btn.style.backgroundColor = 'green';
+        btn.textContent = "🚀 Launch Eigen Decomposition!";
+        warning.style.display = 'none';
+      } else {
+        btn.style.backgroundColor = 'gray';
+        btn.textContent = "Complete Required Items First";
+        warning.style.display = 'block';
+      }
+    }
+  }
+
+  // Spustit při načtení stránky
+  checklistCheckCompletion();
+});
+</script>
+
+<div class="completion-rewards">
+  <h3>🚀 Completion Rewards</h3>
+  <div class="rewards-box">
+    <p>🔓 Unlock: <strong>Eigen Decomposition</strong> (Lesson 4)</p>
+    <p>💼 Portfolio: <strong>Numerical Stability Certificate</strong></p>
+    <p>⚡ XP: <strong>250 points</strong></p>
+
+    <button id="completeBtn" class="completion-btn">Complete Required Items First</button>
+    <p id="warningMsg" class="completion-warning">
+      ⚠ Complete all coding projects to unlock advanced lessons.
+    </p>
+  </div>
+</div>
+
+<style>
+.completion-rewards {
+  font-family: 'Press Start 2P', monospace;
+  color: #00ffc8;
+  margin-top: 2rem;
+}
+.completion-rewards h3 {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+.rewards-box {
+  border: 2px solid #00ffc8;
+  padding: 1rem;
+  background-color: rgba(0, 255, 200, 0.05);
+  border-radius: 6px;
+}
+.completion-btn {
+  display: inline-block;
+  padding: 0.6rem 1rem;
+  background-color: gray;
+  border: none;
+  color: #000;
+  font-size: 0.8rem;
+  margin-top: 1rem;
+  cursor: pointer;
+}
+.completion-btn:hover {
+  filter: brightness(1.2);
+}
+.completion-warning {
+  margin-top: 0.8rem;
+  color: #ffd93b;
+  font-size: 0.75rem;
+}
+</style>
+
+</script>
 
 </body>
 </html>

@@ -1,4 +1,4 @@
-// ====== PŘIPOJENÍ FIREBASE Z INIT ======
+// ====== PŘIPOJENÍ FIREBASE ======
 import { auth } from "./firebase-init.js";
 import { GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
@@ -44,10 +44,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const xpDisplay = document.getElementById("profileXP");
   const levelDisplay = document.getElementById("profileLevel");
   const streakDisplay = document.getElementById("profileStreak");
+  const googleBtn = document.getElementById("googleLoginBtn");
 
   const user = getCurrentUser();
 
-  // DEBUG výpis pro jistotu
   console.log("🎯 Elementy načteny:", {
     usernameInput,
     saveBtn,
@@ -55,21 +55,23 @@ document.addEventListener("DOMContentLoaded", () => {
     xpDisplay,
     levelDisplay,
     streakDisplay,
+    googleBtn,
     user
   });
 
-  if (user && usernameInput && saveBtn && logoutBtn) {
-    usernameInput.value = getCurrentUserKey();
-    if (xpDisplay) xpDisplay.textContent = `XP: ${user.xp}`;
-    if (levelDisplay) levelDisplay.textContent = `Level ${user.level}`;
-    if (streakDisplay) streakDisplay.textContent = `Streak: ${user.streak}🔥`;
+  // ===== PŘEDVYPLNĚNÍ PROFILU =====
+  if (user) {
+    if (usernameInput) usernameInput.value = getCurrentUserKey();
+    if (xpDisplay) xpDisplay.textContent = `⚡ XP: ${user.xp}`;
+    if (levelDisplay) levelDisplay.textContent = `📈 Level ${user.level}`;
+    if (streakDisplay) streakDisplay.textContent = `🔥 Streak: ${user.streak}`;
+  }
 
-    // === ULOŽIT JMÉNO A PŘESMĚROVAT ===
+  // === ULOŽIT JMÉNO ===
+  if (saveBtn) {
     saveBtn.addEventListener("click", () => {
       const newName = usernameInput.value.trim();
       const oldName = getCurrentUserKey();
-
-      console.log("💾 Ukládání nového jména:", newName);
 
       if (!newName || newName === oldName) {
         alert("Zadej jiné jméno!");
@@ -90,47 +92,47 @@ document.addEventListener("DOMContentLoaded", () => {
       alert("✅ Username updated! Redirecting...");
       window.location.href = "account.html";
     });
+  }
 
-    // === ODJENOUT ===
+  // === ODJENOUT ===
+  if (logoutBtn) {
     logoutBtn.addEventListener("click", () => {
       localStorage.removeItem("current_user");
       window.location.href = "index.html";
     });
-
-  } else {
-    console.error("❌ Některé prvky nebo uživatel chybí.");
   }
 
   // ===== GOOGLE LOGIN BUTTON =====
-  const googleBtn = document.getElementById("googleLoginBtn");
   if (googleBtn) {
-    googleBtn.addEventListener("click", () => {
-      signInWithPopup(auth, provider)
-        .then((result) => {
-          const user = result.user;
-          const username = user.displayName;
+    googleBtn.addEventListener("click", async () => {
+      try {
+        const result = await signInWithPopup(auth, provider);
+        const firebaseUser = result.user;
+        const username = firebaseUser.displayName || firebaseUser.email;
 
-          // Uložení nebo vytvoření profilu v localStorage
-          let users = JSON.parse(localStorage.getItem("quant_users")) || {};
-          if (!users[username]) {
-            users[username] = {
-              xp: 0,
-              level: 1,
-              streak: 0,
-              tasks: [],
-              badges: []
-            };
-          }
+        // Uložení / vytvoření profilu
+        let users = getAllUsers();
+        if (!users[username]) {
+          users[username] = {
+            xp: 0,
+            level: 1,
+            streak: 0,
+            tasks: [],
+            badges: []
+          };
+        }
 
-          localStorage.setItem("quant_users", JSON.stringify(users));
-          localStorage.setItem("current_user", username);
+        saveAllUsers(users);
+        setCurrentUserKey(username);
 
-          // Přesměrování na účet
-          window.location.href = "account.html";
-        })
-        .catch((error) => {
-          alert("Chyba při přihlášení: " + error.message);
-        });
+        console.log("✅ Přihlášen:", username);
+
+        // Přesměrování na účet
+        window.location.href = "account.html";
+      } catch (error) {
+        console.error("❌ Chyba při přihlášení:", error.message);
+        alert("Chyba při přihlášení: " + error.message);
+      }
     });
   }
 });

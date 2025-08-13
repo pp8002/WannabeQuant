@@ -2,11 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Lesson 2 – Matrix Algebra | QuantQuest</title>
+  <title>Lesson 2 – Matrix Algebra Checklist | QuantQuest</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+
   <style>
     :root {
       --primary: #00ffcc;
@@ -23,10 +24,17 @@
       padding: 2rem;
       max-width: 1200px;
       margin: 0 auto;
+      line-height: 1.6;
     }
     h1, h2, h3 {
       font-family: 'Press Start 2P', cursive;
       color: var(--primary);
+      margin-bottom: 1rem;
+    }
+    h1 {
+      font-size: 1.5rem;
+      text-align: center;
+      margin-bottom: 2rem;
     }
     .section {
       margin-bottom: 3rem;
@@ -40,208 +48,196 @@
       padding: 1rem;
       margin-top: 1rem;
     }
-    .math {
-      background: rgba(0,255,204,0.1);
+    .checklist {
+      list-style-type: none;
+      padding-left: 0;
+    }
+    .checklist-item {
+      padding: 0.8rem;
+      margin: 0.5rem 0;
+      background-color: rgba(20, 22, 50, 0.8);
+      border-left: 3px solid var(--primary);
+      display: flex;
+      align-items: center;
+      transition: all 0.2s ease-in-out;
+    }
+    .checklist-item input {
+      margin-right: 1rem;
+      cursor: pointer;
+    }
+    .checklist-item:hover {
+      background-color: rgba(0, 255, 204, 0.1);
+    }
+    .completed {
+      opacity: 0.7;
+      border-left-color: var(--secondary);
+      text-decoration: line-through;
+    }
+    .project-card {
+      background-color: rgba(255, 204, 0, 0.1);
+      border: 2px dashed var(--secondary);
       padding: 1rem;
       margin: 1rem 0;
-      border-radius: 4px;
     }
-    .btn {
-      background-color: var(--primary);
-      color: #000;
-      padding: 1rem;
+    .matrix-grid {
+      display: inline-grid;
+      grid-template-columns: repeat(3, auto);
+      gap: 0.5rem;
+      padding: 0.5rem;
+      background-color: rgba(0, 255, 204, 0.05);
+      border: 1px solid var(--primary);
+    }
+    .matrix-cell {
+      min-width: 2rem;
+      text-align: center;
+    }
+    #completeBtn {
+      margin-top: 1.5rem;
+      padding: 0.8rem 1.5rem;
       font-family: 'Press Start 2P', cursive;
+      font-size: 0.8rem;
+      color: var(--bg-dark);
+      background-color: var(--primary);
+      border: none;
       cursor: pointer;
+      transition: all 0.2s ease-in-out;
+      width: 100%;
+      text-align: center;
+    }
+    #completeBtn:hover {
+      background-color: var(--secondary);
+    }
+    .progress-bar {
+      width: 100%;
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 1px solid var(--primary);
+      height: 20px;
+      margin-top: 0.5rem;
       border-radius: 4px;
-      display: inline-block;
-      margin-top: 2rem;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background-color: var(--primary);
+      width: 0%;
+      transition: width 0.3s ease-in-out;
     }
   </style>
 </head>
 <body>
 
-  <h1>📘 Lesson 2: Matrix Algebra</h1>
-  <p>The foundation of quantitative finance: portfolio optimization, PCA, and beyond.</p>
+  <h1>📋 Lesson 2: Matrix Algebra Checklist</h1>
+  <p class="text-center text-gray-300 mb-6">Master the computational engine of quantitative finance.</p>
 
+  <!-- ✅ Core Theory -->
   <div class="section">
-    <h2>🎯 Learning Goals</h2>
+    <h2>✅ Core Theory</h2>
     <div class="card">
-      <ul>
-        <li>✓ Understand matrix structure and operations</li>
-        <li>✓ Learn about inverses and determinants</li>
-        <li>✓ Apply eigenvalue decomposition</li>
-        <li>✓ Use matrices in financial applications</li>
+      <ul class="checklist">
+        <li class="checklist-item"><input type="checkbox">Define matrix types: Identity, Diagonal, Symmetric</li>
+        <li class="checklist-item"><input type="checkbox">Prove matrix multiplication non-commutativity: \( AB \neq BA \)</li>
+        <li class="checklist-item"><input type="checkbox">Derive inverse condition: \( \det(A) \neq 0 \)</li>
+        <li class="checklist-item"><input type="checkbox">Explain covariance matrix symmetry</li>
       </ul>
     </div>
   </div>
 
+  <!-- 💻 Coding Skills -->
   <div class="section">
-    <h2>📖 Core Concepts</h2>
+    <h2>💻 Coding Skills</h2>
     <div class="card">
-      <h3>Matrix Definition</h3>
-      <p>A matrix is a rectangular array of numbers:</p>
-      <div class="math">$$
-      A = \begin{bmatrix}
-      a & b & c \\\\
-      d & e & f
-      \end{bmatrix}
-      $$</div>
-      
-      <h3>Matrix Multiplication</h3>
-      <div class="math">$$
-      (AB)_{ij} = \sum_k A_{ik} B_{kj}
-      $$</div>
-      <p>Matrix multiplication is associative but not commutative: \( AB \ne BA \)</p>
-
-      <h3>Matrix Inverse</h3>
-      <div class="math">$$
-      A A^{-1} = I \quad \text{if} \quad \det(A) \ne 0
-      $$</div>
-
-      <h3>Eigen Decomposition</h3>
-      <div class="math">$$
-      A = Q \Lambda Q^{-1}
-      $$</div>
-      <p>Used in PCA and risk factor modeling.</p>
+      <ul class="checklist">
+        <li class="checklist-item"><input type="checkbox">Create matrices in NumPy: <code>np.array([[1,2],[3,4]])</code></li>
+        <li class="checklist-item"><input type="checkbox">Implement matrix multiplication: <code>A @ B</code></li>
+        <li class="checklist-item"><input type="checkbox">Calculate inverse: <code>np.linalg.inv(A)</code></li>
+        <li class="checklist-item"><input type="checkbox">Compute covariance matrix from asset returns</li>
+      </ul>
     </div>
   </div>
 
-  <div class="section">
-    <h2>💻 Try It Yourself (Python)</h2>
-    <div class="card">
-      <pre><code>import numpy as np
-
-A = np.array([[1, 2], [3, 4]])
-inv_A = np.linalg.inv(A)
-eigvals, eigvecs = np.linalg.eig(A)
-
-print("Inverse:\n", inv_A)
-print("Eigenvalues:", eigvals)
-print("Eigenvectors:\n", eigvecs)
-      </code></pre>
-    </div>
-  </div>
-
+  <!-- 📈 Financial Applications -->
   <div class="section">
     <h2>📈 Financial Applications</h2>
     <div class="card">
-      <h3>Covariance Matrix</h3>
-      <p>Measures risk and correlation:</p>
-      <div class="math">$$
-      \text{Var(portfolio)} = \vec{w}^T \Sigma \vec{w}
-      $$</div>
+      <div class="project-card">
+        <h3>Project 1: Portfolio Covariance Matrix</h3>
+        <p>Construct from historical returns:</p>
+        <pre><code>returns = np.random.normal(0, 0.1, (100, 3)) # 3 assets
+cov_matrix = np.cov(returns.T)</code></pre>
+      </div>
 
-      <h3>Markowitz Optimization</h3>
-      <div class="math">$$
-      \min_{\vec{w}} \vec{w}^T \Sigma \vec{w} \quad \text{s.t.} \quad \vec{w}^T \vec{\mu} = \mu_0
-      $$</div>
-    </div>
-  </div>
-
-   <div class="section">
-    <h2 class="header-font">🧠 Knowledge Check</h2>
-    <div class="card">
-      <div class="quiz-box">
-        <h3>Quick Quiz</h3>
-        
-        <!-- Question 1 -->
-        <div class="mb-8">
-          <h3 class="mb-2">1. What is the result of matrix multiplication \( \begin{bmatrix}1&2\\3&4\end{bmatrix} \begin{bmatrix}5\\7\end{bmatrix} \)?</h3>
-          <label class="quiz-option"><input type="radio" name="q1" onclick="checkAnswer('q1', 'A')"> A) \( \begin{bmatrix}19\\43\end{bmatrix} \)</label>
-          <label class="quiz-option"><input type="radio" name="q1" onclick="checkAnswer('q1', 'B')"> B) \( \begin{bmatrix}17\\39\end{bmatrix} \)</label>
-          <label class="quiz-option"><input type="radio" name="q1" onclick="checkAnswer('q1', 'C')"> C) \( \begin{bmatrix}23\\47\end{bmatrix} \)</label>
-          <p id="q1-result" class="mt-3 font-bold"></p>
-        </div>
-
-        <!-- Question 2 -->
-        <div class="mb-8">
-          <h3 class="mb-2">2. Which property makes a matrix suitable for Cholesky decomposition?</h3>
-          <label class="quiz-option"><input type="radio" name="q2" onclick="checkAnswer('q2', 'A')"> A) Symmetric</label>
-          <label class="quiz-option"><input type="radio" name="q2" onclick="checkAnswer('q2', 'B')"> B) Positive Definite</label>
-          <label class="quiz-option"><input type="radio" name="q2" onclick="checkAnswer('q2', 'C')"> C) Orthogonal</label>
-          <p id="q2-result" class="mt-3 font-bold"></p>
-        </div>
-
-        <!-- Question 3 -->
-        <div class="mb-8">
-          <h3 class="mb-2">3. In portfolio optimization, what does the covariance matrix represent?</h3>
-          <label class="quiz-option"><input type="radio" name="q3" onclick="checkAnswer('q3', 'A')"> A) Expected returns</label>
-          <label class="quiz-option"><input type="radio" name="q3" onclick="checkAnswer('q3', 'B')"> B) Asset volatilities and correlations</label>
-          <label class="quiz-option"><input type="radio" name="q3" onclick="checkAnswer('q3', 'C')"> C) Trading volumes</label>
-          <p id="q3-result" class="mt-3 font-bold"></p>
-        </div>
-
-        <button class="btn mt-6" onclick="showAllAnswers()">Reveal All Answers</button>
+      <div class="project-card">
+        <h3>Project 2: Markowitz Optimization</h3>
+        <p>Solve for optimal weights:</p>
+        <pre><code>def optimize_portfolio(returns):
+    cov = np.cov(returns.T)
+    inv_cov = np.linalg.inv(cov)
+    ones = np.ones(len(cov))
+    return inv_cov @ ones / (ones.T @ inv_cov @ ones)</code></pre>
       </div>
     </div>
   </div>
 
-  <div class="section">
-    <h2>🚀 Next Steps</h2>
-    <div class="card">
-      <h3>📚 Recommended Resources</h3>
-      <ul>
-        <li><a href="https://numpy.org/doc/stable/reference/routines.linalg.html" target="_blank">NumPy Docs</a> – Learn all matrix routines</li>
-        <li><a href="https://quant.stackexchange.com/questions/tagged/matrix" target="_blank">Quant StackExchange</a> – Ask questions or read solutions</li>
-      </ul>
-
-      <h3>🧪 Try This</h3>
-      <ol>
-        <li>Implement a Markowitz portfolio in Python with 3 assets</li>
-        <li>Visualize the covariance matrix as a heatmap</li>
-        <li>Use eigenvalues to reduce portfolio dimensions via PCA</li>
-      </ol>
-
-      <button class="btn" onclick="markLessonComplete()">Mark Lesson Complete</button>
-    </div>
+ <!-- Knowledge Validation -->
+<div class="section">
+  <h2>🧠 Knowledge Validation</h2>
+  <div class="card neon-border p-4">
+    <ul class="task-list space-y-3">
+      <li>
+        <input type="checkbox" id="q1">
+        <label for="q1">Prove rigorously that for any invertible matrices \( A, B \in \mathbb{R}^{n\times n} \), \( (AB)^T = B^T A^T \) and deduce the relationship between \( (A^{-1})^T \) and \( (A^T)^{-1} \).</label>
+      </li>
+      <li>
+        <input type="checkbox" id="q2">
+        <label for="q2">Given a covariance matrix \( \Sigma \) with rank deficiency, design a method to regularize it for portfolio optimization and prove that your method preserves positive semi-definiteness.</label>
+      </li>
+      <li>
+        <input type="checkbox" id="q3">
+        <label for="q3">Implement a matrix factorization of \( \Sigma \) that minimizes numerical instability; compare Cholesky vs. SVD factorization for high-condition-number cases.</label>
+      </li>
+      <li>
+        <input type="checkbox" id="q4">
+        <label for="q4">Given two subspaces \( U, V \subset \mathbb{R}^n \), prove that \(\dim(U+V) = \dim(U) + \dim(V) - \dim(U \cap V)\) and relate this to span of column spaces in portfolio return matrices.</label>
+      </li>
+      <li>
+        <input type="checkbox" id="q5">
+        <label for="q5">Analyze the spectral radius of a correlation matrix and explain how it bounds the maximum possible diversification benefit in a portfolio.</label>
+      </li>
+    </ul>
   </div>
-<script>
-    const answers = {
-      q1: {
-        correct: "A",
-        explanation: "✅ Correct! [1*5 + 2*7, 3*5 + 4*7] = [19, 43]"
-      },
-      q2: {
-        correct: "B",
-        explanation: "✅ Correct! Cholesky requires positive definite matrices (common in covariance matrices)"
-      },
-      q3: {
-        correct: "B",
-        explanation: "✅ Correct! Covariance matrix captures both individual volatilities (diagonal) and correlations (off-diagonal)"
-      }
-    };
+</div>
 
-    function checkAnswer(question, selected) {
-      const result = document.getElementById(`${question}-result`);
-      const answer = answers[question];
-      
-      if (selected === answer.correct) {
-        result.innerHTML = answer.explanation;
-        result.style.color = "#00ff99";
-      } else {
-        result.innerHTML = "❌ Incorrect. Try again!";
-        result.style.color = "#ff6666";
-      }
-    }
-    
-    function showAllAnswers() {
-      Object.keys(answers).forEach(q => {
-        const answer = answers[q];
-        document.getElementById(`${q}-result`).innerHTML = answer.explanation;
-        document.getElementById(`${q}-result`).style.color = "#00ff99";
-      });
-    }
+<!-- Completion Rewards -->
+<div class="section">
+  <h2>🚀 Completion Rewards</h2>
+  <div class="card neon-border p-4">
+    <ul class="reward-list space-y-3">
+      <li class="flex items-center gap-2">
+        <span>🔓</span>
+        <span><strong>Unlock:</strong> Eigen Decomposition <span class="text-sm text-gray-400">(Lesson 3)</span></span>
+      </li>
+      <li class="flex items-center gap-2">
+        <span>💼</span>
+        <span><strong>Portfolio:</strong> Matrix Algebra Certificate</span>
+      </li>
+      <li class="flex items-center gap-2">
+        <span>⚡</span>
+        <span><strong>XP:</strong> <span class="text-yellow-400 font-bold">200 points</span></span>
+      </li>
+    </ul>
+    <button id="mark-complete" class="mt-6 w-full bg-[var(--primary)] text-black font-bold py-3 px-4 rounded hover:bg-[var(--secondary)] transition-all duration-200 shadow-lg shadow-[var(--primary)]">
+      Mark Lesson Complete
+    </button>
+  </div>
+</div>
+
+
+
+    <script src="progress.js"></script>
+
+
   </script>
-  <script type="module">
-  import { markLessonComplete } from "./complete.js";
-  window.markLessonComplete = markLessonComplete;
-</script>
 
-<script>
-  const currentLessonId = "math1_lesson2";  // ← změň číslo lekce podle souboru
-  const XP_REWARD = 150;                   // ← volitelně změň odměnu za lekci
-</script>
-<script type="module" src="/complete.js"></script>
 
 </body>
 </html>

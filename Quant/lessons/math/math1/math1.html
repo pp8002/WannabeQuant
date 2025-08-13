@@ -180,35 +180,91 @@
   det(A) ≠ 0  
 </div>
 
+<style>
+  .path-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    padding-top: 50px;
+    padding-bottom: 100px; /* Rezerva pro footer */
+    min-height: calc(100vh - 80px);
+    box-sizing: border-box;
+  }
+
+  .path__svg {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    height: calc(100% - 100px); /* Kratší o výšku rezervy */
+    width: auto;
+    z-index: 1;
+  }
+
+  .path__svg path {
+    stroke: #27ffd0;
+    stroke-width: 4px; /* tenčí čára */
+    fill: none;
+    stroke-linecap: round;
+  }
+
+  .path__nodes {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 100px;
+  }
+
+  footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+  }
+</style>
+
+<div class="path-container">
+  <svg class="path__svg" viewBox="0 0 200 700" preserveAspectRatio="none">
+    <path d="M100,0 
+             C 80,100 120,200 100,300
+             C 80,400 120,500 100,600" />
+  </svg>
+
+  <div class="path__nodes">
+        <a href="linear-algebra/lesson1.html" class="node node--completed">
+    <span class="node__emoji">📐</span>
+</a>
 
 
-  <div class="path-container">
-    <div class="path">
-      <svg class="path__svg" viewBox="0 0 200 1200" preserveAspectRatio="xMidYMin meet">
-        <path d="
-          M100,10
-          C 90,70 60,120 100,170
-          C 140,220 140,280 100,330
-          C 60,380 60,440 100,490
-          C 140,540 140,600 100,650
-          C 60,700 60,760 100,810
-          C 140,860 140,920 100,970
-          C 60,1020 60,1080 100,1130
-        " stroke="#222" stroke-width="10" stroke-linecap="round" fill="none"/>
-      </svg>
+      <a href="linear-algebra/lesson2.html" class="node node--completed">
+    <span class="node__emoji">📐</span>
+</a>
+<a href="linear-algebra/lesson3.html" class="node node--current">
+    <span class="node__emoji">📊</span>
+</a>
+<a href="linear-algebra/lesson4.html" class="node node--locked">
+    <span class="node__emoji">📈</span>
+</a>
+<a href="linear-algebra/lesson5.html" class="node node--locked">
+    <span class="node__emoji">🧠</span>
+</a>
+<a href="linear-algebra/lesson6.html" class="node node--locked">
+    <span class="node__emoji">💾</span>
+</a>
+<a href="linear-algebra/lesson7.html" class="node node--locked">
+    <span class="node__emoji">📚</span>
+</a>
+<a href="linear-algebra/lesson8.html" class="node node--locked">
+    <span class="node__emoji">🧪</span>
+</a>
 
-      <div class="path__nodes">
-        <a href="lesson1.html" class="node node--completed"><span class="node__emoji">📐</span></a>
-        <a href="lesson2.html" class="node node--completed"><span class="node__emoji">🧮</span></a>
-        <a href="lesson3.html" class="node node--current"><span class="node__emoji">📊</span></a>
-        <a href="lesson4.html" class="node node--locked"><span class="node__emoji">📈</span></a>
-        <a href="lesson5.html" class="node node--locked"><span class="node__emoji">🧠</span></a>
-        <a href="lesson6.html" class="node node--locked"><span class="node__emoji">💾</span></a>
-        <a href="lesson7.html" class="node node--locked"><span class="node__emoji">📚</span></a>
-        <a href="lesson8.html" class="node node--locked"><span class="node__emoji">🧪</span></a>
       </div>
-    </div>
-  </div>
+</div>
+
+
+
 
   <footer class="footer">
     <div class="footer__tab footer__tab--active">Math I</div>

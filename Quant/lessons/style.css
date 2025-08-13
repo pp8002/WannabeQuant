@@ -144,3 +144,17 @@ body {
   filter: brightness(1.2);
 }
 
+.neon-border {
+  border: 2px solid var(--primary);
+  box-shadow: 0 0 10px var(--primary), 0 0 20px var(--primary);
+}
+
+.reward-list li {
+  font-size: 1rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+}
+
+.reward-list li:last-child {
+  border-bottom: none;
+}
