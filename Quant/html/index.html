@@ -129,8 +129,15 @@
                     <span class="text-xl font-bold text-white">7</span>
                 </div>
                 <!-- USER ICON (with onclick handler) -->
-                <a href="profile.html" id="profileIcon" class="w-10 h-10 bg-terraria-orange rounded-full flex items-center justify-center cursor-pointer">
-  <i class="fas fa-user text-xl text-white"></i>
+                <a href="profile.html" id="profileIcon"
+   class="w-10 h-10 bg-terraria-orange rounded-full flex items-center justify-center cursor-pointer overflow-hidden transition-all">
+  <!-- avatar se ukáže jen když jsme přihlášení -->
+  <img id="profileAvatar"
+       alt="Profile"
+       class="hidden w-full h-full object-cover"
+       referrerpolicy="no-referrer" />
+  <!-- fallback ikona pro nepřihlášené / bez fotky -->
+  <i id="profileFallbackIcon" class="fas fa-user text-xl text-white"></i>
 </a>
 
 
@@ -438,13 +445,25 @@
             });
         });
     </script>
-     <script src="env.js"></script>
-    <script type="module" src="profile.js"></script>
+ <!-- MUSÍ být první: poskytne window.FIREBASE_API_KEY -->
+<script src="/Quant/js/env.js"></script>
+
+<!-- Inicializace Firebase + exporty (auth, startGoogleSignIn, …) -->
+<script type="module" src="/Quant/js/firebase-init.js"></script>
+
+<!-- Napojení tlačítka "Sign in with Google" a Logout (krátký handler) -->
+<script type="module" src="/Quant/js/profile.js"></script>
+
+
     <!-- ✅ Připojení skriptu -->
     
 <script type="module" src="script.js"></script>
-<!-- Firebase Init -->
-<script type="module" src="firebase-init.js"></script>
+
+<!-- Pokud máš modul, který vymění ikonku za profilovku (nezměněný obsah) -->
+<script type="module" src="./js/auth-avatar-swap.js"></script>
+
+<script type="module" src="progress-api.js"></script>
+
 
 <!-- Auth Handler (zajistí rozpoznání přihlášeného uživatele) -->
 <script type="module" src="auth-handler.js"></script>

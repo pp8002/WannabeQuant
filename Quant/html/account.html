@@ -51,10 +51,10 @@
   </footer>
 
   <!-- env.js před modulem (kvůli API key) -->
-  <script src="env.js"></script>
+  <script src="../js/env.js"></script>
 
   <script type="module">
-    import { auth, getUserProgress, logoutUser } from './firebase-init.js';
+    import { auth, getUserProgress, logoutUser } from '../js/firebase-init.js';
     import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
     const $ = (id) => document.getElementById(id);
@@ -82,5 +82,11 @@
     $("toDashboard").addEventListener("click", () => (window.location.href = "index.html"));
     $("logoutBtn").addEventListener("click", () => logoutUser());
   </script>
+
+
+
+
+
+
 </body>
 </html>

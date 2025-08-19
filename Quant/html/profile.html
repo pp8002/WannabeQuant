@@ -6,8 +6,6 @@
   <title>QuantQuest Login</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="style.css" />
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
   <style>
     body {
       background-color: #0d0d1a;
@@ -81,44 +79,14 @@
     </div>
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-    import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+  <!-- MUSÍ být první: poskytne window.FIREBASE_API_KEY -->
+  <script src="../js/env.js"></script>
 
-    const firebaseConfig = {
-      apiKey: window.FIREBASE_API_KEY,
-       authDomain: "quant-dacab.firebaseapp.com",
-    projectId: "quant-dacab",
-    storageBucket: "quant-dacab.firebasestorage.app",
-    messagingSenderId: "1045234348083",
-    appId: "1:1045234348083:web:10728b98b79bd0a2da7346",
-    measurementId: "G-GX59BDV9BM"
-  };
+  <!-- Inicializace Firebase + exporty (auth, startGoogleSignIn, …) -->
+  <script type="module" src="../js/firebase-init.js"></script>
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const provider = new GoogleAuthProvider();
+  <!-- Napojení tlačítka "Sign in with Google" a Logout (krátký handler) -->
+  <script type="module" src="../js/profile.js"></script>
 
-    const loginBtn = document.getElementById("googleLoginBtn");
-
-    if (loginBtn) {
-      loginBtn.addEventListener("click", async () => {
-        try {
-          const result = await signInWithPopup(auth, provider);
-          const user = result.user;
-          console.log("✅ Přihlášen:", user.displayName);
-
-          localStorage.setItem("current_user", user.displayName);
-          window.location.href = 'login.html';
-        } catch (error) {
-          console.error("❌ Chyba při přihlášení:", error.message);
-        }
-      });
-    }
-  </script>
-
-  <script src="env.js"></script>
-  <script type="module" src="firebase-init.js"></script>
-  <script type="module" src="profile.js"></script>
 </body>
 </html>

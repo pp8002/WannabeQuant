@@ -28,27 +28,15 @@
     <div class="hint">Popup opens once. After choosing your account you’ll land on your Account screen.</div>
   </div>
 
-  <!-- env.js MUSÍ být před firebase-init.js -->
-  <script src="env.js"></script>
 
-  <script type="module">
-    import { auth, startGoogleSignIn } from './firebase-init.js';
-    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+<!-- MUSÍ být první: poskytne window.FIREBASE_API_KEY -->
+<script src="../js/env.js"></script>
 
-    // Pokud už je přihlášen (cache), přesměruj bez klikání
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        console.log("🟢 onAuthStateChanged → user present on login.html:", user.uid);
-        setTimeout(() => (window.location.href = "account.html"), 10);
-      } else {
-        console.log("ℹ️ onAuthStateChanged → no user yet (login page)");
-      }
-    });
+<!-- Inicializace Firebase + exporty (auth, startGoogleSignIn, …) -->
+<script type="module" src="../js/firebase-init.js"></script>
 
-    // Volat přímo z click handleru (jinak může popup blokovat prohlížeč)
-    document.getElementById('googleSignIn').addEventListener('click', () => {
-      startGoogleSignIn();
-    });
-  </script>
+<script type="module" src="../js/login.js"></script> <!-- jestli máš -->
+
+
 </body>
 </html>

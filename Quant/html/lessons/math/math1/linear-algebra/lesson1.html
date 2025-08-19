@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>QuantQuest · Lesson 1 – Vectors</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <!-- MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    :root{
+      --bg:#0d0d1a; --neon:#00fff2; --accent:#ffcc00; --text:#ffffff; --dim:#b8c0cc; --danger:#ff5d73;
+    }
+    html,body{ background:var(--bg); color:var(--text); font-family:'Roboto Mono',monospace; }
+    .pix { font-family:'Press Start 2P', cursive; }
+    .neon { box-shadow:0 0 0 2px rgba(0,255,242,.5) inset, 0 0 18px rgba(0,255,242,.25), 0 0 40px rgba(0,255,242,.08); }
+    .neon-acc { box-shadow:0 0 0 2px rgba(255,204,0,.4) inset, 0 0 14px rgba(255,204,0,.25); }
+    .ring-neon:focus { outline:none; box-shadow:0 0 0 4px rgba(0,255,242,.35); }
+    .hud-blur { backdrop-filter:saturate(140%) blur(8px); background:rgba(13,13,26,.5); }
+    .switch input { display:none; }
+    .switch .dot { transition:transform .18s ease; }
+    .switch input:checked + .track .dot { transform:translateX(1.25rem); }
+    .pill { background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); }
+    .kbd { background:#0f1222; border:1px solid rgba(255,255,255,.08); border-radius:.375rem; padding:.1rem .45rem; }
+    /* Confetti: minimalist */
+    .confetti {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 0; pointer-events: none; z-index: 60;
+    }
+    .confetti span {
+      position:absolute; top:-10px; width:8px; height:14px; opacity:.9;
+      animation: fall 800ms ease-out forwards;
+    }
+    @keyframes fall {
+      to { transform: translateY(70vh) rotate(310deg); opacity:.9; }
+    }
+  </style>
+</head>
+<body class="min-h-screen">
+  <!-- HUD -->
+  <header class="sticky top-0 z-40 hud-blur border-b border-white/10">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center gap-3">
+      <a href="../math1.html"
+         class="text-sm hover:underline text-white/80 flex items-center gap-2">
+        <span class="text-lg">◀</span><span>Back to Roadmap</span>
+      </a>
+      <div class="mx-auto text-center">
+        <div class="pix text-2xl sm:text-3xl tracking-wide text-[var(--neon)] drop-shadow">📘 Lesson 1: Vectors</div>
+        <div class="text-xs text-white/60 mt-1">Matrix Algebra unlocks after completion</div>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="pill px-3 py-1 rounded-full text-xs flex items-center gap-2">
+          <span class="opacity-70">XP</span><span id="xpText">0/150</span>
+        </div>
+        <div class="w-32 h-2 rounded-full bg-white/10 overflow-hidden">
+          <div id="xpBar" class="h-full bg-[var(--neon)]" style="width:0%"></div>
+        </div>
+        <div id="avatar" class="w-9 h-9 rounded-full ring-2 ring-[var(--neon)] bg-gradient-to-br from-cyan-400/40 to-emerald-400/20"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="max-w-6xl mx-auto px-4 pt-8 pb-2">
+    <div class="neon rounded-2xl p-6 sm:p-8 bg-[rgba(255,255,255,0.03)]">
+      <h1 class="pix text-[var(--neon)] text-2xl sm:text-3xl mb-4">Mission Brief</h1>
+      <p class="text-white/80 leading-relaxed">
+        Master the geometry and algebra of vectors to unlock portfolio optimization. Check off quests, solve one advanced challenge,
+        and claim your <span class="text-[var(--accent)]">Vector Operations Certificate</span>.
+      </p>
+      <button id="startBtn"
+        class="mt-5 px-5 py-3 pix text-sm rounded-xl bg-[var(--neon)] text-[var(--bg)] hover:opacity-90 transition ring-neon">
+        ▶ Start Mission
+      </button>
+    </div>
+  </section>
+
+  <!-- Quests -->
+  <main id="quests" class="max-w-6xl mx-auto px-4 pt-6 pb-24">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Core Theory -->
+      <section class="neon rounded-2xl p-5 bg-[rgba(255,255,255,0.03)]">
+        <header class="flex items-start justify-between gap-3 mb-3">
+          <div>
+            <h2 class="pix text-[var(--neon)] text-xl mb-1">✅ Core Theory</h2>
+            <p class="text-xs text-white/60">Understand the geometry behind vector operations.</p>
+          </div>
+          <div class="text-right">
+            <div id="coreCount" class="text-sm">0/5</div>
+            <div class="w-24 h-2 rounded bg-white/10 mt-1 overflow-hidden">
+              <div id="coreBar" class="h-full bg-[var(--neon)]" style="width:0%"></div>
+            </div>
+          </div>
+        </header>
+        <ul class="space-y-2">
+          <!-- Use data-group and data-key for state -->
+          <li class="flex items-center justify-between gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition">
+            <label class="flex-1 text-sm">Define vectors geometrically (magnitude + direction)</label>
+            <label class="switch inline-flex items-center cursor-pointer">
+              <input type="checkbox" aria-label="Define vectors" data-group="core" data-key="core1">
+              <span class="track w-10 h-6 bg-white/15 rounded-full inline-flex items-center px-1"><span class="dot w-4 h-4 rounded-full bg-[var(--neon)]"></span></span>
+            </label>
+          </li>
+          <li class="flex items-center justify-between gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition">
+            <label class="flex-1 text-sm">Explain vector vs. point distinction</label>
+            <label class="switch inline-flex items-center cursor-pointer">
+              <input type="checkbox" aria-label="Vector vs point" data-group="core" data-key="core2">
+              <span class="track w-10 h-6 bg-white/15 rounded-full inline-flex items-center px-1"><span class="dot w-4 h-4 rounded-full bg-[var(--neon)]"></span></span>
+            </label>
+          </li>
+          <li class="flex items-center justify-between gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition">
+            <label class="flex-1 text-sm">Demonstrate vector addition geometrically (tip-to-tail)</label>
+            <label class="switch inline-flex items-center cursor-pointer">
+              <input type="checkbox" aria-label="Geometric addition" data-group="core" data-key="core3">
+              <span class="track w-10 h-6 bg-white/15 rounded-full inline-flex items-center px-1"><span class="dot w-4 h-4 rounded-full bg-[var(--neon)]"></span></span>
+            </label>
+          </li>
+          <li class="flex items-center justify-between gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition">
+            <label class="flex-1 text-sm">Derive dot product formula: \( \\vec{a}\\cdot\\vec{b}=\\|\\vec{a}\\|\\|\\vec{b}\\|\\cos\\theta \)</label>
+            <label class="switch inline-flex items-center cursor-pointer">
+              <input type="checkbox" aria-label="Dot product derivation" data-group="core" data-key="core4">
+              <span class="track w-10 h-6 bg-white/15 rounded-full inline-flex items-center px-1"><span class="dot w-4 h-4 rounded-full bg-[var(--neon)]"></span></span>
+            </label>
+          </li>
+          <li class="flex items-center justify-between gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition">
+            <label class="flex-1 text-sm">Interpret cross product geometrically (area of parallelogram)</label>
+            <label class="switch inline-flex items-center cursor-pointer">
+              <input type="checkbox" aria-label="Cross product geometry" data-group="core" data-key="core5">
+              <span class="track w-10 h-6 bg-white/15 rounded-full inline-flex items-center px-1"><span class="dot w-4 h-4 rounded-full bg-[var(--neon)]"></span></span>
+            </label>
+          </li>
+        </ul>
+      </section>
+
+      <!-- Coding Skills -->
+      <section class="neon rounded-2xl p-5 bg-[rgba(255,255,255,0.03)]">
+        <header class="flex items-start justify-between gap-3 mb-3">
+          <div>
+            <h2 class="pix text-[var(--neon)] text-xl mb-1">💻 Coding Skills</h2>
+            <p class="text-xs text-white/60">Implement vector operations in NumPy & visualize.</p>
+          </div>
+          <div class="text-right">
+            <div id="codeCount" class="text-sm">0/5</div>
+            <div class="w-24 h-2 rounded bg-white/10 mt-1 overflow-hidden">
+              <div id="codeBar" class="h-full bg-[var(--neon)]" style="width:0%"></div>
+            </div>
+          </div>
+        </header>
+        <ul class="space-y-2">
+          <li class="flex items-center justify-between gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition">
+            <div class="flex-1 text-sm">Create vectors in NumPy: <code class="kbd">v = np.array([1, 2, 3])</code></div>
+            <label class="switch inline-flex items-center cursor-pointer">
+              <input type="checkbox" data-group="code" data-key="code1" aria-label="Create vectors">
+              <span class="track w-10 h-6 bg-white/15 rounded-full inline-flex items-center px-1"><span class="dot w-4 h-4 rounded-full bg-[var(--neon)]"></span></span>
+            </label>
+          </li>
+          <li class="flex items-center justify-between gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition">
+            <div class="flex-1 text-sm">Implement vector operations (+, −, scalar *)</div>
+            <label class="switch inline-flex items-center cursor-pointer">
+              <input type="checkbox" data-group="code" data-key="code2" aria-label="Operations">
+              <span class="track w-10 h-6 bg-white/15 rounded-full inline-flex items-center px-1"><span class="dot w-4 h-4 rounded-full bg-[var(--neon)]"></span></span>
+            </label>
+          </li>
+          <li class="flex items-center justify-between gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition">
+            <div class="flex-1 text-sm">Calculate dot product: <code class="kbd">np.dot(a, b)</code></div>
+            <label class="switch inline-flex items-center cursor-pointer">
+              <input type="checkbox" data-group="code" data-key="code3" aria-label="Dot product code">
+              <span class="track w-10 h-6 bg-white/15 rounded-full inline-flex items-center px-1"><span class="dot w-4 h-4 rounded-full bg-[var(--neon)]"></span></span>
+            </label>
+          </li>
+          <li class="flex items-center justify-between gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition">
+            <div class="flex-1 text-sm">Compute cross product (3D): <code class="kbd">np.cross(a, b)</code></div>
+            <label class="switch inline-flex items-center cursor-pointer">
+              <input type="checkbox" data-group="code" data-key="code4" aria-label="Cross product code">
+              <span class="track w-10 h-6 bg-white/15 rounded-full inline-flex items-center px-1"><span class="dot w-4 h-4 rounded-full bg-[var(--neon)]"></span></span>
+            </label>
+          </li>
+          <li class="flex items-center justify-between gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition">
+            <div class="flex-1 text-sm">Visualize vectors with matplotlib quiver plots</div>
+            <label class="switch inline-flex items-center cursor-pointer">
+              <input type="checkbox" data-group="code" data-key="code5" aria-label="Quiver plots">
+              <span class="track w-10 h-6 bg-white/15 rounded-full inline-flex items-center px-1"><span class="dot w-4 h-4 rounded-full bg-[var(--neon)]"></span></span>
+            </label>
+          </li>
+        </ul>
+      </section>
+
+      <!-- Financial Applications -->
+      <section class="neon rounded-2xl p-5 bg-[rgba(255,255,255,0.03)]">
+        <header class="flex items-start justify-between gap-3 mb-3">
+          <div>
+            <h2 class="pix text-[var(--neon)] text-xl mb-1">📈 Financial Applications</h2>
+            <p class="text-xs text-white/60">Connect vectors with portfolios & covariance.</p>
+          </div>
+          <div class="text-right">
+            <div id="finCount" class="text-sm">0/2</div>
+            <div class="w-24 h-2 rounded bg-white/10 mt-1 overflow-hidden">
+              <div id="finBar" class="h-full bg-[var(--neon)]" style="width:0%"></div>
+            </div>
+          </div>
+        </header>
+
+        <article class="neon-acc rounded-xl p-4 mb-3 bg-white/5">
+          <h3 class="pix text-[var(--accent)] text-base mb-2">Project 1: Portfolio as Vector</h3>
+          <p class="text-sm text-white/80">Represent a 3-asset portfolio as a vector of weights:</p>
+          <pre class="mt-2 text-xs bg-black/40 rounded-lg p-3 overflow-x-auto"><code>weights = np.array([0.5, 0.3, 0.2])  # 50% AAPL, 30% MSFT, 20% TSLA</code></pre>
+          <div class="flex justify-end mt-3">
+            <label class="switch inline-flex items-center cursor-pointer">
+              <input type="checkbox" data-group="fin" data-key="fin1" aria-label="Project 1 done">
+              <span class="track w-10 h-6 bg-white/15 rounded-full inline-flex items-center px-1"><span class="dot w-4 h-4 rounded-full bg-[var(--neon)]"></span></span>
+            </label>
+          </div>
+        </article>
+
+        <article class="neon-acc rounded-xl p-4 bg-white/5">
+          <h3 class="pix text-[var(--accent)] text-base mb-2">Project 2: Covariance as Dot Product</h3>
+          <p class="text-sm text-white/80">Compute asset covariance from returns:</p>
+          <pre class="mt-2 text-xs bg-black/40 rounded-lg p-3 overflow-x-auto"><code>returns_a = np.random.normal(0.1, 0.2, 100)
+returns_b = np.random.normal(0.1, 0.15, 100)
+covariance = np.dot(returns_a - mean_a, returns_b - mean_b) / (len(returns_a) - 1)</code></pre>
+          <div class="flex justify-end mt-3">
+            <label class="switch inline-flex items-center cursor-pointer">
+              <input type="checkbox" data-group="fin" data-key="fin2" aria-label="Project 2 done">
+              <span class="track w-10 h-6 bg-white/15 rounded-full inline-flex items-center px-1"><span class="dot w-4 h-4 rounded-full bg-[var(--neon)]"></span></span>
+            </label>
+          </div>
+        </article>
+      </section>
+    </div>
+
+ 
+   <!-- ████████████████████████████████████████████████████████████ -->
+<!-- 🧠 KNOWLEDGE CHECK (Vectors) – full drop-in block -->
+<!-- ████████████████████████████████████████████████████████████ -->
+<section class="qq-card qq-kc" id="lesson1-kc">
+  <header class="qq-kc__head">
+    <h2 class="qq-title">🧠 Knowledge Check</h2>
+
+    <!-- Lokální meta: progres + XP uvnitř bloku -->
+    <div class="qq-kc__meta">
+      <span class="qq-pill" id="kc-progress-pill"><strong id="kc-progress-count">0</strong>/5</span>
+      <span class="qq-pill qq-pill--xp">XP: <strong id="kc-xp-count">0</strong>/<span id="kc-xp-total">150</span></span>
+    </div>
+  </header>
+
+  <div class="qq-kc__grid">
+    <!-- Q1 -->
+    <article class="kc-q" data-qid="q1">
+      <div class="kc-q__head">
+        <span class="kc-badge">Q1</span>
+        <h3 class="kc-q__title">
+          Given two non-collinear vectors in ℝ³, derive the explicit formula for the vector
+          projection of one onto the other using only the axioms of an inner product space.
+        </h3>
+      </div>
+
+      <div class="kc-actions">
+        <button class="kc-btn kc-btn--reveal" data-target="sol-q1" aria-expanded="false">Reveal solution</button>
+        <button class="kc-btn kc-btn--complete" data-qcomplete>＋ Complete</button>
+      </div>
+
+      <div id="sol-q1" class="kc-solution hidden" role="region" aria-label="Solution Q1">
+        <p><strong>Idea.</strong> Decompose \(v=\alpha u+w\) with \(w\perp u\).
+          Taking inner products with \(u\) gives \(\langle v,u\rangle=\alpha\langle u,u\rangle\),
+          hence \(\alpha=\dfrac{\langle v,u\rangle}{\langle u,u\rangle}\).</p>
+        <p><strong>Projection.</strong>
+          \(\displaystyle \mathrm{proj}_u(v)=\alpha u
+          =\frac{\langle v,u\rangle}{\langle u,u\rangle}\,u.\)
+        </p>
+      </div>
+    </article>
+
+    <!-- Q2 -->
+    <article class="kc-q" data-qid="q2">
+      <div class="kc-q__head">
+        <span class="kc-badge">Q2</span>
+        <h3 class="kc-q__title">
+          Prove that if \( \mathbf{a}\cdot\mathbf{b}=0 \) and \( \|\mathbf{a}\|=\|\mathbf{b}\| \), then
+          \( \mathbf{a}+\mathbf{b} \) is orthogonal to \( \mathbf{a}-\mathbf{b} \).
+        </h3>
+      </div>
+
+      <div class="kc-actions">
+        <button class="kc-btn kc-btn--reveal" data-target="sol-q2" aria-expanded="false">Reveal solution</button>
+        <button class="kc-btn kc-btn--complete" data-qcomplete>＋ Complete</button>
+      </div>
+
+      <div id="sol-q2" class="kc-solution hidden" role="region" aria-label="Solution Q2">
+        <p>
+          \((\mathbf{a}+\mathbf{b})\cdot(\mathbf{a}-\mathbf{b})
+          =\|\mathbf{a}\|^2-\|\mathbf{b}\|^2+\mathbf{a}\cdot(-\mathbf{b})+\mathbf{b}\cdot\mathbf{a}\).
+          Since \(\mathbf{a}\cdot\mathbf{b}=0\), cross terms cancel; with \(\|\mathbf{a}\|=\|\mathbf{b}\|\) it equals \(0\).
+          Hence the vectors are orthogonal.
+        </p>
+      </div>
+    </article>
+
+    <!-- Q3 -->
+    <article class="kc-q" data-qid="q3">
+      <div class="kc-q__head">
+        <span class="kc-badge">Q3</span>
+        <h3 class="kc-q__title">
+          Let \( \mathbf{u},\mathbf{v},\mathbf{w}\in\mathbb{R}^3 \). Show that
+          \( (\mathbf{u}\times\mathbf{v})\cdot\mathbf{w} \) equals the volume of the
+          parallelepiped they form, and determine the sign from orientation.
+        </h3>
+      </div>
+
+      <div class="kc-actions">
+        <button class="kc-btn kc-btn--reveal" data-target="sol-q3" aria-expanded="false">Reveal solution</button>
+        <button class="kc-btn kc-btn--complete" data-qcomplete>＋ Complete</button>
+      </div>
+
+      <div id="sol-q3" class="kc-solution hidden" role="region" aria-label="Solution Q3">
+        <p>
+          The scalar triple product \((\mathbf{u}\times\mathbf{v})\cdot\mathbf{w}\) is the
+          <em>signed</em> volume; its absolute value is the volume, the sign is positive for right-hand
+          orientation \((\mathbf{u},\mathbf{v},\mathbf{w})\) and negative otherwise.
+        </p>
+      </div>
+    </article>
+
+    <!-- Q4 -->
+    <article class="kc-q" data-qid="q4">
+      <div class="kc-q__head">
+        <span class="kc-badge">Q4</span>
+        <h3 class="kc-q__title">
+          Given \( \mathbf{x}\in\mathbb{R}^n \) and a symmetric positive-definite matrix \(A\),
+          prove that \( \langle \mathbf{x},\mathbf{y}\rangle_A=\mathbf{x}^\top A \mathbf{y} \) is an inner product
+          and interpret \( \|\mathbf{x}\|_A \) geometrically.
+        </h3>
+      </div>
+
+      <div class="kc-actions">
+        <button class="kc-btn kc-btn--reveal" data-target="sol-q4" aria-expanded="false">Reveal solution</button>
+        <button class="kc-btn kc-btn--complete" data-qcomplete>＋ Complete</button>
+      </div>
+
+      <div id="sol-q4" class="kc-solution hidden" role="region" aria-label="Solution Q4">
+        <p><strong>Axioms:</strong> Bilinear; symmetric (since \(A=A^\top\));
+          positive-definite because \(x^\top A x&gt;0\) for \(x\ne0\).</p>
+        <p><strong>Geometry:</strong> With \(A=L^\top L\) (Cholesky),
+          \(\|x\|_A=\sqrt{x^\top A x}=\|Lx\|_2\): standard dot-product after map \(x\mapsto Lx\).
+        </p>
+      </div>
+    </article>
+
+    <!-- Q5 -->
+    <article class="kc-q" data-qid="q5">
+      <div class="kc-q__head">
+        <span class="kc-badge">Q5</span>
+        <h3 class="kc-q__title">
+          Show that in ℝ², any rotation \(R(\theta)\) can be written
+          \(R(\theta)=\cos\theta\,I+\sin\theta\,J\) with \(J=\begin{bmatrix}0&-1\\1&0\end{bmatrix}\),
+          and use this to prove rotations preserve the dot product.
+        </h3>
+      </div>
+
+      <div class="kc-actions">
+        <button class="kc-btn kc-btn--reveal" data-target="sol-q5" aria-expanded="false">Reveal solution</button>
+        <button class="kc-btn kc-btn--complete" data-qcomplete>＋ Complete</button>
+      </div>
+
+      <div id="sol-q5" class="kc-solution hidden" role="region" aria-label="Solution Q5">
+        <p>
+          Using \(J^2=-I\) and group law with \(R(0)=I\) yields \(R(\theta)=\cos\theta\,I+\sin\theta\,J\).
+          Since \(R^\top R=I\), \((Rx)\cdot(Ry)=x^\top R^\top R y=x\cdot y\). Rotations preserve the dot product.
+        </p>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ░░ Styles (neon arcade, respektuje globální proměnné) ░░ -->
+<style>
+  :root{
+    --qq-primary: var(--primary, #00ffcc);
+    --qq-secondary: var(--secondary, #ffcc00);
+    --qq-bg-deep: var(--bg-dark, #0b0c2a);
+    --qq-bg-card: var(--bg-light, #141632);
+    --qq-text: var(--text-main, #ffffff);
+    --qq-dim: var(--text-dim, #b9c0d0);
+  }
+  .qq-card{
+    background: linear-gradient(180deg, rgba(0,255,204,.06), rgba(0,0,0,0));
+    border:2px solid var(--qq-primary);
+    border-radius:14px;
+    padding:1.2rem 1.2rem 1rem;
+    box-shadow:0 0 18px rgba(0,255,204,.15);
+    margin-top:1rem;
+  }
+  .qq-kc__head{display:flex;align-items:center;justify-content:space-between;gap:.8rem;flex-wrap:wrap}
+  .qq-title{margin:.2rem 0 .4rem 0;color:var(--qq-primary);font-family:'Press Start 2P',cursive;font-size:1.15rem}
+  .qq-kc__meta{display:flex;gap:.5rem}
+  .qq-pill{
+    font-family:'Press Start 2P',cursive;font-size:.72rem;color:var(--qq-text);
+    border:1px solid var(--qq-primary);padding:.42rem .6rem;border-radius:10px;
+    background:rgba(0,255,204,.06)
+  }
+  .qq-pill--xp{border-color:var(--qq-secondary);background:rgba(255,204,0,.08)}
+  .qq-kc__grid{display:grid;gap:1rem;margin-top:.6rem}
+  @media(min-width:900px){.qq-kc__grid{grid-template-columns:1fr 1fr}}
+  .kc-q{border:2px solid var(--qq-primary);border-radius:12px;padding:1rem}
+  .kc-q__head{display:grid;grid-template-columns:auto 1fr;gap:.8rem;align-items:start}
+  .kc-badge{font-family:'Press Start 2P',cursive;font-size:.7rem;color:#111;background:var(--qq-secondary);
+    border:1px solid var(--qq-secondary);border-radius:8px;padding:.3rem .5rem}
+  .kc-q__title{margin:0;color:var(--qq-text);line-height:1.55}
+  .kc-actions{display:flex;gap:.5rem;flex-wrap:wrap;margin:.7rem 0 .2rem}
+  .kc-btn{font-family:'Press Start 2P',cursive;font-size:.7rem;color:var(--qq-text);
+    padding:.55rem .88rem;border-radius:9px;cursor:pointer;border:1px solid var(--qq-secondary);
+    background:rgba(255,204,0,.14);transition:transform .06s,box-shadow .15s,background .15s}
+  .kc-btn:hover{box-shadow:0 0 10px rgba(255,204,0,.35)}
+  .kc-btn--complete{border-color:var(--qq-primary);background:rgba(0,255,204,.12)}
+  .kc-btn--complete.completed{background:rgba(0,255,204,.22);box-shadow:0 0 10px rgba(0,255,204,.35) inset}
+  .kc-solution{margin-top:.5rem;padding:.9rem 1rem;border-left:3px solid var(--qq-secondary);
+    background:linear-gradient(180deg,rgba(0,255,204,.10),rgba(0,255,204,.03));color:var(--qq-dim);border-radius:6px}
+  .hidden{display:none}
+</style>
+
+<!-- ░░ Logic: lokální progres + XP + napojení na globální XP (300 celkem) ░░ -->
+<script>
+(function(){
+  // ── Nastavení
+  const XP_PER_TASK   = 30;     // 5 × 30 = 150 v Knowledge Check
+  const KC_XP_TOTAL   = 150;    // lokální (jen KC)
+  const GLOBAL_TOTAL  = 300;    // celá lekce (150 base + 150 KC)
+
+  const LS_DONE_KEY   = 'lesson1_kc_completed';
+  const LS_KC_XP_KEY  = 'lesson1_kc_xp';
+  const LS_BASE_KEY   = 'lesson1_global_base_xp'; // XP mimo KC (základ, aby se dalo +/- vracet)
+
+  // ── Lokální elementy
+  const kcProgress = document.getElementById('kc-progress-count');
+  const kcXpCount  = document.getElementById('kc-xp-count');
+  const kcXpTotal  = document.getElementById('kc-xp-total');
+  kcXpTotal.textContent = KC_XP_TOTAL;
+
+  // ── Načti stav
+  const doneSet = new Set(JSON.parse(localStorage.getItem(LS_DONE_KEY) || '[]'));
+  let kcXp = parseInt(localStorage.getItem(LS_KC_XP_KEY) || '0', 10);
+  if (isNaN(kcXp)) kcXp = 0;
+
+  // ── Pomocné: najdi globální XP label & progress bar
+  function findGlobalXpLabel(){
+    const prefer = [
+      '#xpHeaderLabel','#xp-label','#xpCount','#xpCurrent','[data-xp-current]'
+    ];
+    for (const sel of prefer){ const el = document.querySelector(sel); if (el) return el; }
+    // Fallback: najdi element s "XP a/b"
+    const nodes = Array.from(document.querySelectorAll('header *, .top *, body *')).slice(0, 800);
+    for (const n of nodes){
+      const t = (n.textContent||'').trim();
+      if (/^XP\s*\d+\s*\/\s*\d+$/i.test(t)) return n;
+    }
+    return null;
+  }
+  function findGlobalBarFill(){
+    const candidates = ['#xp-bar-fill','.xp-bar__fill','[data-xp-bar-fill]','[role="progressbar"] .fill'];
+    for (const sel of candidates){ const el = document.querySelector(sel); if (el) return el; }
+    return null;
+  }
+
+  const globalLabel = findGlobalXpLabel();
+  const globalBar   = findGlobalBarFill();
+
+  // ── Parsuj původní globální XP, určete baseline (mimo KC)
+  let baseXP = parseInt(localStorage.getItem(LS_BASE_KEY) || 'NaN', 10);
+  let parsedCurrent = 0, parsedTotal = 0;
+
+  if (globalLabel){
+    const txt = globalLabel.textContent.trim(); // "XP a/b"
+    const m = txt.match(/XP\s*(\d+)\s*\/\s*(\d+)/i);
+    if (m){ parsedCurrent = parseInt(m[1],10); parsedTotal = parseInt(m[2],10); }
+  }
+  if (isNaN(baseXP)){
+    // baseline = (co ukazuje chip) − (kolik už má KC z localStorage)
+    baseXP = Math.max(0, parsedCurrent - kcXp);
+    localStorage.setItem(LS_BASE_KEY, String(baseXP));
+  }
+
+  // ── Zobraz lokální čísla
+  refreshLocalUI();
+
+  // ── Inicializace UI stavů (Complete / Reveal)
+  document.querySelectorAll('#lesson1-kc [data-qcomplete]').forEach(btn=>{
+    const q = btn.closest('.kc-q'); const qid = q?.getAttribute('data-qid');
+    if (!qid) return;
+    if (doneSet.has(qid)){
+      btn.classList.add('completed'); btn.textContent='✓ Completed'; btn.setAttribute('aria-pressed','true');
+    }
+    btn.addEventListener('click', ()=>{
+      const was = doneSet.has(qid);
+      if (was){
+        doneSet.delete(qid);
+        kcXp = Math.max(0, kcXp - XP_PER_TASK);
+        btn.classList.remove('completed'); btn.textContent='＋ Complete'; btn.setAttribute('aria-pressed','false');
+      }else{
+        doneSet.add(qid);
+        kcXp = Math.min(KC_XP_TOTAL, kcXp + XP_PER_TASK);
+        btn.classList.add('completed'); btn.textContent='✓ Completed'; btn.setAttribute('aria-pressed','true');
+      }
+      persistState();
+      refreshLocalUI();
+      updateGlobalXP();
+    });
+  });
+
+  document.querySelectorAll('#lesson1-kc .kc-btn--reveal').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const id = btn.getAttribute('data-target'); const box = document.getElementById(id);
+      const show = box.classList.contains('hidden');
+      box.classList.toggle('hidden', !show);
+      btn.textContent = show ? 'Hide solution' : 'Reveal solution';
+      btn.setAttribute('aria-expanded', String(show));
+      if (show && window.MathJax && window.MathJax.typeset){ window.MathJax.typeset([box]); }
+    });
+  });
+
+  // ── Ulož stav
+  function persistState(){
+    localStorage.setItem(LS_DONE_KEY, JSON.stringify(Array.from(doneSet)));
+    localStorage.setItem(LS_KC_XP_KEY, String(kcXp));
+  }
+
+  // ── Lokální UI
+  function refreshLocalUI(){
+    document.getElementById('kc-progress-count').textContent = doneSet.size;
+    kcXpCount.textContent = kcXp;
+  }
+
+  // ── Přepiš globální XP chip + progressbar → cíl 300
+  function updateGlobalXP(){
+    const current = baseXP + kcXp;  // základ + KC XP
+    // 1) Chip "XP a/b"
+    if (globalLabel){
+      globalLabel.textContent = `XP ${current}/${GLOBAL_TOTAL}`;
+    }
+    // 2) Progress bar
+    if (globalBar){
+      const pct = Math.max(0, Math.min(100, (current / GLOBAL_TOTAL) * 100));
+      globalBar.style.width = pct + '%';
+      if (globalBar.setAttribute){
+        globalBar.setAttribute('aria-valuenow', String(current));
+        globalBar.setAttribute('aria-valuemax', String(GLOBAL_TOTAL));
+      }
+    }
+    // 3) Notifikace (pokud něco dalšího poslouchá)
+    try {
+      document.dispatchEvent(new CustomEvent('lesson:xp-changed', {
+        detail: { current, total: GLOBAL_TOTAL, kc: kcXp }
+      }));
+    } catch(e){}
+  }
+
+  // ── Přeceť globál při startu (přepíšeme denominator na 300 hned)
+  updateGlobalXP();
+})();
+</script>
+
+</script>
+
+  </main>
+
+
+
+<!-- spacer pod obsah (aby nic nepřekrývala lišta, když je vidět) -->
+<div id="rewardSpacer" class="h-0"></div>
+
+
+
+
+  <!-- Confetti layer -->
+  <div class="confetti" id="confetti"></div>
+
+  <script>
+    // ---------- CONFIG ----------
+    const STORAGE_KEY = 'qq:lesson1:vectors';
+    const XP_MAX = 150;
+
+    // Minimum completion requirements
+    const REQ = { core: 3, code: 3, fin: 1, kc: 1 };
+
+    const GROUP_MAP = {
+      core: ['core1','core2','core3','core4','core5'],
+      code: ['code1','code2','code3','code4','code5'],
+      fin : ['fin1','fin2'],
+      kc  : ['kc1','kc2','kc3','kc4','kc5']
+    };
+
+    // ---------- STATE ----------
+    let state = {
+      core1:false, core2:false, core3:false, core4:false, core5:false,
+      code1:false, code2:false, code3:false, code4:false, code5:false,
+      fin1:false, fin2:false,
+      kc1:false, kc2:false, kc3:false, kc4:false, kc5:false,
+      xp: 0, claimed:false
+    };
+
+    // ---------- INIT ----------
+    document.addEventListener('DOMContentLoaded', initLesson1);
+
+    function initLesson1(){
+      restoreState();
+      // Attach toggle handlers
+      document.querySelectorAll('input[type="checkbox"][data-group]')
+        .forEach(el=>{
+          el.addEventListener('change', () => {
+            const key = el.dataset.key;
+            state[key] = el.checked;
+            saveState();
+            computeProgress(true);
+          });
+        });
+
+      // Restore checkboxes
+      for (const key in state){
+        const el = document.querySelector(`input[data-key="${key}"]`);
+        if (el && typeof state[key]==='boolean') el.checked = !!state[key];
+      }
+
+      // Toggle accordions
+      document.querySelectorAll('[data-toggle]').forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          const target = document.querySelector(btn.dataset.toggle);
+          const open = target.classList.toggle('hidden');
+          btn.setAttribute('aria-expanded', (!open).toString());
+          // Small scroll into view when opening
+          if (!open) target.scrollIntoView({behavior:'smooth', block:'nearest'});
+        });
+      });
+
+      // Start Mission smooth scroll
+      document.getElementById('startBtn').addEventListener('click', ()=>{
+        document.getElementById('quests').scrollIntoView({behavior:'smooth'});
+      });
+
+      // Claim button
+      document.getElementById('claimBtn').addEventListener('click', (e)=>{
+        if (!canClaim()) {
+          e.preventDefault();
+          pulseLock();
+        } else {
+          if (!state.claimed) {
+            state.claimed = true;
+            state.xp = XP_MAX;
+            saveState();
+            celebrate();
+          }
+        }
+      });
+
+      // Avatar from localStorage (optional)
+      try {
+        const photo = localStorage.getItem('qq:userPhoto') || '';
+        if (photo) {
+          const av = document.getElementById('avatar');
+          av.style.background = `center/cover no-repeat url('${photo}')`;
+          av.classList.remove('bg-gradient-to-br');
+        }
+      } catch(_) {}
+
+      computeProgress(false);
+    }
+
+    // ---------- STORAGE ----------
+    function restoreState(){
+      try{
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          state = { ...state, ...parsed };
+        }
+      }catch(e){ console.warn('restoreState:', e); }
+    }
+    function saveState(){
+      try{
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      }catch(e){ console.warn('saveState:', e); }
+    }
+
+    // ---------- PROGRESS ----------
+    function computeGroup(group){
+      const keys = GROUP_MAP[group];
+      let done = 0;
+      keys.forEach(k => { if (state[k]) done++; });
+      return { done, total: keys.length, pct: (done/keys.length)*100 };
+    }
+
+    function setBar(idCount, idBar, done, total){
+      const pct = total? (done/total)*100 : 0;
+      const bar = document.getElementById(idBar);
+      const cnt = document.getElementById(idCount);
+      if (bar) bar.style.width = pct.toFixed(1) + '%';
+      if (cnt) cnt.textContent = `${done}/${total}`;
+    }
+
+    function canClaim(){
+      const c = computeGroup('core').done >= REQ.core;
+      const d = computeGroup('code').done >= REQ.code;
+      const f = computeGroup('fin').done  >= REQ.fin;
+      const k = computeGroup('kc').done   >= REQ.kc;
+      return c && d && f && k;
+    }
+
+    function computeProgress(animate){
+      // Update bars per group
+      const C = computeGroup('core'); setBar('coreCount','coreBar', C.done, C.total);
+      const D = computeGroup('code'); setBar('codeCount','codeBar', D.done, D.total);
+      const F = computeGroup('fin');  setBar('finCount' ,'finBar' , F.done, F.total);
+      const K = computeGroup('kc');   setBar('kcCount'  ,'kcBar'  , K.done, K.total);
+
+      // XP: proportion of completed items (total 17) scaled to XP_MAX
+      const totalItems = 5+5+2+5;
+      const doneItems  = C.done + D.done + F.done + K.done;
+      const xp = Math.round((doneItems/totalItems) * XP_MAX);
+      if (!state.claimed) state.xp = xp;
+      saveState();
+
+      // HUD
+      document.getElementById('xpText').textContent = `${state.xp}/${XP_MAX}`;
+      const pctXp = Math.min(100, (state.xp/XP_MAX)*100);
+      const xpBar = document.getElementById('xpBar');
+      xpBar.style.width = pctXp.toFixed(1)+'%';
+
+      // Rewards panel state
+      const claimBtn = document.getElementById('claimBtn');
+      const lockMsg  = document.getElementById('lockMsg');
+      if (canClaim()){
+        claimBtn.classList.remove('opacity-40','pointer-events-none');
+        lockMsg.textContent = state.claimed ? 'Reward claimed. You can continue.' : 'Ready to claim!';
+        if (animate && !state.claimed) celebrate();
+      }else{
+        claimBtn.classList.add('opacity-40','pointer-events-none');
+        lockMsg.textContent = 'Complete required items to unlock.';
+      }
+    }
+
+    // ---------- UI sugar ----------
+    function pulseLock(){
+      const p = document.getElementById('rewardPanel');
+      p.animate([{transform:'scale(1)'},{transform:'scale(1.02)'},{transform:'scale(1)'}], {duration:240, easing:'ease-out'});
+    }
+
+    function celebrate(){
+      // Simple confetti
+      const layer = document.getElementById('confetti');
+      layer.innerHTML = '';
+      const colors = ['#00fff2','#ffcc00','#a78bfa','#22d3ee','#34d399','#f472b6'];
+      for (let i=0;i<80;i++){
+        const s = document.createElement('span');
+        s.style.left = (Math.random()*100)+'vw';
+        s.style.background = colors[Math.floor(Math.random()*colors.length)];
+        s.style.transform = `rotate(${Math.random()*360}deg)`;
+        s.style.animationDelay = (Math.random()*350)+'ms';
+        layer.appendChild(s);
+      }
+      setTimeout(()=>layer.innerHTML='',1000);
+    }
+  </script>
+  <!-- ░░ Completion Rewards (drop-in) ░░ -->
+<section class="qq-card qq-rewards" id="lesson1-rewards">
+  <div class="rewards-head">
+    <h2 class="qq-title">🚀 Completion Rewards</h2>
+
+    <!-- lokální info; jen text, XP už počítáš globálně -->
+    <div class="rewards-meta">
+      <ul class="rewards-list">
+        <li>🔓 Unlock: <strong>Matrix Algebra (Lesson 2)</strong></li>
+        <li>💼 Portfolio: <strong>Vector Operations Certificate</strong></li>
+        <li>⚡ XP: <strong>300 points</strong></li>
+      </ul>
+      <p class="rewards-note" id="rewards-note">Complete required items to unlock.</p>
+    </div>
+
+    <button
+      class="qq-btn-large"
+      id="claimContinueBtn"
+      data-next-url="lesson2.html"
+      disabled
+      aria-disabled="true"
+    >
+      Claim &amp; Continue
+    </button>
+  </div>
+</section>
+
+<style>
+  /* navazuje na tvé proměnné a vzhled qq-card */
+  .qq-rewards .rewards-head{
+    display:grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "title  button"
+      "meta   button";
+    gap: 0.9rem 1rem;
+    align-items:center;
+  }
+  .qq-rewards .qq-title{ grid-area:title; margin:0; }
+  .qq-rewards .rewards-meta{ grid-area:meta; }
+  .qq-rewards .rewards-list{
+    margin:.25rem 0 .35rem;
+    padding:0;
+    list-style:none;
+    color: var(--text-main, #fff);
+  }
+  .qq-rewards .rewards-list li{ margin:.15rem 0; }
+  .qq-rewards .rewards-note{
+    margin:0; color:var(--text-dim,#b9c0d0); font-size:.95rem;
+  }
+  .qq-rewards .qq-btn-large{
+    grid-area:button;
+    font-family:'Press Start 2P',cursive;
+    font-size:1rem;
+    color:var(--text-main,#fff);
+    background:rgba(0,255,204,.18);
+    border:2px solid var(--primary,#00ffcc);
+    border-radius:14px;
+    padding:1rem 1.4rem;
+    cursor:pointer;
+    transition:transform .06s, box-shadow .15s, background .15s, opacity .15s;
+    box-shadow:0 0 14px rgba(0,255,204,.15);
+  }
+  .qq-rewards .qq-btn-large:hover{ box-shadow:0 0 18px rgba(0,255,204,.35); }
+  .qq-rewards .qq-btn-large:disabled,
+  .qq-rewards .qq-btn-large[aria-disabled="true"]{
+    opacity:.45; cursor:not-allowed; box-shadow:none; filter:saturate(.6);
+  }
+
+  /* responsivní zarovnání */
+  @media (max-width: 820px){
+    .qq-rewards .rewards-head{
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        "title"
+        "meta"
+        "button";
+    }
+    .qq-rewards .qq-btn-large{ width:100%; }
+  }
+</style>
+
+<script>
+  (function(){
+    const BTN_ID = 'claimContinueBtn';
+    const LS_DONE_KEY = 'lesson1_kc_completed'; // už používáš v Knowledge Check bloku
+    const LS_CLAIMED  = 'lesson1_rewards_claimed';
+
+    const btn   = document.getElementById(BTN_ID);
+    const note  = document.getElementById('rewards-note');
+
+    function getKCCompletedCount(){
+      try {
+        const set = new Set(JSON.parse(localStorage.getItem(LS_DONE_KEY) || '[]'));
+        return set.size || 0;
+      } catch(e){ return 0; }
+    }
+
+    function updateRewardsState(){
+      const allDone = getKCCompletedCount() >= 5;
+      const alreadyClaimed = localStorage.getItem(LS_CLAIMED) === '1';
+
+      if (alreadyClaimed){
+        btn.textContent = '✓ Claimed';
+        btn.disabled = true;
+        btn.setAttribute('aria-disabled','true');
+        note.textContent = 'Rewards claimed. Great job!';
+        return;
+      }
+
+      btn.disabled = !allDone;
+      btn.setAttribute('aria-disabled', String(!allDone));
+      note.textContent = allDone
+        ? 'All checks completed. You can claim your rewards!'
+        : 'Complete required items to unlock.';
+    }
+
+    // reaguj na změny XP/úloh (posílá je Knowledge Check skript)
+    document.addEventListener('lesson:xp-changed', updateRewardsState);
+    // fallback: kontrola i při návratu/refreshi
+    window.addEventListener('focus', updateRewardsState);
+    document.addEventListener('DOMContentLoaded', updateRewardsState);
+
+    // Claim
+    btn?.addEventListener('click', ()=>{
+      if (btn.disabled) return;
+      localStorage.setItem(LS_CLAIMED, '1');
+      btn.textContent = '✓ Claimed';
+      btn.disabled = true;
+      btn.setAttribute('aria-disabled','true');
+      note.textContent = 'Rewards claimed. Great job!';
+
+      // volitelné přesměrování (změň data-next-url dle potřeby)
+      const next = btn.dataset.nextUrl;
+      if (next) {
+        setTimeout(()=>{ window.location.href = next; }, 550);
+      }
+    });
+
+    updateRewardsState();
+  })();
+</script>
+
+</body>
+</html>

@@ -1,1 +1,0 @@
-window.FIREBASE_API_KEY=AIzaSyDYT7LkvCn7Bqbp4gv75q4GtmmxugYnfrU;

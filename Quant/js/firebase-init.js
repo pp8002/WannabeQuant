@@ -40,6 +40,9 @@ setPersistence(auth, browserLocalPersistence).catch(e =>
   console.error("Auth persistence error:", e)
 );
 
+// --- Guard: prevent multiple concurrent popups ---
+let __loginInProgress = false;
+
 // --- Helpers: uživatelský dokument ve Firestore ---
 async function ensureUserDoc(uid, profile) {
   try {
@@ -98,6 +101,12 @@ export async function startGoogleSignIn() {
 
   let finished = false;
 
+  if (__loginInProgress) {
+    console.log("⏳ Login already in progress – ignoring extra click");
+    return;
+  }
+  __loginInProgress = true;
+
   // „Dokočovací“ funkce — redirect proběhne hned, uložení do DB neblokuje
   const finish = (user) => {
     if (finished || !user) return;
@@ -129,6 +138,7 @@ export async function startGoogleSignIn() {
     unsub();
     console.error("❌ signInWithPopup error:", err?.code, err?.message);
     alert("Sign-in failed: " + (err?.message || err));
+    __loginInProgress = false;
   }
 }
 

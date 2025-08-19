@@ -1,12 +1,5 @@
-// ====== PŘIPOJENÍ FIREBASE ======
-import { auth } from "./firebase-init.js";
-import {
-  GoogleAuthProvider,
-  signInWithRedirect,
-  getRedirectResult
-} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-
-const provider = new GoogleAuthProvider();
+// ====== PŘIPOJENÍ FIREBASE (centralizované) ======
+import { auth, startGoogleSignIn } from "./firebase-init.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   console.log("✅ profile.js načten");
@@ -106,42 +99,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  // ===== GOOGLE LOGIN BUTTON (redirect verze) =====
+  // ===== GOOGLE LOGIN BUTTON (popup, centralizované) =====
   if (googleBtn) {
-    googleBtn.addEventListener("click", () => {
-      signInWithRedirect(auth, provider);
-    });
-  }
-
-  // ===== PO NÁVRATU Z PŘIHLÁŠENÍ ZÍSKÁNÍ DAT =====
-  try {
-    const result = await getRedirectResult(auth);
-    if (result && result.user) {
-      const firebaseUser = result.user;
-      const username = firebaseUser.displayName || firebaseUser.email;
-
-      let users = getAllUsers();
-      if (!users[username]) {
-        users[username] = {
-          xp: 0,
-          level: 1,
-          streak: 0,
-          tasks: [],
-          badges: []
-        };
+    googleBtn.addEventListener("click", async () => {
+      try {
+        await startGoogleSignIn();
+      } catch (e) {
+        console.error("❌ Login error:", e?.code, e?.message || e);
+        alert("Chyba při přihlášení: " + (e?.message || e));
       }
-
-      saveAllUsers(users);
-      setCurrentUserKey(username);
-
-      console.log("✅ Přihlášen:", username);
-
-      // Přesměrování na účet
-      window.location.href = "account.html";
-    }
-  } catch (error) {
-    if (error.code) {
-      console.error("❌ Chyba při přihlášení:", error.message);
-    }
+    });
   }
 });

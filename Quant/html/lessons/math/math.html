@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Math Roadmap</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0f1419;
+      --card:#10171f;
+      --neon:#00ff99;
+      --text:#e6e6e6;
+      --shadow:rgba(0,255,153,.4);
+
+      /* sjednocené menší rozměry karet a mezery */
+      --card-h: clamp(180px, 22vh, 210px);
+      --gap: clamp(20px, 1.8vw, 32px);
+    }
+
+    body{
+      background:var(--bg);
+      font-family:'Press Start 2P', monospace;
+      color:var(--text);
+      margin:0;
+      padding:36px 16px 64px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+    }
+
+    h1{
+      font-size:clamp(18px, 2.4vw, 32px);
+      color:var(--neon);
+      text-shadow:0 0 10px var(--shadow);
+      margin:0 0 clamp(24px,2.6vw,34px);
+      text-align:center;
+    }
+
+    /* Grid rámec: okraje + dvě řady (horní a spodní) */
+    .grid-wrap{
+      display:grid;
+      grid-template-columns:
+        minmax(0, 1fr)
+        repeat(3, minmax(280px, 1fr))
+        minmax(0, 1fr);
+      grid-auto-rows: var(--card-h);
+      column-gap: var(--gap);
+      row-gap: clamp(72px, 7.5vw, 120px); /* velký svislý rozestup */
+      width:min(1500px, 96vw);
+    }
+
+    /* HORNÍ ŘADA – 3 karty s mezerami */
+    .top-row{
+      grid-column:2 / span 3;
+      grid-row:1;
+      display:flex;
+      justify-content:center;
+      align-items:stretch;
+      gap: var(--gap);      /* ← jistota, že se nedotknou */
+    }
+
+    /* SPODNÍ ŘADA – 2 karty uprostřed */
+    .bottom-row{
+      grid-column:2 / span 3;
+      grid-row:2;
+      display:flex;
+      justify-content:center;
+      gap: var(--gap);
+      margin-top: clamp(6px, 1.2vw, 16px);
+    }
+
+    .math-block{
+      width:100%;
+      max-width:460px;
+      height:var(--card-h);
+      background:var(--card);
+      border:2px solid var(--neon);
+      border-radius:16px;
+      box-shadow:0 0 18px var(--shadow);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding:16px clamp(16px, 1.6vw, 22px);
+      transition:transform .18s ease, box-shadow .18s ease;
+      text-decoration:none;
+      color:inherit;
+      flex:1 1 0; /* hezky vyplní řadu a drží stejné šířky */
+    }
+
+    .math-block:hover{
+      transform:translateY(-3px);
+      box-shadow:0 0 24px var(--shadow);
+    }
+
+    .math-block h2{
+      color:#ffe600;
+      font-size:clamp(15px, 1.9vw, 24px);
+      margin:0 0 8px;
+    }
+    .math-block p{
+      font-size:clamp(10px, 0.9vw, 14px);
+      line-height:1.5;
+      margin:0;
+      max-width:52ch;
+    }
+
+    /* Mobile fallback – 1 sloupec */
+    @media (max-width:1100px){
+      .grid-wrap{
+        grid-template-columns:minmax(0,1fr);
+        grid-auto-rows:auto;
+        justify-items:center;
+        row-gap: clamp(28px, 6vw, 48px);
+      }
+      .top-row,
+      .bottom-row{
+        grid-column:1;
+        grid-row:auto;
+        flex-direction:column;
+        align-items:center;
+      }
+      .math-block{
+        height:auto;
+        max-width:min(94vw,480px);
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>🚀 Math Mastery Levels</h1>
+
+  <div class="grid-wrap">
+    <!-- HORNÍ ŘADA (3 KARTY S MEZERAMI) -->
+    <div class="top-row">
+      <a href="./math1/math1.html" class="math-block">
+        <h2>Math I</h2>
+        <p>Linear Algebra: Vectors, Matrices, Eigenvalues — essential for financial modeling and systems.</p>
+      </a>
+
+      <a href="math2.html" class="math-block">
+        <h2>Math II</h2>
+        <p>Calculus: Derivatives and Integrals in multiple dimensions. Core to optimization and finance dynamics.</p>
+      </a>
+
+      <a href="math3.html" class="math-block">
+        <h2>Math III</h2>
+        <p>Probability &amp; Statistics: Distributions, estimators, CLT. Key tools in risk and data-driven finance.</p>
+      </a>
+    </div>
+
+    <!-- SPODNÍ ŘADA (2 KARTY UPROSTŘED) -->
+    <div class="bottom-row">
+      <a href="math4.html" class="math-block">
+        <h2>Math IV</h2>
+        <p>Differential Equations: ODEs, PDEs, and applications to pricing and quantitative models.</p>
+      </a>
+
+      <a href="math5.html" class="math-block">
+        <h2>Math V</h2>
+        <p>Numerical Methods &amp; Optimization: Algorithms for solving complex financial systems and simulations.</p>
+      </a>
+    </div>
+  </div>
+</body>
+</html>
